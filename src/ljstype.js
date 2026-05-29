@@ -1,6 +1,4 @@
-"use strict";
-
-const { luastring_of } = require('./defs.js');
+import {luastring_of} from "./defs.js";
 
 const luai_ctype_ = luastring_of(
     0x00,  /* EOZ */
@@ -67,10 +65,3 @@ const lislalpha = function(c) {
 const lislalnum = function(c) {
     return (luai_ctype_[c+1] & ((1<<ALPHABIT)|(1<<DIGITBIT))) !== 0;
 };
-
-module.exports.lisdigit   = lisdigit;
-module.exports.lislalnum  = lislalnum;
-module.exports.lislalpha  = lislalpha;
-module.exports.lisprint   = lisprint;
-module.exports.lisspace   = lisspace;
-module.exports.lisxdigit  = lisxdigit;

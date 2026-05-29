@@ -30,6 +30,9 @@
   },
   "homepage": "https://github.com/fengari-lua/fengari#readme",
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "babel-jest": "^30.4.1",
     "eslint": "^5.15.1",
     "jest": "^24.5.0"
   },
@@ -38,54 +41,5 @@
     "sprintf-js": "^1.1.2",
     "tmp": "^0.0.33"
   },
-  "sideEffects": false,
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "es6": true,
-      "node": true,
-      "worker": true
-    },
-    "extends": "eslint:recommended",
-    "rules": {
-      "indent": [
-        "error",
-        4,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "linebreak-style": [
-        "error",
-        "unix"
-      ],
-      "no-console": 0,
-      "no-empty": [
-        2,
-        {
-          "allowEmptyCatch": true
-        }
-      ],
-      "no-unused-vars": [
-        2,
-        {
-          "args": "none"
-        }
-      ],
-      "semi": [
-        "error",
-        "always"
-      ]
-    },
-    "overrides": [
-      {
-        "files": [
-          "test/**/*.test.js"
-        ],
-        "env": {
-          "jest": true
-        }
-      }
-    ]
-  }
+  "sideEffects": false
 }

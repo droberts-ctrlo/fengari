@@ -1,40 +1,30 @@
-"use strict";
-
-const {
-    LUA_OPLT,
-    LUA_TNUMBER,
+import {
     lua_compare,
     lua_gettop,
     lua_isinteger,
     lua_isnoneornil,
-    lua_pushboolean,
-    lua_pushinteger,
-    lua_pushliteral,
-    lua_pushnil,
-    lua_pushnumber,
-    lua_pushvalue,
-    lua_setfield,
+    LUA_OPLT,
+    lua_pushboolean, lua_pushinteger, lua_pushliteral, lua_pushnil, lua_pushnumber, lua_pushvalue, lua_setfield,
     lua_settop,
-    lua_tointeger,
-    lua_tointegerx,
-    lua_type
-} = require('./lua.js');
-const {
+    LUA_TNUMBER, lua_tointeger, lua_tointegerx, lua_type
+} from "./lua.js";
+
+
+import {
     luaL_argcheck,
     luaL_argerror,
     luaL_checkany,
     luaL_checkinteger,
     luaL_checknumber,
-    luaL_error,
-    luaL_newlib,
-    luaL_optnumber
-} = require('./lauxlib.js');
-const {
-    LUA_MAXINTEGER,
-    LUA_MININTEGER,
-    lua_numbertointeger
-} = require('./luaconf.js');
-const { to_luastring } = require("./fengaricore.js");
+    luaL_error, luaL_newlib, luaL_optnumber
+} from "./lauxlib.js";
+
+
+import {LUA_MAXINTEGER, LUA_MININTEGER, lua_numbertointeger} from "./luaconf.js";
+
+
+import {to_luastring} from "./fengaricore.js";
+
 
 let rand_state;
 /* use same parameters as glibc LCG */
@@ -66,13 +56,13 @@ const math_random = function(L) {
             up = luaL_checkinteger(L, 2);
             break;
         }
-        default: return luaL_error(L, "wrong number of arguments");
+        default: return luaL_error(L, 'wrong number of arguments');
     }
 
     /* random integer in the interval [low, up] */
-    luaL_argcheck(L, low <= up, 1, "interval is empty");
+    luaL_argcheck(L, low <= up, 1, 'interval is empty');
     luaL_argcheck(L, low >= 0 || up <= LUA_MAXINTEGER + low, 1,
-        "interval too large");
+        'interval too large');
 
     r *= (up - low) + 1;
     lua_pushinteger(L, Math.floor(r) + low);
@@ -213,7 +203,7 @@ const math_rad = function(L) {
 const math_min = function(L) {
     let n = lua_gettop(L);  /* number of arguments */
     let imin = 1;  /* index of current minimum value */
-    luaL_argcheck(L, n >= 1, 1, "value expected");
+    luaL_argcheck(L, n >= 1, 1, 'value expected');
     for (let i = 2; i <= n; i++){
         if (lua_compare(L, i, imin, LUA_OPLT))
             imin = i;
@@ -225,7 +215,7 @@ const math_min = function(L) {
 const math_max = function(L) {
     let n = lua_gettop(L);  /* number of arguments */
     let imax = 1;  /* index of current minimum value */
-    luaL_argcheck(L, n >= 1, 1, "value expected");
+    luaL_argcheck(L, n >= 1, 1, 'value expected');
     for (let i = 2; i <= n; i++){
         if (lua_compare(L, imax, i, LUA_OPLT))
             imax = i;
@@ -237,9 +227,9 @@ const math_max = function(L) {
 const math_type = function(L) {
     if (lua_type(L, 1) === LUA_TNUMBER) {
         if (lua_isinteger(L, 1))
-            lua_pushliteral(L, "integer");
+            lua_pushliteral(L, 'integer');
         else
-            lua_pushliteral(L, "float");
+            lua_pushliteral(L, 'float');
     } else {
         luaL_checkany(L, 1);
         lua_pushnil(L);
@@ -252,7 +242,7 @@ const math_fmod = function(L) {
         let d = lua_tointeger(L, 2);
         /* no special case needed for -1 in javascript */
         if (d === 0) {
-            luaL_argerror(L, 2, "zero");
+            luaL_argerror(L, 2, 'zero');
         } else
             lua_pushinteger(L, (lua_tointeger(L, 1) % d)|0);
     } else {
@@ -277,41 +267,41 @@ const math_modf = function(L) {
 };
 
 const mathlib = {
-    "abs":        math_abs,
-    "acos":       math_acos,
-    "asin":       math_asin,
-    "atan":       math_atan,
-    "ceil":       math_ceil,
-    "cos":        math_cos,
-    "deg":        math_deg,
-    "exp":        math_exp,
-    "floor":      math_floor,
-    "fmod":       math_fmod,
-    "log":        math_log,
-    "max":        math_max,
-    "min":        math_min,
-    "modf":       math_modf,
-    "rad":        math_rad,
-    "random":     math_random,
-    "randomseed": math_randomseed,
-    "sin":        math_sin,
-    "sqrt":       math_sqrt,
-    "tan":        math_tan,
-    "tointeger":  math_toint,
-    "type":       math_type,
-    "ult":        math_ult
+    'abs':        math_abs,
+    'acos':       math_acos,
+    'asin':       math_asin,
+    'atan':       math_atan,
+    'ceil':       math_ceil,
+    'cos':        math_cos,
+    'deg':        math_deg,
+    'exp':        math_exp,
+    'floor':      math_floor,
+    'fmod':       math_fmod,
+    'log':        math_log,
+    'max':        math_max,
+    'min':        math_min,
+    'modf':       math_modf,
+    'rad':        math_rad,
+    'random':     math_random,
+    'randomseed': math_randomseed,
+    'sin':        math_sin,
+    'sqrt':       math_sqrt,
+    'tan':        math_tan,
+    'tointeger':  math_toint,
+    'type':       math_type,
+    'ult':        math_ult
 };
 
 const luaopen_math = function(L) {
     luaL_newlib(L, mathlib);
     lua_pushnumber(L, Math.PI);
-    lua_setfield(L, -2, to_luastring("pi", true));
+    lua_setfield(L, -2, to_luastring('pi', true));
     lua_pushnumber(L, Infinity);
-    lua_setfield(L, -2, to_luastring("huge", true));
+    lua_setfield(L, -2, to_luastring('huge', true));
     lua_pushinteger(L, LUA_MAXINTEGER);
-    lua_setfield(L, -2, to_luastring("maxinteger", true));
+    lua_setfield(L, -2, to_luastring('maxinteger', true));
     lua_pushinteger(L, LUA_MININTEGER);
-    lua_setfield(L, -2, to_luastring("mininteger", true));
+    lua_setfield(L, -2, to_luastring('mininteger', true));
     return 1;
 };
 

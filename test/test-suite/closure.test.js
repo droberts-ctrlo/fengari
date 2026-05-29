@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
-test("[test-suite] closure: testing equality", () => {
+test('[test-suite] closure: testing equality', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -29,9 +29,9 @@ test("[test-suite] closure: testing equality", () => {
 });
 
 
-test("[test-suite] closure: testing closures with 'for' control variable", () => {
+test('[test-suite] closure: testing closures with \'for\' control variable', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -70,9 +70,9 @@ test("[test-suite] closure: testing closures with 'for' control variable", () =>
 });
 
 
-test("[test-suite] closure: testing closures with 'for' control variable x break", () => {
+test('[test-suite] closure: testing closures with \'for\' control variable x break', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {"a", "b"}
@@ -98,9 +98,9 @@ test("[test-suite] closure: testing closures with 'for' control variable x break
 });
 
 
-test("[test-suite] closure: testing closure x break x return x errors", () => {
+test('[test-suite] closure: testing closure x break x return x errors', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local b
@@ -142,9 +142,9 @@ test("[test-suite] closure: testing closure x break x return x errors", () => {
 });
 
 
-test("[test-suite] closure: testing multi-level closure", () => {
+test('[test-suite] closure: testing multi-level closure', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local w
@@ -165,9 +165,9 @@ test("[test-suite] closure: testing multi-level closure", () => {
 });
 
 
-test("[test-suite] closure: testing closures x repeat-until", () => {
+test('[test-suite] closure: testing closures x repeat-until', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = {}
@@ -185,9 +185,9 @@ test("[test-suite] closure: testing closures x repeat-until", () => {
 });
 
 
-test("[test-suite] closure: testing closures created in 'then' and 'else' parts of 'if's", () => {
+test('[test-suite] closure: testing closures created in \'then\' and \'else\' parts of \'if\'s', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -226,9 +226,9 @@ test("[test-suite] closure: testing closures created in 'then' and 'else' parts 
 });
 
 
-test("[test-suite] closure: test for correctly closing upvalues in tail calls of vararg functions", () => {
+test('[test-suite] closure: test for correctly closing upvalues in tail calls of vararg functions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function t ()

@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
-test("[test-suite] calls: test 'type'", () => {
+test('[test-suite] calls: test \'type\'', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(type(1<2) == 'boolean')
@@ -30,9 +30,9 @@ test("[test-suite] calls: test 'type'", () => {
 });
 
 
-test("[test-suite] calls: test error in 'print'", () => {
+test('[test-suite] calls: test error in \'print\'', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do    -- test error in 'print' too...
@@ -56,9 +56,9 @@ test("[test-suite] calls: test error in 'print'", () => {
 });
 
 
-test("[test-suite] calls: testing local-function recursion", () => {
+test('[test-suite] calls: testing local-function recursion', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         fact = false
@@ -80,9 +80,9 @@ test("[test-suite] calls: testing local-function recursion", () => {
 });
 
 
-test("[test-suite] calls: testing declarations", () => {
+test('[test-suite] calls: testing declarations', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {i = 10}
@@ -175,9 +175,9 @@ test("[test-suite] calls: testing declarations", () => {
 });
 
 
-test("[test-suite] calls: testing closures", () => {
+test('[test-suite] calls: testing closures', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- fixed-point operator
@@ -221,9 +221,9 @@ test("[test-suite] calls: testing closures", () => {
 });
 
 
-test("[test-suite] calls: testing multiple returns", () => {
+test('[test-suite] calls: testing multiple returns', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function unlpack (t, i)
@@ -267,9 +267,9 @@ test("[test-suite] calls: testing multiple returns", () => {
 });
 
 
-test("[test-suite] calls: testing calls with 'incorrect' arguments", () => {
+test('[test-suite] calls: testing calls with \'incorrect\' arguments', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         rawget({}, "x", 1)
@@ -284,9 +284,9 @@ test("[test-suite] calls: testing calls with 'incorrect' arguments", () => {
 });
 
 
-test("[test-suite] calls: test for generic load", () => {
+test('[test-suite] calls: test for generic load', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local x = "-- a comment\\0\\0\\0\\n  x = 10 + \\n23; \\
@@ -344,9 +344,9 @@ test("[test-suite] calls: test for generic load", () => {
 });
 
 
-test("[test-suite] calls: any value is valid for _ENV", () => {
+test('[test-suite] calls: any value is valid for _ENV', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(load("return _ENV", nil, nil, 123)() == 123)
@@ -358,9 +358,9 @@ test("[test-suite] calls: any value is valid for _ENV", () => {
 });
 
 
-test("[test-suite] calls: load when _ENV is not first upvalue", () => {
+test('[test-suite] calls: load when _ENV is not first upvalue', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local x; XX = 123
@@ -383,9 +383,9 @@ test("[test-suite] calls: load when _ENV is not first upvalue", () => {
 });
 
 
-test("[test-suite] calls: test generic load with nested functions", () => {
+test('[test-suite] calls: test generic load with nested functions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function read1 (x)
@@ -416,9 +416,9 @@ test("[test-suite] calls: test generic load with nested functions", () => {
 });
 
 
-test("[test-suite] calls: test for dump/undump with upvalues", () => {
+test('[test-suite] calls: test for dump/undump with upvalues', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a, b = 20, 30
@@ -444,9 +444,9 @@ test("[test-suite] calls: test for dump/undump with upvalues", () => {
 });
 
 
-test("[test-suite] calls: test for dump/undump with many upvalues", () => {
+test('[test-suite] calls: test for dump/undump with many upvalues', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -479,9 +479,9 @@ test("[test-suite] calls: test for dump/undump with many upvalues", () => {
 });
 
 
-test("[test-suite] calls: test for long method names", () => {
+test('[test-suite] calls: test for long method names', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -499,9 +499,9 @@ test("[test-suite] calls: test for long method names", () => {
 });
 
 
-test("[test-suite] calls: test for bug in parameter adjustment", () => {
+test('[test-suite] calls: test for bug in parameter adjustment', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert((function () return nil end)(4) == nil)
@@ -515,9 +515,9 @@ test("[test-suite] calls: test for bug in parameter adjustment", () => {
 });
 
 
-test("[test-suite] calls: testing binary chunks", () => {
+test('[test-suite] calls: testing binary chunks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do

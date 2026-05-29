@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
-test("[test-suite] goto: error messages", () => {
+test('[test-suite] goto: error messages', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function errmsg (code, m)
@@ -53,9 +53,9 @@ test("[test-suite] goto: error messages", () => {
 });
 
 
-test("[test-suite] goto", () => {
+test('[test-suite] goto', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- simple gotos
@@ -120,9 +120,9 @@ test("[test-suite] goto", () => {
 });
 
 
-test("[test-suite] goto: to repeat a label in a different function is OK", () => {
+test('[test-suite] goto: to repeat a label in a different function is OK', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo ()
@@ -148,9 +148,9 @@ test("[test-suite] goto: to repeat a label in a different function is OK", () =>
 });
 
 
-test("[test-suite] goto: bug in 5.2 -> 5.3.2", () => {
+test('[test-suite] goto: bug in 5.2 -> 5.3.2', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- bug in 5.2 -> 5.3.2
@@ -175,9 +175,9 @@ test("[test-suite] goto: bug in 5.2 -> 5.3.2", () => {
 });
 
 
-test("[test-suite] goto: testing closing of upvalues", () => {
+test('[test-suite] goto: testing closing of upvalues', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo ()
@@ -248,9 +248,9 @@ test("[test-suite] goto: testing closing of upvalues", () => {
 });
 
 
-test("[test-suite] goto: testing if x goto optimizations", () => {
+test('[test-suite] goto: testing if x goto optimizations', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function testG (a)

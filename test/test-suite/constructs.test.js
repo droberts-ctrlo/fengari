@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const checkload = `
     local function checkload (s, msg)
@@ -13,7 +13,7 @@ const checkload = `
 
 test('[test-suite] constructs: testing semicolons', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do ;;; end
@@ -29,7 +29,7 @@ test('[test-suite] constructs: testing semicolons', () => {
 
 test('[test-suite] constructs: invalid operations should not raise errors when not executed', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         if false then a = 3 // 0; a = 0 % 0 end
@@ -43,7 +43,7 @@ test('[test-suite] constructs: invalid operations should not raise errors when n
 
 test('[test-suite] constructs: testing priorities', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(2^3^2 == 2^(3^2));
@@ -96,7 +96,7 @@ test('[test-suite] constructs: testing priorities', () => {
 
 test('[test-suite] constructs: silly loops', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         repeat until 1; repeat until true;
@@ -269,7 +269,7 @@ test('[test-suite] constructs: silly loops', () => {
 
 test.skip('[test-suite] constructs: huge loops, upvalue', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- sometimes will be 0, sometimes will not...
@@ -343,9 +343,9 @@ test.skip('[test-suite] constructs: huge loops, upvalue', () => {
 });
 
 
-test("[test-suite] constructs: testing some syntax errors (chosen through 'gcov')", () => {
+test('[test-suite] constructs: testing some syntax errors (chosen through \'gcov\')', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true

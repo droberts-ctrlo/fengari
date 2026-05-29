@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const checkerror = `
     local maxi, mini = math.maxinteger, math.mininteger
@@ -16,7 +16,7 @@ const checkerror = `
 
 test('[test-suite] strings: string comparisons', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert('alo' < 'alo1')
@@ -46,7 +46,7 @@ test('[test-suite] strings: string comparisons', () => {
 
 test('[test-suite] strings: string.sub', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert('alo' < 'alo1')
@@ -76,7 +76,7 @@ test('[test-suite] strings: string.sub', () => {
 
 test('[test-suite] strings: string.find', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.find("123456789", "345") == 3)
@@ -102,7 +102,7 @@ test('[test-suite] strings: string.find', () => {
 
 test('[test-suite] strings: string.len and #', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.len("") == 0)
@@ -122,7 +122,7 @@ test('[test-suite] strings: string.len and #', () => {
 
 test('[test-suite] strings: string.byte/string.char', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.byte("a") == 97)
@@ -167,7 +167,7 @@ test('[test-suite] strings: string.byte/string.char', () => {
 
 test('[test-suite] strings: repetitions with separator', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.rep('teste', 0, 'xuxu') == '')
@@ -192,7 +192,7 @@ test('[test-suite] strings: repetitions with separator', () => {
 
 test('[test-suite] strings: tostring', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(type(tostring(nil)) == 'string')
@@ -232,7 +232,7 @@ test('[test-suite] strings: tostring', () => {
 
 test('[test-suite] strings: string.format', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         x = '"ílo"\\n\\\\'
@@ -267,7 +267,7 @@ test('[test-suite] strings: string.format', () => {
 
 test('[test-suite] strings: %q', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -296,7 +296,7 @@ test('[test-suite] strings: %q', () => {
 
 test('[test-suite] strings: embedded zeros error', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.format("\\0%s\\0", "\\0\\0\\1") == "\\0\\0\\0\\1\\0")
@@ -311,7 +311,7 @@ test('[test-suite] strings: embedded zeros error', () => {
 
 test('[test-suite] strings: format x tostring', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.format("%s %s", nil, true) == "nil true")
@@ -342,7 +342,7 @@ test('[test-suite] strings: format x tostring', () => {
 
 test('[test-suite] strings: longest number that can be formatted', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -367,7 +367,7 @@ test('[test-suite] strings: longest number that can be formatted', () => {
 
 test('[test-suite] strings: large numbers for format', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- assume at least 32 bits
@@ -402,9 +402,9 @@ test('[test-suite] strings: large numbers for format', () => {
 });
 
 
-test("[test-suite] strings: 'format %a %A'", () => {
+test('[test-suite] strings: \'format %a %A\'', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -447,9 +447,9 @@ test("[test-suite] strings: 'format %a %A'", () => {
 });
 
 
-test("[test-suite] strings: errors in format", () => {
+test('[test-suite] strings: errors in format', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function check (fmt, msg)
@@ -475,9 +475,9 @@ test("[test-suite] strings: errors in format", () => {
 });
 
 
-test("[test-suite] strings: table.concat", () => {
+test('[test-suite] strings: table.concat', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("table expected", table.concat, 3)
@@ -515,9 +515,9 @@ test("[test-suite] strings: table.concat", () => {
 
 
 // TODO: os.setlocale NYI
-test.skip("[test-suite] strings: locale", () => {
+test.skip('[test-suite] strings: locale', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         if not _port then
@@ -558,9 +558,9 @@ test.skip("[test-suite] strings: locale", () => {
 });
 
 
-test("[test-suite] strings: bug in Lua 5.3.2: 'gmatch' iterator does not work across coroutines", () => {
+test('[test-suite] strings: bug in Lua 5.3.2: \'gmatch\' iterator does not work across coroutines', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do

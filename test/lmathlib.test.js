@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../src/lua.js');
 const lauxlib = require('../src/lauxlib.js');
 const lualib = require('../src/lualib.js');
-const {to_luastring} = require("../src/fengaricore.js");
+const {to_luastring} = require('../src/fengaricore.js');
 
 test('math.abs, math.sin, math.cos, math.tan, math.asin, math.acos, math.atan', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.abs(-10), math.abs(-10.5), math.cos(10), math.tan(10),
@@ -31,7 +31,7 @@ test('math.abs, math.sin, math.cos, math.tan, math.asin, math.acos, math.atan', 
 
 test('math.ceil, math.floor', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.ceil(10.5), math.floor(10.5)
@@ -49,7 +49,7 @@ test('math.ceil, math.floor', () => {
 
 test('math.deg, math.rad', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.deg(10), math.rad(10)
@@ -67,7 +67,7 @@ test('math.deg, math.rad', () => {
 
 test('math.log', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.log(10), math.log(10, 2), math.log(10, 10)
@@ -87,7 +87,7 @@ test('math.log', () => {
 /* Node.js 6 has incorrect results for Math.exp */
 (parseInt(process.versions.node) > 6 ? test : test.skip)('math.exp', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.exp(10)
@@ -104,7 +104,7 @@ test('math.log', () => {
 
 test('math.min, math.max', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.max(10, 5, 23), math.min(10, 5, 23)
@@ -122,7 +122,7 @@ test('math.min, math.max', () => {
 
 test('math.random', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.random(), math.random(10, 15)
@@ -148,7 +148,7 @@ test('math.random', () => {
 
 test('math.sqrt', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.sqrt(10)
@@ -165,7 +165,7 @@ test('math.sqrt', () => {
 
 test('math.tointeger', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.tointeger('10')
@@ -182,7 +182,7 @@ test('math.tointeger', () => {
 
 test('math.type', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.type(10), math.type(10.5), math.type('hello')
@@ -193,15 +193,15 @@ test('math.type', () => {
         lua.lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -3)).toBe("integer");
-    expect(lua.lua_tojsstring(L, -2)).toBe("float");
+    expect(lua.lua_tojsstring(L, -3)).toBe('integer');
+    expect(lua.lua_tojsstring(L, -2)).toBe('float');
     expect(lua.lua_tojsstring(L, -1)).toBe(null);
 });
 
 
 test('math.ult', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.ult(5, 200)
@@ -218,7 +218,7 @@ test('math.ult', () => {
 
 test('math.fmod', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.fmod(2,5)
@@ -235,7 +235,7 @@ test('math.fmod', () => {
 
 test('math.modf', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return math.modf(3.4, 0.6)

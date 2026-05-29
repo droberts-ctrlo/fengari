@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const prefix = `
     local function dostring(s) return assert(load(s))() end
@@ -22,9 +22,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] db: getinfo, ...line...", () => {
+test('[test-suite] db: getinfo, ...line...', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not pcall(debug.getinfo, print, "X"))   -- invalid option
@@ -50,9 +50,9 @@ test("[test-suite] db: getinfo, ...line...", () => {
 });
 
 
-test("[test-suite] db: test file and string names truncation", () => {
+test('[test-suite] db: test file and string names truncation', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = "function f () end"
@@ -85,9 +85,9 @@ test("[test-suite] db: test file and string names truncation", () => {
     lua.lua_call(L, 0, 0);
 });
 
-test("[test-suite] db: local", () => {
+test('[test-suite] db: local', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         repeat
@@ -133,9 +133,9 @@ test("[test-suite] db: local", () => {
 });
 
 
-test("[test-suite] db: line hook", () => {
+test('[test-suite] db: line hook', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         test([[if
@@ -199,9 +199,9 @@ test("[test-suite] db: line hook", () => {
 });
 
 
-test("[test-suite] db: invalid levels in [gs]etlocal", () => {
+test('[test-suite] db: invalid levels in [gs]etlocal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not pcall(debug.getlocal, 20, 1))
@@ -214,9 +214,9 @@ test("[test-suite] db: invalid levels in [gs]etlocal", () => {
 });
 
 
-test("[test-suite] db: parameter names", () => {
+test('[test-suite] db: parameter names', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo (a,b,...) local d, e end
@@ -238,9 +238,9 @@ test("[test-suite] db: parameter names", () => {
 });
 
 
-test("[test-suite] db: vararg", () => {
+test('[test-suite] db: vararg', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo (a, ...)
@@ -275,9 +275,9 @@ test("[test-suite] db: vararg", () => {
 });
 
 
-test("[test-suite] db: access to vararg in non-vararg function", () => {
+test('[test-suite] db: access to vararg in non-vararg function', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo () return debug.getlocal(1, -1) end
@@ -290,9 +290,9 @@ test("[test-suite] db: access to vararg in non-vararg function", () => {
 });
 
 
-test("[test-suite] db: test hook presence in debug info", () => {
+test('[test-suite] db: test hook presence in debug info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- test hook presence in debug info
@@ -386,9 +386,9 @@ test("[test-suite] db: test hook presence in debug info", () => {
 });
 
 
-test("[test-suite] db: tests for manipulating non-registered locals (C and Lua temporaries)", () => {
+test('[test-suite] db: tests for manipulating non-registered locals (C and Lua temporaries)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local n, v = debug.getlocal(0, 1)
@@ -420,9 +420,9 @@ test("[test-suite] db: tests for manipulating non-registered locals (C and Lua t
 });
 
 
-test("[test-suite] db: testing access to function arguments", () => {
+test('[test-suite] db: testing access to function arguments', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function collectlocals (level)
@@ -469,9 +469,9 @@ test("[test-suite] db: testing access to function arguments", () => {
 });
 
 
-test("[test-suite] db: testing access to local variables in return hook (bug in 5.2)", () => {
+test('[test-suite] db: testing access to local variables in return hook (bug in 5.2)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function collectlocals (level)
@@ -516,9 +516,9 @@ test("[test-suite] db: testing access to local variables in return hook (bug in 
 });
 
 
-test("[test-suite] db: testing upvalue access", () => {
+test('[test-suite] db: testing upvalue access', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function getupvalues (f)
@@ -556,9 +556,9 @@ test("[test-suite] db: testing upvalue access", () => {
 });
 
 
-test("[test-suite] db: testing count hooks", () => {
+test('[test-suite] db: testing count hooks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a=0
@@ -586,9 +586,9 @@ test("[test-suite] db: testing count hooks", () => {
 });
 
 
-test("[test-suite] db: tests for tail calls", () => {
+test('[test-suite] db: tests for tail calls', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f (x)
@@ -652,9 +652,9 @@ test("[test-suite] db: tests for tail calls", () => {
 });
 
 
-test("[test-suite] db: testing local function information", () => {
+test('[test-suite] db: testing local function information', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         co = load[[
@@ -682,9 +682,9 @@ test("[test-suite] db: testing local function information", () => {
 });
 
 
-test("[test-suite] db: testing traceback", () => {
+test('[test-suite] db: testing traceback', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(debug.traceback(print) == print)
@@ -707,9 +707,9 @@ test("[test-suite] db: testing traceback", () => {
 });
 
 
-test("[test-suite] db: testing nparams, nups e isvararg", () => {
+test('[test-suite] db: testing nparams, nups e isvararg', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = debug.getinfo(print, "u")
@@ -732,9 +732,9 @@ test("[test-suite] db: testing nparams, nups e isvararg", () => {
 });
 
 
-test("[test-suite] db: testing debugging of coroutines", () => {
+test('[test-suite] db: testing debugging of coroutines', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checktraceback (co, p, level)
@@ -805,15 +805,15 @@ test("[test-suite] db: testing debugging of coroutines", () => {
     `;
     lualib.luaL_openlibs(L);
     let b = to_luastring(luaCode);
-    if (lauxlib.luaL_loadbuffer(L, b, b.length, to_luastring("@db.lua")) === lua.LUA_ERRSYNTAX)
+    if (lauxlib.luaL_loadbuffer(L, b, b.length, to_luastring('@db.lua')) === lua.LUA_ERRSYNTAX)
         throw new SyntaxError(lua.lua_tojsstring(L, -1));
     lua.lua_call(L, 0, 0);
 });
 
 
-test("[test-suite] db: check get/setlocal in coroutines", () => {
+test('[test-suite] db: check get/setlocal in coroutines', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         co = coroutine.create(function (x)
@@ -838,9 +838,9 @@ test("[test-suite] db: check get/setlocal in coroutines", () => {
 });
 
 
-test("[test-suite] db: check traceback of suspended (or dead with error) coroutines", () => {
+test('[test-suite] db: check traceback of suspended (or dead with error) coroutines', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checktraceback (co, p, level)
@@ -873,9 +873,9 @@ test("[test-suite] db: check traceback of suspended (or dead with error) corouti
 });
 
 
-test("[test-suite] db: check test acessing line numbers of a coroutine from a resume inside a C function", () => {
+test('[test-suite] db: check test acessing line numbers of a coroutine from a resume inside a C function', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function g(x)
@@ -904,9 +904,9 @@ test("[test-suite] db: check test acessing line numbers of a coroutine from a re
 });
 
 
-test("[test-suite] db: test tagmethod information", () => {
+test('[test-suite] db: test tagmethod information', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = {}
@@ -944,9 +944,9 @@ test("[test-suite] db: test tagmethod information", () => {
 });
 
 
-test("[test-suite] db: testing for-iterator name", () => {
+test('[test-suite] db: testing for-iterator name', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -964,9 +964,9 @@ test("[test-suite] db: testing for-iterator name", () => {
 });
 
 
-test("[test-suite] db: testing traceback sizes", () => {
+test('[test-suite] db: testing traceback sizes', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function countlines (s)
@@ -1006,15 +1006,15 @@ test("[test-suite] db: testing traceback sizes", () => {
     `;
     lualib.luaL_openlibs(L);
     let b = to_luastring(luaCode);
-    if (lauxlib.luaL_loadbuffer(L, b, b.length, to_luastring("@db.lua")) === lua.LUA_ERRSYNTAX)
+    if (lauxlib.luaL_loadbuffer(L, b, b.length, to_luastring('@db.lua')) === lua.LUA_ERRSYNTAX)
         throw new SyntaxError(lua.lua_tojsstring(L, -1));
     lua.lua_call(L, 0, 0);
 });
 
 
-test("[test-suite] db: testing debug functions on chunk without debug info", () => {
+test('[test-suite] db: testing debug functions on chunk without debug info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         prog = [[-- program to be loaded without debug information
@@ -1067,9 +1067,9 @@ test("[test-suite] db: testing debug functions on chunk without debug info", () 
 });
 
 
-test("[test-suite] db: tests for 'source' in binary dumps", () => {
+test('[test-suite] db: tests for \'source\' in binary dumps', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
