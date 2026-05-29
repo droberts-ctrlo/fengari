@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const ltests = require('./ltests.js');
 
@@ -26,9 +26,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] api: registry", () => {
+test('[test-suite] api: registry', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = T.testC("pushvalue R; return 1")
@@ -42,9 +42,9 @@ test("[test-suite] api: registry", () => {
 });
 
 
-test("[test-suite] api: absindex", () => {
+test('[test-suite] api: absindex', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC("settop 10; absindex -1; return 1") == 10)
@@ -60,9 +60,9 @@ test("[test-suite] api: absindex", () => {
 });
 
 
-test("[test-suite] api: testing alignment", () => {
+test('[test-suite] api: testing alignment', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- Useless tests in fengari since we do the same thing in d2s than in string.pack
@@ -85,9 +85,9 @@ test("[test-suite] api: testing alignment", () => {
 });
 
 
-test("[test-suite] api: test that all trues are equal", () => {
+test('[test-suite] api: test that all trues are equal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a,b,c = T.testC("pushbool 1; pushbool 2; pushbool 0; return 3")
@@ -138,9 +138,9 @@ test("[test-suite] api: test that all trues are equal", () => {
 });
 
 
-test("[test-suite] api: testing 'rotate'", () => {
+test('[test-suite] api: testing \'rotate\'', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- testing 'rotate'
@@ -174,9 +174,9 @@ test("[test-suite] api: testing 'rotate'", () => {
 });
 
 
-test("[test-suite] api: testing non-function message handlers", () => {
+test('[test-suite] api: testing non-function message handlers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -215,9 +215,9 @@ test("[test-suite] api: testing non-function message handlers", () => {
 });
 
 
-test("[test-suite] api: testing MULTRET", () => {
+test('[test-suite] api: testing MULTRET', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         t = pack(T.testC("call 2,-1; return *",
@@ -232,9 +232,9 @@ test("[test-suite] api: testing MULTRET", () => {
 });
 
 
-test("[test-suite] api: test returning more results than fit in the caller stack", () => {
+test('[test-suite] api: test returning more results than fit in the caller stack', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do  -- test returning more results than fit in the caller stack
@@ -253,9 +253,9 @@ test("[test-suite] api: test returning more results than fit in the caller stack
 });
 
 
-test("[test-suite] api: testing globals", () => {
+test('[test-suite] api: testing globals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _G.a = 14; _G.b = "a31"
@@ -276,9 +276,9 @@ test("[test-suite] api: testing globals", () => {
 });
 
 
-test("[test-suite] api: testing arith", () => {
+test('[test-suite] api: testing arith', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC("pushnum 10; pushnum 20; arith /; return 1") == 0.5)
@@ -322,9 +322,9 @@ test("[test-suite] api: testing arith", () => {
 });
 
 
-test("[test-suite] api: errors in arithmetic", () => {
+test('[test-suite] api: errors in arithmetic', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerr("divide by zero", T.testC, "arith \\\\", 10, 0)
@@ -338,9 +338,9 @@ test("[test-suite] api: errors in arithmetic", () => {
 });
 
 
-test("[test-suite] api: testing lessthan and lessequal", () => {
+test('[test-suite] api: testing lessthan and lessequal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC("compare LT 2 5, return 1", 3, 2, 2, 4, 2, 2))
@@ -359,9 +359,9 @@ test("[test-suite] api: testing lessthan and lessequal", () => {
 });
 
 
-test("[test-suite] api: non-valid indices produce false", () => {
+test('[test-suite] api: non-valid indices produce false', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not T.testC("compare LT 1 4, return 1"))
@@ -390,9 +390,9 @@ test("[test-suite] api: non-valid indices produce false", () => {
 });
 
 
-test("[test-suite] api: testing length", () => {
+test('[test-suite] api: testing length', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = setmetatable({x = 20}, {__len = function (t) return t.x end})
@@ -429,9 +429,9 @@ test("[test-suite] api: testing length", () => {
 });
 
 
-test("[test-suite] api: testing __concat", () => {
+test('[test-suite] api: testing __concat', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = setmetatable({x="u"}, {__concat = function (a,b) return a.x..'.'..b.x end})
@@ -459,9 +459,9 @@ test("[test-suite] api: testing __concat", () => {
 });
 
 
-test("[test-suite] api: testing lua_is", () => {
+test('[test-suite] api: testing lua_is', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function B(x) return x and 1 or 0 end
@@ -502,9 +502,9 @@ test("[test-suite] api: testing lua_is", () => {
 });
 
 
-test("[test-suite] api: testing lua_to...", () => {
+test('[test-suite] api: testing lua_to...', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function to (s, x, n)
@@ -550,9 +550,9 @@ test("[test-suite] api: testing lua_to...", () => {
     lua.lua_call(L, 0, 0);
 });
 
-test("[test-suite] api: testing panic function", () => {
+test('[test-suite] api: testing panic function', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -598,9 +598,9 @@ test("[test-suite] api: testing panic function", () => {
 });
 
 
-test.skip("[test-suite] api: testing deep JS stack", () => {
+test.skip('[test-suite] api: testing deep JS stack', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -642,9 +642,9 @@ test.skip("[test-suite] api: testing deep JS stack", () => {
 });
 
 
-test("[test-suite] api: testing errors", () => {
+test('[test-suite] api: testing errors', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = T.testC([[
@@ -673,9 +673,9 @@ test("[test-suite] api: testing errors", () => {
 });
 
 
-test("[test-suite] api: test errors in non protected threads", () => {
+test('[test-suite] api: test errors in non protected threads', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function checkerrnopro (code, msg)
@@ -699,9 +699,9 @@ test("[test-suite] api: test errors in non protected threads", () => {
 });
 
 
-test("[test-suite] api: testing table access", () => {
+test('[test-suite] api: testing table access', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- getp/setp
@@ -750,9 +750,9 @@ test("[test-suite] api: testing table access", () => {
 });
 
 
-test("[test-suite] api: testing getfield/setfield with long keys", () => {
+test('[test-suite] api: testing getfield/setfield with long keys', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- testing getfield/setfield with long keys
@@ -778,9 +778,9 @@ test("[test-suite] api: testing getfield/setfield with long keys", () => {
 });
 
 
-test("[test-suite] api: testing next", () => {
+test('[test-suite] api: testing next', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -800,9 +800,9 @@ test("[test-suite] api: testing next", () => {
 });
 
 
-test("[test-suite] api: testing upvalues", () => {
+test('[test-suite] api: testing upvalues', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -828,9 +828,9 @@ test("[test-suite] api: testing upvalues", () => {
 });
 
 
-test("[test-suite] api: testing absent upvalues from JS-function pointers", () => {
+test('[test-suite] api: testing absent upvalues from JS-function pointers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC[[isnull U1; return 1]] == true)
@@ -852,9 +852,9 @@ test("[test-suite] api: testing absent upvalues from JS-function pointers", () =
 });
 
 
-test("[test-suite] api: large closures", () => {
+test('[test-suite] api: large closures', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -877,9 +877,9 @@ test("[test-suite] api: large closures", () => {
 });
 
 
-test("[test-suite] api: testing get/setuservalue", () => {
+test('[test-suite] api: testing get/setuservalue', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- bug in 5.1.2
@@ -912,9 +912,9 @@ test("[test-suite] api: testing get/setuservalue", () => {
 });
 
 
-test.skip("[test-suite] api: testing get/setuservalue", () => {
+test.skip('[test-suite] api: testing get/setuservalue', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         T.gcstate("atomic")
@@ -931,9 +931,9 @@ test.skip("[test-suite] api: testing get/setuservalue", () => {
 });
 
 
-test.skip("[test-suite] api: long chain of userdata", () => {
+test.skip('[test-suite] api: long chain of userdata', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = 1, 1000 do
@@ -956,9 +956,9 @@ test.skip("[test-suite] api: long chain of userdata", () => {
 });
 
 
-test.skip("[test-suite] api: reuse of references", () => {
+test.skip('[test-suite] api: reuse of references', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local i = T.ref{}
@@ -1016,9 +1016,9 @@ test.skip("[test-suite] api: reuse of references", () => {
 });
 
 
-test.skip("[test-suite] api: collect in cl the `val' of all collected userdata", () => {
+test.skip('[test-suite] api: collect in cl the `val\' of all collected userdata', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         tt = {}
@@ -1132,9 +1132,9 @@ test.skip("[test-suite] api: collect in cl the `val' of all collected userdata",
 });
 
 
-test.skip("[test-suite] api: test whether udate collection frees memory in the right time", () => {
+test.skip('[test-suite] api: test whether udate collection frees memory in the right time', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1176,9 +1176,9 @@ test.skip("[test-suite] api: test whether udate collection frees memory in the r
 });
 
 
-test("[test-suite] api: testing lua_equal", () => {
+test('[test-suite] api: testing lua_equal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC("compare EQ 2 4; return 1", print, 1, print, 20))
@@ -1196,9 +1196,9 @@ test("[test-suite] api: testing lua_equal", () => {
 });
 
 
-test("[test-suite] api: testing lua_equal with fallbacks", () => {
+test('[test-suite] api: testing lua_equal with fallbacks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1226,9 +1226,9 @@ test("[test-suite] api: testing lua_equal with fallbacks", () => {
 });
 
 
-test("[test-suite] api: testing changing hooks during hooks", () => {
+test('[test-suite] api: testing changing hooks during hooks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _G.t = {}
@@ -1260,9 +1260,9 @@ test("[test-suite] api: testing changing hooks during hooks", () => {
 });
 
 
-test.skip("[test-suite] api: testing errors during GC", () => {
+test.skip('[test-suite] api: testing errors during GC', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- testing errors during GC
@@ -1300,9 +1300,9 @@ test.skip("[test-suite] api: testing errors during GC", () => {
 });
 
 
-test("[test-suite] api: test for userdata vals", () => {
+test('[test-suite] api: test for userdata vals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1323,9 +1323,9 @@ test("[test-suite] api: test for userdata vals", () => {
 });
 
 
-test("[test-suite] api: testing multiple states", () => {
+test('[test-suite] api: testing multiple states', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         T.closestate(T.newstate());
@@ -1382,9 +1382,9 @@ test("[test-suite] api: testing multiple states", () => {
 });
 
 
-test.skip("[test-suite] api: testing memory limits", () => {
+test.skip('[test-suite] api: testing memory limits', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerr("block too big", T.newuserdata, math.maxinteger)
@@ -1428,9 +1428,9 @@ const memprefix = `
 `;
 
 
-test.skip("[test-suite] api: testing memory errors when creating a new state", () => {
+test.skip('[test-suite] api: testing memory errors when creating a new state', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         b = testamem("state creation", T.newstate)
@@ -1443,9 +1443,9 @@ test.skip("[test-suite] api: testing memory errors when creating a new state", (
     lua.lua_call(L, 0, 0);
 });
 
-test("[test-suite] api: get main thread from registry (at index LUA_RIDX_MAINTHREAD == 1)", () => {
+test('[test-suite] api: get main thread from registry (at index LUA_RIDX_MAINTHREAD == 1)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         mt = T.testC("rawgeti R 1; return 1")
@@ -1458,9 +1458,9 @@ test("[test-suite] api: get main thread from registry (at index LUA_RIDX_MAINTHR
     lua.lua_call(L, 0, 0);
 });
 
-test.skip("[test-suite] api: test thread creation after stressing GC", () => {
+test.skip('[test-suite] api: test thread creation after stressing GC', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function expand (n,s)
@@ -1486,9 +1486,9 @@ test.skip("[test-suite] api: test thread creation after stressing GC", () => {
 });
 
 
-test.skip("[test-suite] api: testing memory x compiler", () => {
+test.skip('[test-suite] api: testing memory x compiler', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         testamem("loadstring", function ()
@@ -1503,9 +1503,9 @@ test.skip("[test-suite] api: testing memory x compiler", () => {
 });
 
 
-test.skip("[test-suite] api: testing memory x dofile", () => {
+test.skip('[test-suite] api: testing memory x dofile', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local testprog = [[
@@ -1537,9 +1537,9 @@ test.skip("[test-suite] api: testing memory x dofile", () => {
 });
 
 
-test.skip("[test-suite] api: other generic tests", () => {
+test.skip('[test-suite] api: other generic tests', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         testamem("string creation", function ()
@@ -1608,9 +1608,9 @@ test.skip("[test-suite] api: other generic tests", () => {
 });
 
 
-test("[test-suite] api: testing some auxlib functions", () => {
+test('[test-suite] api: testing some auxlib functions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function gsub (a, b, c)
@@ -1633,9 +1633,9 @@ test("[test-suite] api: testing some auxlib functions", () => {
 });
 
 
-test("[test-suite] api: testing luaL_newmetatable", () => {
+test('[test-suite] api: testing luaL_newmetatable', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt_xuxu, res, top = T.testC("newmetatable xuxu; gettop; return 3")

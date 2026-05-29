@@ -1,43 +1,28 @@
-"use strict";
-
-const fs      = require('fs');
-
-const {
-    LUA_REGISTRYINDEX,
+import fs from "fs";
+import {
     lua_getfield,
     lua_gettop,
     lua_isnone,
     lua_isnoneornil,
     lua_newuserdata,
-    lua_pop,
-    lua_pushliteral,
-    lua_pushnil,
-    lua_pushstring,
-    lua_pushvalue,
-    lua_setfield,
-    lua_tostring,
-    lua_touserdata
-} = require('./lua.js');
-const {
+    lua_pop, lua_pushliteral, lua_pushnil, lua_pushstring, lua_pushvalue,
+    LUA_REGISTRYINDEX, lua_setfield, lua_tostring, lua_touserdata
+} from "./lua.js";
+import {
     LUA_FILEHANDLE,
     luaL_checkany,
     luaL_checklstring,
     luaL_checkudata,
     luaL_error,
-    luaL_fileresult,
-    luaL_newlib,
-    luaL_newmetatable,
-    luaL_setfuncs,
-    luaL_setmetatable,
-    luaL_testudata
-} = require('./lauxlib.js');
-const lualib = require('./lualib.js');
-const { to_luastring } = require("./fengaricore.js");
+    luaL_fileresult, luaL_newlib, luaL_newmetatable, luaL_setfuncs, luaL_setmetatable, luaL_testudata
+} from "./lauxlib.js";
+import * as lualib from "./lualib.js";
+import {to_luastring} from "./fengaricore.js";
 
-const IO_PREFIX = "_IO_";
+const IO_PREFIX = '_IO_';
 const IOPREF_LEN = IO_PREFIX.length;
-const IO_INPUT = to_luastring(IO_PREFIX + "input");
-const IO_OUTPUT = to_luastring(IO_PREFIX + "output");
+const IO_INPUT = to_luastring(IO_PREFIX + 'input');
+const IO_OUTPUT = to_luastring(IO_PREFIX + 'output');
 
 const tolstream = function(L) {
     return luaL_checkudata(L, 1, LUA_FILEHANDLE);
@@ -53,16 +38,16 @@ const io_type = function(L) {
     if (p === null)
         lua_pushnil(L);  /* not a file */
     else if (isclosed(p))
-        lua_pushliteral(L, "closed file");
+        lua_pushliteral(L, 'closed file');
     else
-        lua_pushliteral(L, "file");
+        lua_pushliteral(L, 'file');
     return 1;
 };
 
 const f_tostring = function(L) {
     let p = tolstream(L);
     if (isclosed(p))
-        lua_pushliteral(L, "file (closed)");
+        lua_pushliteral(L, 'file (closed)');
     else
         lua_pushstring(L, to_luastring(`file (${p.f.toString()})`));
     return 1;
@@ -71,7 +56,7 @@ const f_tostring = function(L) {
 const tofile = function(L) {
     let p = tolstream(L);
     if (isclosed(p))
-        luaL_error(L, to_luastring("attempt to use a closed file"));
+        luaL_error(L, to_luastring('attempt to use a closed file'));
     lualib.lua_assert(p.f);
     return p.f;
 };
@@ -102,7 +87,7 @@ const getiofile = function(L, findex) {
     lua_getfield(L, LUA_REGISTRYINDEX, findex);
     let p = lua_touserdata(L, -1);
     if (isclosed(p))
-        luaL_error(L, to_luastring("standard %s file is closed"), findex.subarray(IOPREF_LEN));
+        luaL_error(L, to_luastring('standard %s file is closed'), findex.subarray(IOPREF_LEN));
     return p.f;
 };
 
@@ -110,7 +95,7 @@ const g_iofile = function(L, f, mode) {
     if (!lua_isnoneornil(L, 1)) {
         let filename = lua_tostring(L, 1);
         if (filename)
-            luaL_error(L, to_luastring("opening files not yet implemented"));
+            luaL_error(L, to_luastring('opening files not yet implemented'));
         else {
             tofile(L);  /* check that it's a valid file handle */
             lua_pushvalue(L, 1);
@@ -123,11 +108,11 @@ const g_iofile = function(L, f, mode) {
 };
 
 const io_input = function(L) {
-    return g_iofile(L, IO_INPUT, "r");
+    return g_iofile(L, IO_INPUT, 'r');
 };
 
 const io_output = function(L) {
-    return g_iofile(L, IO_OUTPUT, "w");
+    return g_iofile(L, IO_OUTPUT, 'w');
 };
 
 /* node <= 6 doesn't support passing a Uint8Array to fs.writeSync */
@@ -175,25 +160,25 @@ const f_flush = function (L) {
 };
 
 const iolib = {
-    "close": io_close,
-    "flush": io_flush,
-    "input": io_input,
-    "output": io_output,
-    "type": io_type,
-    "write": io_write
+    'close': io_close,
+    'flush': io_flush,
+    'input': io_input,
+    'output': io_output,
+    'type': io_type,
+    'write': io_write
 };
 
 const flib = {
-    "close": io_close,
-    "flush": f_flush,
-    "write": f_write,
-    "__tostring": f_tostring
+    'close': io_close,
+    'flush': f_flush,
+    'write': f_write,
+    '__tostring': f_tostring
 };
 
 const createmeta = function(L) {
     luaL_newmetatable(L, LUA_FILEHANDLE);  /* create metatable for file handles */
     lua_pushvalue(L, -1);  /* push metatable */
-    lua_setfield(L, -2, to_luastring("__index", true));  /* metatable.__index = metatable */
+    lua_setfield(L, -2, to_luastring('__index', true));  /* metatable.__index = metatable */
     luaL_setfuncs(L, flib, 0);  /* add file methods to new metatable */
     lua_pop(L, 1);  /* pop new metatable */
 };
@@ -202,7 +187,7 @@ const io_noclose = function(L) {
     let p = tolstream(L);
     p.closef = io_noclose;
     lua_pushnil(L);
-    lua_pushliteral(L, "cannot close standard file");
+    lua_pushliteral(L, 'cannot close standard file');
     return 2;
 };
 
@@ -221,10 +206,8 @@ const luaopen_io = function(L) {
     luaL_newlib(L, iolib);
     createmeta(L);
     /* create (and set) default files */
-    createstdfile(L, process.stdin, IO_INPUT, to_luastring("stdin"));
-    createstdfile(L, process.stdout, IO_OUTPUT, to_luastring("stdout"));
-    createstdfile(L, process.stderr, null, to_luastring("stderr"));
+    createstdfile(L, process.stdin, IO_INPUT, to_luastring('stdin'));
+    createstdfile(L, process.stdout, IO_OUTPUT, to_luastring('stdout'));
+    createstdfile(L, process.stderr, null, to_luastring('stderr'));
     return 1;
 };
-
-module.exports.luaopen_io = luaopen_io;

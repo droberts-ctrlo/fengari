@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 test('[test-suite] locals: bug in 5.1', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f(x) x = nil; return x end
@@ -28,7 +28,7 @@ test('[test-suite] locals: bug in 5.1', () => {
 
 test('[test-suite] locals: local scope', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -97,7 +97,7 @@ const getenv = `
 
 test('[test-suite] locals: test for global table of loaded chunks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(getenv(load"a=3") == _G)
@@ -116,7 +116,7 @@ test('[test-suite] locals: test for global table of loaded chunks', () => {
 
 test('[test-suite] locals: old test for limits for special instructions (now just a generic test)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -147,7 +147,7 @@ test('[test-suite] locals: old test for limits for special instructions (now jus
 
 test('[test-suite] locals: testing lexical environments', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(_ENV == _G)

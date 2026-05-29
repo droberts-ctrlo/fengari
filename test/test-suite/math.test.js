@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const prefix = `
     local minint = math.mininteger
@@ -52,9 +52,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] math: int bits", () => {
+test('[test-suite] math: int bits', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(minint == 1 << (intbits - 1))
@@ -67,9 +67,9 @@ test("[test-suite] math: int bits", () => {
 });
 
 
-test("[test-suite] math: number of bits in the mantissa of a floating-point number", () => {
+test('[test-suite] math: number of bits in the mantissa of a floating-point number', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(isNaN(0/0))
@@ -94,9 +94,9 @@ test("[test-suite] math: number of bits in the mantissa of a floating-point numb
 });
 
 
-test("[test-suite] math: basic float notation", () => {
+test('[test-suite] math: basic float notation', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(0e12 == 0 and .0 == 0 and 0. == 0 and .2e2 == 20 and 2.E-1 == 0.2)
@@ -146,9 +146,9 @@ test("[test-suite] math: basic float notation", () => {
 });
 
 
-test("[test-suite] math: math.huge", () => {
+test('[test-suite] math: math.huge', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(math.huge > 10e30)
@@ -161,9 +161,9 @@ test("[test-suite] math: math.huge", () => {
 });
 
 
-test("[test-suite] math: integer arithmetic", () => {
+test('[test-suite] math: integer arithmetic', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(minint < minint + 1)
@@ -179,9 +179,9 @@ test("[test-suite] math: integer arithmetic", () => {
 });
 
 
-test("[test-suite] math: testing floor division and conversions", () => {
+test('[test-suite] math: testing floor division and conversions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for _, i in pairs{-16, -15, -3, -2, -1, 0, 1, 2, 3, 15} do
@@ -222,9 +222,9 @@ test("[test-suite] math: testing floor division and conversions", () => {
 });
 
 
-test("[test-suite] math: negative exponents", () => {
+test('[test-suite] math: negative exponents', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -247,9 +247,9 @@ test("[test-suite] math: negative exponents", () => {
 });
 
 
-test("[test-suite] math: comparison between floats and integers (border cases)", () => {
+test('[test-suite] math: comparison between floats and integers (border cases)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         if floatbits < intbits then
@@ -275,9 +275,9 @@ test("[test-suite] math: comparison between floats and integers (border cases)",
 });
 
 
-test("[test-suite] math: order between floats and integers", () => {
+test('[test-suite] math: order between floats and integers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(minint == 1 << (intbits - 1))
@@ -312,9 +312,9 @@ test("[test-suite] math: order between floats and integers", () => {
 });
 
 
-test("[test-suite] math: testing order (floats can represent all integers)", () => {
+test('[test-suite] math: testing order (floats can represent all integers)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(floatbits >= intbits)
@@ -354,9 +354,9 @@ test("[test-suite] math: testing order (floats can represent all integers)", () 
 });
 
 
-test("[test-suite] math: NaN order", () => {
+test('[test-suite] math: NaN order', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local NaN = 0/0
@@ -375,9 +375,9 @@ test("[test-suite] math: NaN order", () => {
 });
 
 
-test("[test-suite] math: avoiding errors at compile time", () => {
+test('[test-suite] math: avoiding errors at compile time', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkcompt("divide by zero", "return 2 // 0")
@@ -393,9 +393,9 @@ test("[test-suite] math: avoiding errors at compile time", () => {
     lua.lua_call(L, 0, 0);
 });
 
-test("[test-suite] math: testing overflow errors when converting from float to integer (runtime)", () => {
+test('[test-suite] math: testing overflow errors when converting from float to integer (runtime)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f2i (x) return x | x end
@@ -435,9 +435,9 @@ test("[test-suite] math: testing overflow errors when converting from float to i
 });
 
 
-test("[test-suite] math: testing numeric strings", () => {
+test('[test-suite] math: testing numeric strings', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert("2" + 1 == 3)
@@ -452,9 +452,9 @@ test("[test-suite] math: testing numeric strings", () => {
 });
 
 
-test("[test-suite] math: Literal integer Overflows (new behavior in 5.3.3)", () => {
+test('[test-suite] math: Literal integer Overflows (new behavior in 5.3.3)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -498,9 +498,9 @@ test("[test-suite] math: Literal integer Overflows (new behavior in 5.3.3)", () 
 });
 
 
-test("[test-suite] math: 'tonumber' with numbers", () => {
+test('[test-suite] math: \'tonumber\' with numbers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(tonumber(3.4) == 3.4)
@@ -515,9 +515,9 @@ test("[test-suite] math: 'tonumber' with numbers", () => {
 });
 
 
-test("[test-suite] math: 'tonumber' with strings", () => {
+test('[test-suite] math: \'tonumber\' with strings', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(tonumber("0") == 0)
@@ -565,9 +565,9 @@ test("[test-suite] math: 'tonumber' with strings", () => {
 });
 
 
-test("[test-suite] math: tests with very long numerals", () => {
+test('[test-suite] math: tests with very long numerals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(tonumber("0x"..string.rep("f", 13)..".0") == 2.0^(4*13) - 1)
@@ -591,9 +591,9 @@ test("[test-suite] math: tests with very long numerals", () => {
 });
 
 
-test("[test-suite] math: testing 'tonumber' for invalid formats", () => {
+test('[test-suite] math: testing \'tonumber\' for invalid formats', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f (...)
@@ -635,9 +635,9 @@ test("[test-suite] math: testing 'tonumber' for invalid formats", () => {
 });
 
 
-test("[test-suite] math: testing 'tonumber' for invalid hexadecimal formats", () => {
+test('[test-suite] math: testing \'tonumber\' for invalid hexadecimal formats', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(tonumber('0x') == nil)
@@ -660,9 +660,9 @@ test("[test-suite] math: testing 'tonumber' for invalid hexadecimal formats", ()
 });
 
 
-test("[test-suite] math: testing hexadecimal numerals", () => {
+test('[test-suite] math: testing hexadecimal numerals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(0x10 == 16 and 0xfff == 2^12 - 1 and 0XFB == 251)
@@ -682,9 +682,9 @@ test("[test-suite] math: testing hexadecimal numerals", () => {
 });
 
 
-test("[test-suite] math: floating hexas", () => {
+test('[test-suite] math: floating hexas', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(tonumber('  0x2.5  ') == 0x25/16)
@@ -718,9 +718,9 @@ test("[test-suite] math: floating hexas", () => {
 });
 
 
-test("[test-suite] math: testing order operators", () => {
+test('[test-suite] math: testing order operators', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not(1<1) and (1<2) and not(2<1))
@@ -740,9 +740,9 @@ test("[test-suite] math: testing order operators", () => {
 });
 
 
-test("[test-suite] math: testing mod operator", () => {
+test('[test-suite] math: testing mod operator', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(eqT(-4 % 3, 2))
@@ -769,9 +769,9 @@ test("[test-suite] math: testing mod operator", () => {
 });
 
 
-test("[test-suite] math: non-portable tests because Windows C library cannot compute fmod(1, huge) correctly", () => {
+test('[test-suite] math: non-portable tests because Windows C library cannot compute fmod(1, huge) correctly', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function anan (x) assert(isNaN(x)) end   -- assert Not a Number
@@ -794,9 +794,9 @@ test("[test-suite] math: non-portable tests because Windows C library cannot com
 });
 
 
-test("[test-suite] math: testing unsigned comparisons", () => {
+test('[test-suite] math: testing unsigned comparisons', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(math.ult(3, 4))
@@ -838,9 +838,9 @@ test("[test-suite] math: testing unsigned comparisons", () => {
 });
 
 
-test("[test-suite] math: testing constant limits", () => {
+test('[test-suite] math: testing constant limits', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(8388609 + -8388609 == 0)
@@ -854,9 +854,9 @@ test("[test-suite] math: testing constant limits", () => {
 });
 
 
-test("[test-suite] math: testing floor & ceil", () => {
+test('[test-suite] math: testing floor & ceil', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -909,9 +909,9 @@ test("[test-suite] math: testing floor & ceil", () => {
 });
 
 
-test("[test-suite] math: testing fmod for integers", () => {
+test('[test-suite] math: testing fmod for integers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = -6, 6 do
@@ -941,9 +941,9 @@ test("[test-suite] math: testing fmod for integers", () => {
 });
 
 
-test("[test-suite] math: testing max/min", () => {
+test('[test-suite] math: testing max/min', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -969,9 +969,9 @@ test("[test-suite] math: testing max/min", () => {
 });
 
 
-test("[test-suite] math: testing implicit convertions", () => {
+test('[test-suite] math: testing implicit convertions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a,b = '10', '20'
@@ -985,9 +985,9 @@ test("[test-suite] math: testing implicit convertions", () => {
 });
 
 
-test("[test-suite] math: testing -0 and NaN", () => {
+test('[test-suite] math: testing -0 and NaN', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1031,9 +1031,9 @@ test("[test-suite] math: testing -0 and NaN", () => {
 });
 
 
-test("[test-suite] math: test random for floats", () => {
+test('[test-suite] math: test random for floats', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         math.randomseed(0)
@@ -1062,9 +1062,9 @@ test("[test-suite] math: test random for floats", () => {
 });
 
 
-test("[test-suite] math: test random for small intervals", () => {
+test('[test-suite] math: test random for small intervals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1106,9 +1106,9 @@ test("[test-suite] math: test random for small intervals", () => {
 });
 
 
-test("[test-suite] math: test random for large intervals", () => {
+test('[test-suite] math: test random for large intervals', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -1152,9 +1152,9 @@ test("[test-suite] math: test random for large intervals", () => {
 });
 
 
-test("[test-suite] math: test random for empty interval", () => {
+test('[test-suite] math: test random for empty interval', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not pcall(math.random, minint + 1, minint))
@@ -1168,9 +1168,9 @@ test("[test-suite] math: test random for empty interval", () => {
 });
 
 
-test("[test-suite] math: interval too large", () => {
+test('[test-suite] math: interval too large', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not pcall(math.random, minint, 0))

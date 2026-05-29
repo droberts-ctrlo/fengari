@@ -1,33 +1,23 @@
-"use strict";
-
-const {
+import {
     lua_gettop,
     lua_pushcfunction,
     lua_pushfstring,
     lua_pushinteger,
     lua_pushnil,
     lua_pushstring,
-    lua_pushvalue,
-    lua_setfield,
-    lua_tointeger
-} = require('./lua.js');
-const {
-    luaL_Buffer,
+    lua_pushvalue, lua_setfield, lua_tointeger
+} from "./lua.js";
+
+import {
     luaL_addvalue,
     luaL_argcheck,
+    luaL_Buffer,
     luaL_buffinit,
     luaL_checkinteger,
-    luaL_checkstack,
-    luaL_checkstring,
-    luaL_error,
-    luaL_newlib,
-    luaL_optinteger,
-    luaL_pushresult
-} = require('./lauxlib.js');
-const {
-    luastring_of,
-    to_luastring
-} = require("./fengaricore.js");
+    luaL_checkstack, luaL_checkstring, luaL_error, luaL_newlib, luaL_optinteger, luaL_pushresult
+} from "./lauxlib.js";
+
+import {luastring_of, to_luastring} from "./fengaricore.js";
 
 const MAXUNICODE = 0x10FFFF;
 
@@ -85,8 +75,8 @@ const utflen = function(L) {
     let posi = u_posrelat(luaL_optinteger(L, 2, 1), len);
     let posj = u_posrelat(luaL_optinteger(L, 3, -1), len);
 
-    luaL_argcheck(L, 1 <= posi && --posi <= len, 2, "initial position out of string");
-    luaL_argcheck(L, --posj < len, 3, "final position out of string");
+    luaL_argcheck(L, 1 <= posi && --posi <= len, 2, 'initial position out of string');
+    luaL_argcheck(L, --posj < len, 3, 'final position out of string');
 
     while (posi <= posj) {
         let dec = utf8_decode(s, posi);
@@ -102,10 +92,10 @@ const utflen = function(L) {
     return 1;
 };
 
-const p_U = to_luastring("%U");
+const p_U = to_luastring('%U');
 const pushutfchar = function(L, arg) {
     let code = luaL_checkinteger(L, arg);
-    luaL_argcheck(L, 0 <= code && code <= MAXUNICODE, arg, "value out of range");
+    luaL_argcheck(L, 0 <= code && code <= MAXUNICODE, arg, 'value out of range');
     lua_pushfstring(L, p_U, code);
 };
 
@@ -138,14 +128,14 @@ const byteoffset = function(L) {
     let posi = n >= 0 ? 1 : s.length + 1;
     posi = u_posrelat(luaL_optinteger(L, 3, posi), s.length);
 
-    luaL_argcheck(L, 1 <= posi && --posi <= s.length, 3, "position out of range");
+    luaL_argcheck(L, 1 <= posi && --posi <= s.length, 3, 'position out of range');
 
     if (n === 0) {
         /* find beginning of current byte sequence */
         while (posi > 0 && iscont(s[posi])) posi--;
     } else {
         if (iscont(s[posi]))
-            luaL_error(L, "initial position is a continuation byte");
+            luaL_error(L, 'initial position is a continuation byte');
 
         if (n < 0) {
             while (n < 0 && posi > 0) {  /* move back */
@@ -182,19 +172,19 @@ const codepoint = function(L) {
     let posi = u_posrelat(luaL_optinteger(L, 2, 1), s.length);
     let pose = u_posrelat(luaL_optinteger(L, 3, posi), s.length);
 
-    luaL_argcheck(L, posi >= 1, 2, "out of range");
-    luaL_argcheck(L, pose <= s.length, 3, "out of range");
+    luaL_argcheck(L, posi >= 1, 2, 'out of range');
+    luaL_argcheck(L, pose <= s.length, 3, 'out of range');
 
     if (posi > pose) return 0;  /* empty interval; return no values */
     if (pose - posi >= Number.MAX_SAFE_INTEGER)
-        return luaL_error(L, "string slice too long");
+        return luaL_error(L, 'string slice too long');
     let n = (pose - posi) + 1;
-    luaL_checkstack(L, n, "string slice too long");
+    luaL_checkstack(L, n, 'string slice too long');
     n = 0;
     for (posi -= 1; posi < pose;) {
         let dec = utf8_decode(s, posi);
         if (dec === null)
-            return luaL_error(L, "invalid UTF-8 code");
+            return luaL_error(L, 'invalid UTF-8 code');
         lua_pushinteger(L, dec.code);
         posi = dec.pos;
         n++;
@@ -219,7 +209,7 @@ const iter_aux = function(L) {
     else {
         let dec = utf8_decode(s, n);
         if (dec === null || iscont(s[dec.pos]))
-            return luaL_error(L, to_luastring("invalid UTF-8 code"));
+            return luaL_error(L, to_luastring('invalid UTF-8 code'));
         lua_pushinteger(L, n + 1);
         lua_pushinteger(L, dec.code);
         return 2;
@@ -235,11 +225,11 @@ const iter_codes = function(L) {
 };
 
 const funcs = {
-    "char":      utfchar,
-    "codepoint": codepoint,
-    "codes":     iter_codes,
-    "len":       utflen,
-    "offset":    byteoffset
+    'char':      utfchar,
+    'codepoint': codepoint,
+    'codes':     iter_codes,
+    'len':       utflen,
+    'offset':    byteoffset
 };
 
 /* pattern to match a single UTF-8 character */
@@ -248,8 +238,6 @@ const UTF8PATT = luastring_of(91, 0, 45, 127, 194, 45, 244, 93, 91, 128, 45, 191
 const luaopen_utf8 = function(L) {
     luaL_newlib(L, funcs);
     lua_pushstring(L, UTF8PATT);
-    lua_setfield(L, -2, to_luastring("charpattern", true));
+    lua_setfield(L, -2, to_luastring('charpattern', true));
     return 1;
 };
-
-module.exports.luaopen_utf8 = luaopen_utf8;

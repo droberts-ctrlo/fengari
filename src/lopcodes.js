@@ -1,56 +1,54 @@
-"use strict";
-
 const OpCodes = [
-    "MOVE",
-    "LOADK",
-    "LOADKX",
-    "LOADBOOL",
-    "LOADNIL",
-    "GETUPVAL",
-    "GETTABUP",
-    "GETTABLE",
-    "SETTABUP",
-    "SETUPVAL",
-    "SETTABLE",
-    "NEWTABLE",
-    "SELF",
-    "ADD",
-    "SUB",
-    "MUL",
-    "MOD",
-    "POW",
-    "DIV",
-    "IDIV",
-    "BAND",
-    "BOR",
-    "BXOR",
-    "SHL",
-    "SHR",
-    "UNM",
-    "BNOT",
-    "NOT",
-    "LEN",
-    "CONCAT",
-    "JMP",
-    "EQ",
-    "LT",
-    "LE",
-    "TEST",
-    "TESTSET",
-    "CALL",
-    "TAILCALL",
-    "RETURN",
-    "FORLOOP",
-    "FORPREP",
-    "TFORCALL",
-    "TFORLOOP",
-    "SETLIST",
-    "CLOSURE",
-    "VARARG",
-    "EXTRAARG"
+    'MOVE',
+    'LOADK',
+    'LOADKX',
+    'LOADBOOL',
+    'LOADNIL',
+    'GETUPVAL',
+    'GETTABUP',
+    'GETTABLE',
+    'SETTABUP',
+    'SETUPVAL',
+    'SETTABLE',
+    'NEWTABLE',
+    'SELF',
+    'ADD',
+    'SUB',
+    'MUL',
+    'MOD',
+    'POW',
+    'DIV',
+    'IDIV',
+    'BAND',
+    'BOR',
+    'BXOR',
+    'SHL',
+    'SHR',
+    'UNM',
+    'BNOT',
+    'NOT',
+    'LEN',
+    'CONCAT',
+    'JMP',
+    'EQ',
+    'LT',
+    'LE',
+    'TEST',
+    'TESTSET',
+    'CALL',
+    'TAILCALL',
+    'RETURN',
+    'FORLOOP',
+    'FORPREP',
+    'TFORCALL',
+    'TFORLOOP',
+    'SETLIST',
+    'CLOSURE',
+    'VARARG',
+    'EXTRAARG'
 ];
 
-const OpCodesI = {
+export const OpCodesI = {
     OP_MOVE:     0,
     OP_LOADK:    1,
     OP_LOADKX:   2,
@@ -219,12 +217,12 @@ const MAXINDEXRK = (BITRK - 1);
 const NO_REG     = MAXARG_A;
 
 /* test whether value is a constant */
-const ISK = function (x) {
+export const ISK = function (x) {
     return x & BITRK;
 };
 
 /* gets the index of the constant */
-const INDEXK = function (r) {
+export const INDEXK = function (r) {
     return r & ~BITRK;
 };
 
@@ -310,7 +308,7 @@ const SETARG_sBx = function(i, b) {
 ** Pre-calculate all possible part of the instruction
 */
 const fullins = function(ins) {
-    if (typeof ins === "number") {
+    if (typeof ins === 'number') {
         return {
             code:   ins,
             opcode: (ins >> POS_OP) & MASK1(SIZE_OP, 0),
@@ -347,63 +345,4 @@ const CREATE_Ax = function(o, a) {
 };
 
 /* number of list items to accumulate before a SETLIST instruction */
-const LFIELDS_PER_FLUSH = 50;
-
-module.exports.BITRK               = BITRK;
-module.exports.CREATE_ABC          = CREATE_ABC;
-module.exports.CREATE_ABx          = CREATE_ABx;
-module.exports.CREATE_Ax           = CREATE_Ax;
-module.exports.GET_OPCODE          = GET_OPCODE;
-module.exports.GETARG_A            = GETARG_A;
-module.exports.GETARG_B            = GETARG_B;
-module.exports.GETARG_C            = GETARG_C;
-module.exports.GETARG_Bx           = GETARG_Bx;
-module.exports.GETARG_Ax           = GETARG_Ax;
-module.exports.GETARG_sBx          = GETARG_sBx;
-module.exports.INDEXK              = INDEXK;
-module.exports.ISK                 = ISK;
-module.exports.LFIELDS_PER_FLUSH   = LFIELDS_PER_FLUSH;
-module.exports.MAXARG_A            = MAXARG_A;
-module.exports.MAXARG_Ax           = MAXARG_Ax;
-module.exports.MAXARG_B            = MAXARG_B;
-module.exports.MAXARG_Bx           = MAXARG_Bx;
-module.exports.MAXARG_C            = MAXARG_C;
-module.exports.MAXARG_sBx          = MAXARG_sBx;
-module.exports.MAXINDEXRK          = MAXINDEXRK;
-module.exports.NO_REG              = NO_REG;
-module.exports.OpArgK              = OpArgK;
-module.exports.OpArgN              = OpArgN;
-module.exports.OpArgR              = OpArgR;
-module.exports.OpArgU              = OpArgU;
-module.exports.OpCodes             = OpCodes;
-module.exports.OpCodesI            = OpCodesI;
-module.exports.POS_A               = POS_A;
-module.exports.POS_Ax              = POS_Ax;
-module.exports.POS_B               = POS_B;
-module.exports.POS_Bx              = POS_Bx;
-module.exports.POS_C               = POS_C;
-module.exports.POS_OP              = POS_OP;
-module.exports.RKASK               = RKASK;
-module.exports.SETARG_A            = SETARG_A;
-module.exports.SETARG_Ax           = SETARG_Ax;
-module.exports.SETARG_B            = SETARG_B;
-module.exports.SETARG_Bx           = SETARG_Bx;
-module.exports.SETARG_C            = SETARG_C;
-module.exports.SETARG_sBx          = SETARG_sBx;
-module.exports.SET_OPCODE          = SET_OPCODE;
-module.exports.SIZE_A              = SIZE_A;
-module.exports.SIZE_Ax             = SIZE_Ax;
-module.exports.SIZE_B              = SIZE_B;
-module.exports.SIZE_Bx             = SIZE_Bx;
-module.exports.SIZE_C              = SIZE_C;
-module.exports.SIZE_OP             = SIZE_OP;
-module.exports.fullins             = fullins;
-module.exports.getBMode            = getBMode;
-module.exports.getCMode            = getCMode;
-module.exports.getOpMode           = getOpMode;
-module.exports.iABC                = iABC;
-module.exports.iABx                = iABx;
-module.exports.iAsBx               = iAsBx;
-module.exports.iAx                 = iAx;
-module.exports.testAMode           = testAMode;
-module.exports.testTMode           = testTMode;
+export const LFIELDS_PER_FLUSH = 50;

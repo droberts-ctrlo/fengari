@@ -1,51 +1,26 @@
-"use strict";
-
-const {
-    LUA_TNIL,
-    LUA_TTABLE,
+import {
     lua_close,
     lua_createtable,
     lua_getfield,
     lua_isboolean,
     lua_isnoneornil,
-    lua_pop,
-    lua_pushboolean,
-    lua_pushfstring,
-    lua_pushinteger,
-    lua_pushliteral,
-    lua_pushnil,
-    lua_pushnumber,
-    lua_pushstring,
-    lua_setfield,
-    lua_settop,
-    lua_toboolean,
-    lua_tointegerx
-} = require('./lua.js');
-const {
-    luaL_Buffer,
+    lua_pop, lua_pushboolean, lua_pushfstring, lua_pushinteger, lua_pushliteral, lua_pushnil, lua_pushnumber,
+    lua_pushstring, lua_setfield, lua_settop,
+    LUA_TNIL, lua_toboolean, lua_tointegerx,
+    LUA_TTABLE
+} from "./lua.js";
+import {
     luaL_addchar,
     luaL_addstring,
-    // luaL_argcheck,
     luaL_argerror,
+    luaL_Buffer,
     luaL_buffinit,
     luaL_checkinteger,
-    luaL_checkoption,
-    luaL_checkstring,
-    luaL_checktype,
-    luaL_error,
-    luaL_execresult,
-    luaL_fileresult,
-    luaL_newlib,
-    luaL_optinteger,
-    luaL_optlstring,
-    luaL_optstring,
-    luaL_pushresult
-} = require('./lauxlib.js');
-const {
-    luastring_eq,
-    to_jsstring,
-    to_luastring
-} = require("./fengaricore.js");
+    luaL_checkoption, luaL_checkstring, luaL_checktype, luaL_error, luaL_execresult, luaL_fileresult, luaL_newlib,
+    luaL_optinteger, luaL_optlstring, luaL_optstring, luaL_pushresult
+} from "./lauxlib.js";
+import {luastring_eq, to_jsstring, to_luastring} from "./fengaricore.js";
+
 
 /* options for ANSI C 89 (only 1-char options) */
 // const L_STRFTIMEC89 = to_luastring("aAbBcdHIjmMpSUwWxXyYZ%");
@@ -69,7 +44,7 @@ const {
       - %l: TZ extension: space-padded 12-hour
       - %P: GNU extension: lower-case am/pm
 */
-const LUA_STRFTIMEOPTIONS = to_luastring("aAbBcCdDeFhHIjklmMnpPrRStTuUwWxXyYzZ%");
+const LUA_STRFTIMEOPTIONS = to_luastring('aAbBcCdDeFhHIjklmMnpPrRStTuUwWxXyYzZ%');
 
 
 const setfield = function(L, key, value) {
@@ -78,14 +53,14 @@ const setfield = function(L, key, value) {
 };
 
 const setallfields = function(L, time, utc) {
-    setfield(L, "sec",   utc ? time.getUTCSeconds()  : time.getSeconds());
-    setfield(L, "min",   utc ? time.getUTCMinutes()  : time.getMinutes());
-    setfield(L, "hour",  utc ? time.getUTCHours()    : time.getHours());
-    setfield(L, "day",   utc ? time.getUTCDate()     : time.getDate());
-    setfield(L, "month", (utc ? time.getUTCMonth()   : time.getMonth()) + 1);
-    setfield(L, "year",  utc ? time.getUTCFullYear() : time.getFullYear());
-    setfield(L, "wday",  (utc ? time.getUTCDay()     : time.getDay()) + 1);
-    setfield(L, "yday", Math.floor((time - (new Date(time.getFullYear(), 0, 0 /* shortcut to correct day by one */))) / 86400000));
+    setfield(L, 'sec',   utc ? time.getUTCSeconds()  : time.getSeconds());
+    setfield(L, 'min',   utc ? time.getUTCMinutes()  : time.getMinutes());
+    setfield(L, 'hour',  utc ? time.getUTCHours()    : time.getHours());
+    setfield(L, 'day',   utc ? time.getUTCDate()     : time.getDate());
+    setfield(L, 'month', (utc ? time.getUTCMonth()   : time.getMonth()) + 1);
+    setfield(L, 'year',  utc ? time.getUTCFullYear() : time.getFullYear());
+    setfield(L, 'wday',  (utc ? time.getUTCDay()     : time.getDay()) + 1);
+    setfield(L, 'yday', Math.floor((time - (new Date(time.getFullYear(), 0, 0 /* shortcut to correct day by one */))) / 86400000));
     // setboolfield(L, "isdst", time.get);
 };
 
@@ -96,14 +71,14 @@ const getfield = function(L, key, d, delta) {
     let res = lua_tointegerx(L, -1);
     if (res === false) {  /* field is not an integer? */
         if (t !== LUA_TNIL)  /* some other value? */
-            return luaL_error(L, to_luastring("field '%s' is not an integer"), key);
+            return luaL_error(L, to_luastring('field \'%s\' is not an integer'), key);
         else if (d < 0)  /* absent field; no default? */
-            return luaL_error(L, to_luastring("field '%s' missing in date table"), key);
+            return luaL_error(L, to_luastring('field \'%s\' missing in date table'), key);
         res = d;
     }
     else {
         if (!(-L_MAXDATEFIELD <= res && res <= L_MAXDATEFIELD))
-            return luaL_error(L, to_luastring("field '%s' is out-of-bound"), key);
+            return luaL_error(L, to_luastring('field \'%s\' is out-of-bound'), key);
         res -= delta;
     }
     lua_pop(L, 1);
@@ -112,23 +87,23 @@ const getfield = function(L, key, d, delta) {
 
 
 const locale = {
-    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ].map((s) => to_luastring(s)),
-    shortDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((s) => to_luastring(s)),
-    months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((s) => to_luastring(s)),
-    shortMonths: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].map((s) => to_luastring(s)),
-    AM: to_luastring("AM"),
-    PM: to_luastring("PM"),
-    am: to_luastring("am"),
-    pm: to_luastring("pm"),
+    days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ].map((s) => to_luastring(s)),
+    shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((s) => to_luastring(s)),
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((s) => to_luastring(s)),
+    shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((s) => to_luastring(s)),
+    AM: to_luastring('AM'),
+    PM: to_luastring('PM'),
+    am: to_luastring('am'),
+    pm: to_luastring('pm'),
     formats: {
-        c: to_luastring("%a %b %e %H:%M:%S %Y"),
-        D: to_luastring("%m/%d/%y"),
-        F: to_luastring("%Y-%m-%d"),
-        R: to_luastring("%H:%M"),
-        r: to_luastring("%I:%M:%S %p"),
-        T: to_luastring("%H:%M:%S"),
-        X: to_luastring("%T"),
-        x: to_luastring("%D")
+        c: to_luastring('%a %b %e %H:%M:%S %Y'),
+        D: to_luastring('%m/%d/%y'),
+        F: to_luastring('%Y-%m-%d'),
+        R: to_luastring('%H:%M'),
+        r: to_luastring('%I:%M:%S %p'),
+        T: to_luastring('%H:%M:%S'),
+        X: to_luastring('%T'),
+        x: to_luastring('%D')
     }
 };
 
@@ -229,12 +204,12 @@ const strftime = function(L, b, s, date) {
 
                 // '00'
                 case 85 /* U */:
-                    push_pad_2(b, week_number(date, "sunday"), 48 /* 0 */);
+                    push_pad_2(b, week_number(date, 'sunday'), 48 /* 0 */);
                     break;
 
                 // '00'
                 case 87 /* W */:
-                    push_pad_2(b, week_number(date, "monday"), 48 /* 0 */);
+                    push_pad_2(b, week_number(date, 'monday'), 48 /* 0 */);
                     break;
 
                 // '16:00:00'
@@ -387,7 +362,7 @@ const checkoption = function(L, conv, i) {
         }
     }
     luaL_argerror(L, 1,
-        lua_pushfstring(L, to_luastring("invalid conversion specifier '%%%s'"), conv));
+        lua_pushfstring(L, to_luastring('invalid conversion specifier \'%%%s\''), conv));
 };
 
 /* maximum size for an individual 'strftime' item */
@@ -395,7 +370,7 @@ const checkoption = function(L, conv, i) {
 
 
 const os_date = function(L) {
-    let s = luaL_optlstring(L, 1, "%c");
+    let s = luaL_optlstring(L, 1, '%c');
     let stm = lua_isnoneornil(L, 2) ? new Date() : new Date(l_checktime(L, 2) * 1000);
     let utc = false;
     let i = 0;
@@ -403,12 +378,12 @@ const os_date = function(L) {
         utc = true;
         i++;  /* skip '!' */
     }
-    if (s[i] === "*".charCodeAt(0) && s[i+1] === "t".charCodeAt(0)) {
+    if (s[i] === '*'.charCodeAt(0) && s[i+1] === 't'.charCodeAt(0)) {
         lua_createtable(L, 0, 9);  /* 9 = number of fields */
         setallfields(L, stm, utc);
     } else {
         let cc = new Uint8Array(4);
-        cc[0] = "%".charCodeAt(0);
+        cc[0] = '%'.charCodeAt(0);
         let b = new luaL_Buffer();
         luaL_buffinit(L, b);
         strftime(L, b, s, stm);
@@ -425,12 +400,12 @@ const os_time = function(L) {
         luaL_checktype(L, 1, LUA_TTABLE);
         lua_settop(L, 1);  /* make sure table is at the top */
         t = new Date(
-            getfield(L, "year", -1, 0),
-            getfield(L, "month", -1, 1),
-            getfield(L, "day", -1, 0),
-            getfield(L, "hour", 12, 0),
-            getfield(L, "min", 0, 0),
-            getfield(L, "sec", 0, 0)
+            getfield(L, 'year', -1, 0),
+            getfield(L, 'month', -1, 1),
+            getfield(L, 'day', -1, 0),
+            getfield(L, 'hour', 12, 0),
+            getfield(L, 'min', 0, 0),
+            getfield(L, 'sec', 0, 0)
         );
         setallfields(L, t);
     }
@@ -452,12 +427,12 @@ const os_difftime = function(L) {
     return 1;
 };
 
-const catnames = ["all", "collate", "ctype", "monetary", "numeric", "time"].map((lc) => to_luastring(lc));
-const C = to_luastring("C");
-const POSIX = to_luastring("POSIX");
+const catnames = ['all', 'collate', 'ctype', 'monetary', 'numeric', 'time'].map((lc) => to_luastring(lc));
+const C = to_luastring('C');
+const POSIX = to_luastring('POSIX');
 const os_setlocale = function(L) {
     const l = luaL_optstring(L, 1, null);
-    luaL_checkoption(L, 2, "all", catnames);
+    luaL_checkoption(L, 2, 'all', catnames);
     /* It is not possible to set the JS-VM wide locale, so we say that we only
        know the C locale. The "POSIX" locale is defined in
        IEEE Std 1003.1-2017 Section 7.2 as equivalent to "C" */
@@ -471,13 +446,13 @@ const os_setlocale = function(L) {
 };
 
 const syslib = {
-    "date": os_date,
-    "difftime": os_difftime,
-    "setlocale": os_setlocale,
-    "time": os_time
+    'date': os_date,
+    'difftime': os_difftime,
+    'setlocale': os_setlocale,
+    'time': os_time
 };
 
-if (typeof process === "undefined") {
+if (typeof process === 'undefined') {
     syslib.clock = function(L) {
         lua_pushnumber(L, performance.now()/1000);
         return 1;
@@ -552,7 +527,7 @@ if (typeof process === "undefined") {
     syslib.tmpname = function(L) {
         let name = lua_tmpname();
         if (!name)
-            return luaL_error(L, to_luastring("unable to generate a unique filename"));
+            return luaL_error(L, to_luastring('unable to generate a unique filename'));
         lua_pushstring(L, to_luastring(name));
         return 1;
     };

@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
-test("[test-suite] vararg: testing vararg", () => {
+test('[test-suite] vararg: testing vararg', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f(a, ...)
@@ -81,9 +81,9 @@ test("[test-suite] vararg: testing vararg", () => {
 });
 
 
-test("[test-suite] vararg: new-style varargs", () => {
+test('[test-suite] vararg: new-style varargs', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function oneless (a, ...) return ... end
@@ -114,9 +114,9 @@ test("[test-suite] vararg: new-style varargs", () => {
 });
 
 
-test("[test-suite] vararg: varargs for main chunks", () => {
+test('[test-suite] vararg: varargs for main chunks', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         f = load[[ return {...} ]]
@@ -152,9 +152,9 @@ test("[test-suite] vararg: varargs for main chunks", () => {
 });
 
 
-test("[test-suite] vararg: bug in 5.2.2", () => {
+test('[test-suite] vararg: bug in 5.2.2', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,

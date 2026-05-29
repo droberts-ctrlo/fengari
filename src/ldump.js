@@ -1,19 +1,21 @@
-"use strict";
-
-const {
+import {
     LUA_SIGNATURE,
+    LUA_TBOOLEAN,
+    LUA_TLNGSTR,
+    LUA_TNIL,
+    LUA_TNUMFLT, LUA_TNUMINT, LUA_TSHRSTR,
     LUA_VERSION_MAJOR,
-    LUA_VERSION_MINOR,
-    constant_types: {
-        LUA_TBOOLEAN,
-        LUA_TLNGSTR,
-        LUA_TNIL,
-        LUA_TNUMFLT,
-        LUA_TNUMINT,
-        LUA_TSHRSTR
-    },
-    luastring_of
-} = require('./defs.js');
+    LUA_VERSION_MINOR, luastring_of
+} from "./defs.js";
+
+const constant_types = {
+    LUA_TBOOLEAN,
+    LUA_TLNGSTR,
+    LUA_TNIL,
+    LUA_TNUMFLT,
+    LUA_TNUMINT,
+    LUA_TSHRSTR
+}
 
 const LUAC_DATA    = luastring_of(25, 147, 13, 10, 26, 10);
 const LUAC_INT     = 0x5678;
@@ -182,7 +184,7 @@ const DumpHeader = function(D) {
 /*
 ** dump Lua function as precompiled chunk
 */
-const luaU_dump = function(L, f, w, data, strip) {
+export const luaU_dump = function(L, f, w, data, strip) {
     let D = new DumpState();
     D.L = L;
     D.writer = w;
@@ -194,5 +196,3 @@ const luaU_dump = function(L, f, w, data, strip) {
     DumpFunction(f, null, D);
     return D.status;
 };
-
-module.exports.luaU_dump = luaU_dump;

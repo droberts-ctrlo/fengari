@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const prefix = `
     -- avoid problems with 'strict' module (which may generate other error messages)
@@ -42,9 +42,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] errors: test error message with no extra info", () => {
+test('[test-suite] errors: test error message with no extra info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(doit("error('hi', 0)") == 'hi')
@@ -56,9 +56,9 @@ test("[test-suite] errors: test error message with no extra info", () => {
 });
 
 
-test("[test-suite] errors: test error message with no info", () => {
+test('[test-suite] errors: test error message with no info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(doit("error()") == nil)
@@ -70,9 +70,9 @@ test("[test-suite] errors: test error message with no info", () => {
 });
 
 
-test("[test-suite] errors: test common errors/errors that crashed in the past", () => {
+test('[test-suite] errors: test common errors/errors that crashed in the past', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(doit("table.unpack({}, 1, n=2^30)"))
@@ -99,9 +99,9 @@ test("[test-suite] errors: test common errors/errors that crashed in the past", 
 });
 
 
-test("[test-suite] errors: tests for better error messages", () => {
+test('[test-suite] errors: tests for better error messages', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage("a = {} + 1", "arithmetic")
@@ -133,9 +133,9 @@ test("[test-suite] errors: tests for better error messages", () => {
 });
 
 
-test("[test-suite] errors: upvalues being indexed do not go to the stack", () => {
+test('[test-suite] errors: upvalues being indexed do not go to the stack', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage("local a,b,cc; (function () a = cc[1] end)()", "upvalue 'cc'")
@@ -155,9 +155,9 @@ test("[test-suite] errors: upvalues being indexed do not go to the stack", () =>
 });
 
 
-test("[test-suite] errors: short circuit", () => {
+test('[test-suite] errors: short circuit', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage("a=1; local a,bbbb=2,3; a = math.sin(1) and bbbb(3)",
@@ -180,9 +180,9 @@ test("[test-suite] errors: short circuit", () => {
 });
 
 
-test("[test-suite] errors: float->integer conversions", () => {
+test('[test-suite] errors: float->integer conversions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage("local a = 2.0^100; x = a << 2", "local a")
@@ -210,9 +210,9 @@ test("[test-suite] errors: float->integer conversions", () => {
 });
 
 
-test("[test-suite] errors: passing light userdata instead of full userdata", () => {
+test('[test-suite] errors: passing light userdata instead of full userdata', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _G.D = debug
@@ -230,9 +230,9 @@ test("[test-suite] errors: passing light userdata instead of full userdata", () 
 });
 
 
-test("[test-suite] errors: named objects (field '__name')", () => {
+test('[test-suite] errors: named objects (field \'__name\')', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -255,9 +255,9 @@ test("[test-suite] errors: named objects (field '__name')", () => {
 });
 
 
-test("[test-suite] errors: global functions", () => {
+test('[test-suite] errors: global functions', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage("(io.write or print){}", "io.write")
@@ -270,9 +270,9 @@ test("[test-suite] errors: global functions", () => {
 });
 
 
-test("[test-suite] errors: errors in functions without debug info", () => {
+test('[test-suite] errors: errors in functions without debug info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -296,9 +296,9 @@ test("[test-suite] errors: errors in functions without debug info", () => {
 });
 
 
-test("[test-suite] errors: tests for field accesses after RK limit", () => {
+test('[test-suite] errors: tests for field accesses after RK limit', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {}
@@ -319,9 +319,9 @@ test("[test-suite] errors: tests for field accesses after RK limit", () => {
 });
 
 
-test("[test-suite] errors: global", () => {
+test('[test-suite] errors: global', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[aaa=9
@@ -342,9 +342,9 @@ test("[test-suite] errors: global", () => {
 });
 
 
-test("[test-suite] errors: field", () => {
+test('[test-suite] errors: field', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[
@@ -359,9 +359,9 @@ test("[test-suite] errors: field", () => {
 });
 
 
-test("[test-suite] errors: global insert", () => {
+test('[test-suite] errors: global insert', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[
@@ -380,9 +380,9 @@ test("[test-suite] errors: global insert", () => {
 });
 
 
-test("[test-suite] errors: sin", () => {
+test('[test-suite] errors: sin', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[  -- tail call
@@ -396,9 +396,9 @@ test("[test-suite] errors: sin", () => {
 });
 
 
-test("[test-suite] errors: concatenate", () => {
+test('[test-suite] errors: concatenate', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[x = print .. "a"]], "concatenate")
@@ -412,9 +412,9 @@ test("[test-suite] errors: concatenate", () => {
 });
 
 
-test("[test-suite] errors: unknown global", () => {
+test('[test-suite] errors: unknown global', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkmessage([[
@@ -432,9 +432,9 @@ test("[test-suite] errors: unknown global", () => {
 });
 
 
-test("[test-suite] errors: __index", () => {
+test('[test-suite] errors: __index', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}; setmetatable(a, {__index = string})
@@ -452,9 +452,9 @@ test("[test-suite] errors: __index", () => {
 });
 
 
-test("[test-suite] errors: tests for errors in coroutines", () => {
+test('[test-suite] errors: tests for errors in coroutines', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f (n)
@@ -476,9 +476,9 @@ test("[test-suite] errors: tests for errors in coroutines", () => {
 });
 
 
-test("[test-suite] errors: testing size of 'source' info", () => {
+test('[test-suite] errors: testing size of \'source\' info', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         idsize = 60 - 1
@@ -503,9 +503,9 @@ test("[test-suite] errors: testing size of 'source' info", () => {
 });
 
 
-test("[test-suite] errors: testing line error", () => {
+test('[test-suite] errors: testing line error', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function lineerror (s, l)
@@ -568,9 +568,9 @@ test("[test-suite] errors: testing line error", () => {
 });
 
 
-test("[test-suite] errors: several tests that exhaust the Lua stack", () => {
+test('[test-suite] errors: several tests that exhaust the Lua stack', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         C = 0
@@ -591,9 +591,9 @@ test("[test-suite] errors: several tests that exhaust the Lua stack", () => {
 });
 
 
-test("[test-suite] errors: error lines in stack overflow", () => {
+test('[test-suite] errors: error lines in stack overflow', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         C = 0
@@ -622,9 +622,9 @@ test("[test-suite] errors: error lines in stack overflow", () => {
 });
 
 
-test("[test-suite] errors: error in error handling", () => {
+test('[test-suite] errors: error in error handling', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local res, msg = xpcall(error, error)
@@ -647,9 +647,9 @@ test("[test-suite] errors: error in error handling", () => {
 });
 
 
-test("[test-suite] errors: too many results", () => {
+test('[test-suite] errors: too many results', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function loop (x,y,z) return 1 + loop(x, y, z) end
@@ -674,9 +674,9 @@ test("[test-suite] errors: too many results", () => {
 });
 
 
-test("[test-suite] errors: non string messages", () => {
+test('[test-suite] errors: non string messages', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -714,15 +714,15 @@ test("[test-suite] errors: non string messages", () => {
         end
     `;
     lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadbuffer(L, to_luastring(prefix + luaCode), null, to_luastring("@errors.lua")) === lua.LUA_ERRSYNTAX)
+    if (lauxlib.luaL_loadbuffer(L, to_luastring(prefix + luaCode), null, to_luastring('@errors.lua')) === lua.LUA_ERRSYNTAX)
         throw new SyntaxError(lua.lua_tojsstring(L, -1));
     lua.lua_call(L, 0, 0);
 });
 
 
-test("[test-suite] errors: xpcall with arguments", () => {
+test('[test-suite] errors: xpcall with arguments', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a, b, c = xpcall(string.find, error, "alo", "al")
@@ -737,9 +737,9 @@ test("[test-suite] errors: xpcall with arguments", () => {
 });
 
 
-test("[test-suite] errors: testing tokens in error messages", () => {
+test('[test-suite] errors: testing tokens in error messages', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checksyntax("syntax error", "", "error", 1)
@@ -756,9 +756,9 @@ test("[test-suite] errors: testing tokens in error messages", () => {
 });
 
 
-test("[test-suite] errors: test invalid non-printable char in a chunk", () => {
+test('[test-suite] errors: test invalid non-printable char in a chunk', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checksyntax("a\\1a = 1", "", "<\\\\1>", 1)
@@ -770,9 +770,9 @@ test("[test-suite] errors: test invalid non-printable char in a chunk", () => {
 });
 
 
-test("[test-suite] errors: test 255 as first char in a chunk", () => {
+test('[test-suite] errors: test 255 as first char in a chunk', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checksyntax("\\255a = 1", "", "<\\\\255>", 1)
@@ -787,9 +787,9 @@ test("[test-suite] errors: test 255 as first char in a chunk", () => {
 });
 
 
-test("[test-suite] errors: lots of errors", () => {
+test('[test-suite] errors: lots of errors', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         lim = 1000
@@ -806,9 +806,9 @@ test("[test-suite] errors: lots of errors", () => {
 });
 
 
-test("[test-suite] errors: testing syntax limits", () => {
+test('[test-suite] errors: testing syntax limits', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local maxClevel = 200    -- LUAI_MAXCCALLS (in llimits.h)
@@ -841,9 +841,9 @@ test("[test-suite] errors: testing syntax limits", () => {
 });
 
 
-test("[test-suite] errors: upvalues limit", () => {
+test('[test-suite] errors: upvalues limit', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local lim = 127
@@ -875,9 +875,9 @@ test("[test-suite] errors: upvalues limit", () => {
 });
 
 
-test("[test-suite] errors: local variables limit", () => {
+test('[test-suite] errors: local variables limit', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         s = "\\nfunction foo ()\\n  local "

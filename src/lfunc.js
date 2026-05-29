@@ -1,7 +1,8 @@
-"use strict";
+import {LUA_TNIL} from "./defs.js";
 
-const { constant_types: { LUA_TNIL } } = require('./defs.js');
-const lobject = require('./lobject.js');
+import * as lobject from "./lobject.js";
+
+const constant_types = { LUA_TNIL }
 
 class Proto {
     constructor(L) {
@@ -63,10 +64,4 @@ const luaF_getlocalname = function(f, local_number, pc) {
     return null;  /* not found */
 };
 
-module.exports.MAXUPVAL          = 255;
-module.exports.Proto             = Proto;
-module.exports.luaF_findupval    = luaF_findupval;
-module.exports.luaF_close        = luaF_close;
-module.exports.luaF_getlocalname = luaF_getlocalname;
-module.exports.luaF_initupvals   = luaF_initupvals;
-module.exports.luaF_newLclosure  = luaF_newLclosure;
+export const MAXUPVAL= 255;

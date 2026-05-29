@@ -1,54 +1,33 @@
-"use strict";
+import {LUA_MAXINTEGER} from "./luaconf.js";
 
-const { LUA_MAXINTEGER } = require('./luaconf.js');
-const {
-    LUA_OPEQ,
-    LUA_OPLT,
-    LUA_TFUNCTION,
-    LUA_TNIL,
-    LUA_TTABLE,
+import {
     lua_call,
     lua_checkstack,
     lua_compare,
-    lua_createtable,
-    lua_geti,
-    lua_getmetatable,
-    lua_gettop,
-    lua_insert,
-    lua_isnil,
-    lua_isnoneornil,
-    lua_isstring,
-    lua_pop,
-    lua_pushinteger,
-    lua_pushnil,
-    lua_pushstring,
-    lua_pushvalue,
-    lua_rawget,
-    lua_setfield,
-    lua_seti,
+    lua_createtable, lua_geti, lua_getmetatable, lua_gettop, lua_insert, lua_isnil, lua_isnoneornil, lua_isstring,
+    LUA_OPEQ,
+    LUA_OPLT, lua_pop, lua_pushinteger, lua_pushnil, lua_pushstring, lua_pushvalue, lua_rawget, lua_setfield, lua_seti,
     lua_settop,
-    lua_toboolean,
-    lua_type
-} = require('./lua.js');
-const {
-    luaL_Buffer,
+    LUA_TFUNCTION,
+    LUA_TNIL, lua_toboolean,
+    LUA_TTABLE, lua_type
+} from "./lua.js";
+
+
+import {
     luaL_addlstring,
     luaL_addvalue,
     luaL_argcheck,
+    luaL_Buffer,
     luaL_buffinit,
-    luaL_checkinteger,
-    luaL_checktype,
-    luaL_error,
-    luaL_len,
-    luaL_newlib,
-    luaL_opt,
-    luaL_optinteger,
-    luaL_optlstring,
-    luaL_pushresult,
-    luaL_typename
-} = require('./lauxlib.js');
-const lualib = require('./lualib.js');
-const { to_luastring } = require("./fengaricore.js");
+    luaL_checkinteger, luaL_checktype, luaL_error, luaL_len, luaL_newlib, luaL_opt, luaL_optinteger, luaL_optlstring,
+    luaL_pushresult, luaL_typename
+} from "./lauxlib.js";
+
+
+import lualib from "./lualib.js";
+import {to_luastring} from "./fengaricore.js";
+
 
 /*
 ** Operations that an object must define to mimic a table
@@ -72,9 +51,9 @@ const checktab = function(L, arg, what) {
     if (lua_type(L, arg) !== LUA_TTABLE) {  /* is it not a table? */
         let n = 1;
         if (lua_getmetatable(L, arg) &&  /* must have metatable */
-            (!(what & TAB_R) || checkfield(L, to_luastring("__index", true), ++n)) &&
-            (!(what & TAB_W) || checkfield(L, to_luastring("__newindex", true), ++n)) &&
-            (!(what & TAB_L) || checkfield(L, to_luastring("__len", true), ++n))) {
+            (!(what & TAB_R) || checkfield(L, to_luastring('__index', true), ++n)) &&
+            (!(what & TAB_W) || checkfield(L, to_luastring('__newindex', true), ++n)) &&
+            (!(what & TAB_L) || checkfield(L, to_luastring('__len', true), ++n))) {
             lua_pop(L, n);  /* pop metatable and tested metamethods */
         }
         else
@@ -90,7 +69,7 @@ const aux_getn = function(L, n, w) {
 const addfield = function(L, b, i) {
     lua_geti(L, 1, i);
     if (!lua_isstring(L, -1))
-        luaL_error(L, to_luastring("invalid value (%s) at index %d in table for 'concat'"),
+        luaL_error(L, to_luastring('invalid value (%s) at index %d in table for \'concat\''),
             luaL_typename(L, -1), i);
 
     luaL_addvalue(b);
@@ -105,7 +84,7 @@ const tinsert = function(L) {
             break;
         case 3: {
             pos = luaL_checkinteger(L, 2);  /* 2nd argument is the position */
-            luaL_argcheck(L, 1 <= pos && pos <= e, 2, "position out of bounds");
+            luaL_argcheck(L, 1 <= pos && pos <= e, 2, 'position out of bounds');
             for (let i = e; i > pos; i--) {  /* move up elements */
                 lua_geti(L, 1, i - 1);
                 lua_seti(L, 1, i);  /* t[i] = t[i - 1] */
@@ -113,7 +92,7 @@ const tinsert = function(L) {
             break;
         }
         default: {
-            return luaL_error(L, "wrong number of arguments to 'insert'");
+            return luaL_error(L, 'wrong number of arguments to \'insert\'');
         }
     }
 
@@ -125,7 +104,7 @@ const tremove = function(L) {
     let size = aux_getn(L, 1, TAB_RW);
     let pos = luaL_optinteger(L, 2, size);
     if (pos !== size)  /* validate 'pos' if given */
-        luaL_argcheck(L, 1 <= pos && pos <= size + 1, 1, "position out of bounds");
+        luaL_argcheck(L, 1 <= pos && pos <= size + 1, 1, 'position out of bounds');
     lua_geti(L, 1, pos);  /* result = t[pos] */
     for (; pos < size; pos++) {
         lua_geti(L, 1, pos + 1);
@@ -150,9 +129,9 @@ const tmove = function(L) {
     checktab(L, 1, TAB_R);
     checktab(L, tt, TAB_W);
     if (e >= f) {  /* otherwise, nothing to move */
-        luaL_argcheck(L, f > 0 || e < LUA_MAXINTEGER + f, 3, "too many elements to move");
+        luaL_argcheck(L, f > 0 || e < LUA_MAXINTEGER + f, 3, 'too many elements to move');
         let n = e - f + 1;  /* number of elements to move */
-        luaL_argcheck(L, t <= LUA_MAXINTEGER - n + 1, 4, "destination wrap around");
+        luaL_argcheck(L, t <= LUA_MAXINTEGER - n + 1, 4, 'destination wrap around');
 
         if (t > e || t <= f || (tt !== 1 && lua_compare(L, 1, tt, LUA_OPEQ) !== 1)) {
             for (let i = 0; i < n; i++) {
@@ -173,7 +152,7 @@ const tmove = function(L) {
 
 const tconcat = function(L) {
     let last = aux_getn(L, 1, TAB_R);
-    let sep = luaL_optlstring(L, 2, "");
+    let sep = luaL_optlstring(L, 2, '');
     let lsep = sep.length;
     let i = luaL_optinteger(L, 3, 1);
     last = luaL_optinteger(L, 4, last);
@@ -201,7 +180,7 @@ const pack = function(L) {
     for (let i = n; i >= 1; i--)  /* assign elements */
         lua_seti(L, 1, i);
     lua_pushinteger(L, n);
-    lua_setfield(L, 1, to_luastring("n"));  /* t.n = number of elements */
+    lua_setfield(L, 1, to_luastring('n'));  /* t.n = number of elements */
     return 1;  /* return table */
 };
 
@@ -211,7 +190,7 @@ const unpack = function(L) {
     if (i > e) return 0;  /* empty range */
     let n = e - i;  /* number of elements minus 1 (avoid overflows) */
     if (n >= Number.MAX_SAFE_INTEGER || !lua_checkstack(L, ++n))
-        return luaL_error(L, to_luastring("too many results to unpack"));
+        return luaL_error(L, to_luastring('too many results to unpack'));
     for (; i < e; i++)  /* push arg[i..e - 1] (to avoid overflows) */
         lua_geti(L, 1, i);
     lua_geti(L, 1, e);  /* push last element */
@@ -251,14 +230,14 @@ const partition = function(L, lo, up) {
         /* next loop: repeat ++i while a[i] < P */
         while (lua_geti(L, 1, ++i), sort_comp(L, -1, -2)) {
             if (i == up - 1)  /* a[i] < P  but a[up - 1] == P  ?? */
-                luaL_error(L, to_luastring("invalid order function for sorting"));
+                luaL_error(L, to_luastring('invalid order function for sorting'));
             lua_pop(L, 1);  /* remove a[i] */
         }
         /* after the loop, a[i] >= P and a[lo .. i - 1] < P */
         /* next loop: repeat --j while P < a[j] */
         while (lua_geti(L, 1, --j), sort_comp(L, -3, -1)) {
             if (j < i)  /* j < i  but  a[j] > P ?? */
-                luaL_error(L, to_luastring("invalid order function for sorting"));
+                luaL_error(L, to_luastring('invalid order function for sorting'));
             lua_pop(L, 1);  /* remove a[j] */
         }
         /* after the loop, a[j] <= P and a[j + 1 .. up] >= P */
@@ -335,7 +314,7 @@ const auxsort = function(L, lo, up, rnd) {
 const sort = function(L) {
     let n = aux_getn(L, 1, TAB_RW);
     if (n > 1) {  /* non-trivial interval? */
-        luaL_argcheck(L, n < LUA_MAXINTEGER, 1, "array too big");
+        luaL_argcheck(L, n < LUA_MAXINTEGER, 1, 'array too big');
         if (!lua_isnoneornil(L, 2))  /* is there a 2nd argument? */
             luaL_checktype(L, 2, LUA_TFUNCTION);  /* must be a function */
         lua_settop(L, 2);  /* make sure there are two arguments */
@@ -345,18 +324,16 @@ const sort = function(L) {
 };
 
 const tab_funcs = {
-    "concat": tconcat,
-    "insert": tinsert,
-    "move":   tmove,
-    "pack":   pack,
-    "remove": tremove,
-    "sort":   sort,
-    "unpack": unpack
+    'concat': tconcat,
+    'insert': tinsert,
+    'move':   tmove,
+    'pack':   pack,
+    'remove': tremove,
+    'sort':   sort,
+    'unpack': unpack
 };
 
 const luaopen_table = function(L) {
     luaL_newlib(L, tab_funcs);
     return 1;
 };
-
-module.exports.luaopen_table = luaopen_table;

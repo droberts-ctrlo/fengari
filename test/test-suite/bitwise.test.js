@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const prefix = `
     package.preload.bit32 = function ()     --{
@@ -114,9 +114,9 @@ const prefix = `
     local bit32 = require'bit32'
 `;
 
-test("[test-suite] bitwise: testing bitwise operations", () => {
+test('[test-suite] bitwise: testing bitwise operations', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local numbits = string.packsize('j') * 8
@@ -184,9 +184,9 @@ test("[test-suite] bitwise: testing bitwise operations", () => {
 });
 
 
-test("[test-suite] bitwise: testing bitwise library", () => {
+test('[test-suite] bitwise: testing bitwise library', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(bit32.band() == bit32.bnot(0))
@@ -204,9 +204,9 @@ test("[test-suite] bitwise: testing bitwise library", () => {
 });
 
 
-test("[test-suite] bitwise: out-of-range numbers", () => {
+test('[test-suite] bitwise: out-of-range numbers', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(bit32.band(-1) == 0xffffffff)
@@ -269,9 +269,9 @@ test("[test-suite] bitwise: out-of-range numbers", () => {
 });
 
 
-test("[test-suite] bitwise: some special cases", () => {
+test('[test-suite] bitwise: some special cases', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local c = {0, 1, 2, 3, 10, 0x80000000, 0xaaaaaaaa, 0x55555555,
@@ -312,9 +312,9 @@ test("[test-suite] bitwise: some special cases", () => {
 });
 
 
-test("[test-suite] bitwise: for this test, use at most 24 bits (mantissa of a single float)", () => {
+test('[test-suite] bitwise: for this test, use at most 24 bits (mantissa of a single float)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         c = {0, 1, 2, 3, 10, 0x800000, 0xaaaaaa, 0x555555, 0xffffff, 0x7fffff}
@@ -339,9 +339,9 @@ test("[test-suite] bitwise: for this test, use at most 24 bits (mantissa of a si
 });
 
 
-test("[test-suite] bitwise: testing extract/replace", () => {
+test('[test-suite] bitwise: testing extract/replace', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(bit32.extract(0x12345678, 0, 4) == 8)
@@ -370,9 +370,9 @@ test("[test-suite] bitwise: testing extract/replace", () => {
 });
 
 
-test("[test-suite] bitwise: testing conversion of floats", () => {
+test('[test-suite] bitwise: testing conversion of floats', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(bit32.bor(3.0) == 3)
@@ -385,9 +385,9 @@ test("[test-suite] bitwise: testing conversion of floats", () => {
 });
 
 
-test("[test-suite] bitwise: large floats and large-enough integers?", () => {
+test('[test-suite] bitwise: large floats and large-enough integers?', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         if 2.0^50 < 2.0^50 + 1.0 and 2.0^50 < (-1 >> 1) then

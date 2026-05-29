@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
-const lua = require("../src/lua.js");
-const lauxlib = require("../src/lauxlib.js");
-const lualib = require("../src/lualib.js");
-const {to_luastring} = require("../src/fengaricore.js");
+const lua = require('../src/lua.js');
+const lauxlib = require('../src/lauxlib.js');
+const lualib = require('../src/lualib.js');
+const {to_luastring} = require('../src/fengaricore.js');
 
 test('utf8.offset', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return utf8.offset("( ͡° ͜ʖ ͡° )", 5)
@@ -24,7 +24,7 @@ test('utf8.offset', () => {
 
 test('utf8.codepoint', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return utf8.codepoint("( ͡° ͜ʖ ͡° )", 5, 8)
@@ -43,7 +43,7 @@ test('utf8.codepoint', () => {
 
 test('utf8.char', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return utf8.char(40, 32, 865, 176, 32, 860, 662, 32, 865, 176, 32, 41)
@@ -54,13 +54,13 @@ test('utf8.char', () => {
         lua.lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("( ͡° ͜ʖ ͡° )");
+    expect(lua.lua_tojsstring(L, -1)).toBe('( ͡° ͜ʖ ͡° )');
 });
 
 
 test('utf8.len', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return utf8.len("( ͡° ͜ʖ ͡° )")
@@ -77,7 +77,7 @@ test('utf8.len', () => {
 
 test('utf8.codes', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local s = "( ͡° ͜ʖ ͡° )"
@@ -93,5 +93,5 @@ test('utf8.codes', () => {
         lua.lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("[1,40] [2,32] [3,865] [5,176] [7,32] [8,860] [10,662] [12,32] [13,865] [15,176] [17,32] [18,41] ");
+    expect(lua.lua_tojsstring(L, -1)).toBe('[1,40] [2,32] [3,865] [5,176] [7,32] [8,860] [10,662] [12,32] [13,865] [15,176] [17,32] [18,41] ');
 });

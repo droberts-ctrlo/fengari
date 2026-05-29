@@ -1,8 +1,22 @@
-"use strict";
+import {
+    LUA_TBOOLEAN,
+    LUA_TCCL,
+    LUA_TLCF,
+    LUA_TLCL,
+    LUA_TLIGHTUSERDATA,
+    LUA_TLNGSTR,
+    LUA_TNIL,
+    LUA_TNUMFLT, LUA_TNUMINT, LUA_TSHRSTR, LUA_TTABLE, LUA_TTHREAD, LUA_TUSERDATA, to_luastring
+} from "./defs.js";
+import {LUA_MAXINTEGER} from "./luaconf.js";
+import {lua_assert} from "./llimits.js";
+import * as ldebug from "./ldebug.js";
+import * as lobject from "./lobject.js";
+import {luaS_hashlongstr, TString} from "./lstring.js";
+import * as lstate from "./lstate.js";
 
-const {
-    constant_types: {
-        LUA_TBOOLEAN,
+const constant_types = {
+    LUA_TBOOLEAN,
         LUA_TCCL,
         LUA_TLCF,
         LUA_TLCL,
@@ -15,20 +29,7 @@ const {
         LUA_TTABLE,
         LUA_TTHREAD,
         LUA_TUSERDATA
-    },
-    to_luastring
-} = require('./defs.js');
-const {
-    LUA_MAXINTEGER
-} = require('./luaconf.js');
-const { lua_assert } = require('./llimits.js');
-const ldebug  = require('./ldebug.js');
-const lobject = require('./lobject.js');
-const {
-    luaS_hashlongstr,
-    TString
-} = require('./lstring.js');
-const lstate  = require('./lstate.js');
+}
 
 /* used to prevent conflicts with lightuserdata keys */
 let lightuserdata_hashes = new WeakMap();
@@ -46,10 +47,10 @@ const get_lightuserdata_hash = function(v) {
 const table_hash = function(L, key) {
     switch(key.type) {
         case LUA_TNIL:
-            return ldebug.luaG_runerror(L, to_luastring("table index is nil", true));
+            return ldebug.luaG_runerror(L, to_luastring('table index is nil', true));
         case LUA_TNUMFLT:
             if (isNaN(key.value))
-                return ldebug.luaG_runerror(L, to_luastring("table index is NaN", true));
+                return ldebug.luaG_runerror(L, to_luastring('table index is NaN', true));
             /* fall through */
         case LUA_TNUMINT: /* takes advantage of floats and integers being same in JS */
         case LUA_TBOOLEAN:
@@ -66,22 +67,22 @@ const table_hash = function(L, key) {
         case LUA_TLIGHTUSERDATA: {
             let v = key.value;
             switch(typeof v) {
-                case "string":
+                case 'string':
                     /* possible conflict with LUA_TSTRING.
                        prefix this string with "*" so they don't clash */
-                    return "*" + v;
-                case "number":
+                    return '*' + v;
+                case 'number':
                     /* possible conflict with LUA_TNUMBER.
                        turn into string and prefix with "#" to avoid clash with other strings */
-                    return "#" + v;
-                case "boolean":
+                    return '#' + v;
+                case 'boolean':
                     /* possible conflict with LUA_TBOOLEAN. use strings ?true and ?false instead */
-                    return v?"?true":"?false";
-                case "function":
+                    return v?'?true':'?false';
+                case 'function':
                     /* possible conflict with LUA_TLCF.
                        indirect via a weakmap */
                     return get_lightuserdata_hash(v);
-                case "object":
+                case 'object':
                     /* v could be a lua_State, CClosure, LClosure, Table or Userdata from this state as returned by lua_topointer */
                     if ((v instanceof lstate.lua_State && v.l_G === L.l_G) ||
                         v instanceof Table ||
@@ -97,7 +98,7 @@ const table_hash = function(L, key) {
             }
         }
         default:
-            throw new Error("unknown key type: " + key.type);
+            throw new Error('unknown key type: ' + key.type);
     }
 };
 
@@ -114,7 +115,7 @@ class Table {
     }
 }
 
-const invalidateTMcache = function(t) {
+export const invalidateTMcache = function(t) {
     t.flags = 0;
 };
 
@@ -162,7 +163,7 @@ const mark_dead = function(t, hash) {
     }
 };
 
-const luaH_new = function(L) {
+export const luaH_new = function(L) {
     return new Table(L);
 };
 
@@ -171,8 +172,8 @@ const getgeneric = function(t, hash) {
     return v ? v.value : lobject.luaO_nilobject;
 };
 
-const luaH_getint = function(t, key) {
-    lua_assert(typeof key == "number" && (key|0) === key);
+export const luaH_getint = function(t, key) {
+    lua_assert(typeof key == 'number' && (key|0) === key);
     return getgeneric(t, key);
 };
 
@@ -181,15 +182,15 @@ const luaH_getstr = function(t, key) {
     return getgeneric(t, luaS_hashlongstr(key));
 };
 
-const luaH_get = function(L, t, key) {
+export const luaH_get = function(L, t, key) {
     lua_assert(key instanceof lobject.TValue);
     if (key.ttisnil() || (key.ttisfloat() && isNaN(key.value)))
         return lobject.luaO_nilobject;
     return getgeneric(t, table_hash(L, key));
 };
 
-const luaH_setint = function(t, key, value) {
-    lua_assert(typeof key == "number" && (key|0) === key && value instanceof lobject.TValue);
+export const luaH_setint = function(t, key, value) {
+    lua_assert(typeof key == 'number' && (key|0) === key && value instanceof lobject.TValue);
     let hash = key; /* table_hash known result */
     if (value.ttisnil()) {
         mark_dead(t, hash);
@@ -206,7 +207,7 @@ const luaH_setint = function(t, key, value) {
     }
 };
 
-const luaH_setfrom = function(L, t, key, value) {
+export const luaH_setfrom = function(L, t, key, value) {
     lua_assert(key instanceof lobject.TValue);
     let hash = table_hash(L, key);
     if (value.ttisnil()) { /* delete */
@@ -235,7 +236,7 @@ const luaH_setfrom = function(L, t, key, value) {
 ** Try to find a boundary in table 't'. A 'boundary' is an integer index
 ** such that t[i] is non-nil and t[i+1] is nil (and 0 if t[1] is nil).
 */
-const luaH_getn = function(t) {
+export const luaH_getn = function(t) {
     let i = 0;
     let j = t.strong.size + 1; /* use known size of Map to kick start search */
     /* find 'i' and 'j' such that i is present and j is not */
@@ -258,7 +259,7 @@ const luaH_getn = function(t) {
     return i;
 };
 
-const luaH_next = function(L, table, keyI) {
+export const luaH_next = function(L, table, keyI) {
     let keyO = L.stack[keyI];
 
     let entry;
@@ -280,7 +281,7 @@ const luaH_next = function(L, table, keyI) {
             entry = (table.dead_weak && table.dead_weak.get(hash)) || table.dead_strong.get(hash);
             if (!entry)
                 /* item not in table */
-                return ldebug.luaG_runerror(L, to_luastring("invalid key to 'next'"));
+                return ldebug.luaG_runerror(L, to_luastring('invalid key to \'next\''));
             /* Iterate until either out of keys, or until finding a non-dead key */
             do {
                 entry = entry.n;
@@ -293,14 +294,3 @@ const luaH_next = function(L, table, keyI) {
     lobject.setobj2s(L, keyI+1, entry.value);
     return true;
 };
-
-module.exports.invalidateTMcache = invalidateTMcache;
-module.exports.luaH_get     = luaH_get;
-module.exports.luaH_getint  = luaH_getint;
-module.exports.luaH_getn    = luaH_getn;
-module.exports.luaH_getstr  = luaH_getstr;
-module.exports.luaH_setfrom = luaH_setfrom;
-module.exports.luaH_setint  = luaH_setint;
-module.exports.luaH_new     = luaH_new;
-module.exports.luaH_next    = luaH_next;
-module.exports.Table        = Table;

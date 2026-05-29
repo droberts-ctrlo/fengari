@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 const lua = require('../src/lua.js');
 const lauxlib = require('../src/lauxlib.js');
 const lualib = require('../src/lualib.js');
-const {to_luastring} = require("../src/fengaricore.js");
+const {to_luastring} = require('../src/fengaricore.js');
 
 
 test('print', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         print("hello", "world", 123)
@@ -23,7 +23,7 @@ test('print', () => {
 
 test('setmetatable, getmetatable', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -45,7 +45,7 @@ test('setmetatable, getmetatable', () => {
     }
 
     expect(lua.lua_tojsstring(L, -2))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua.lua_istable(L, -1)).toBe(true);
 });
@@ -53,7 +53,7 @@ test('setmetatable, getmetatable', () => {
 
 test('rawequal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -83,7 +83,7 @@ test('rawequal', () => {
 
 test('rawset, rawget', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -108,22 +108,22 @@ test('rawset, rawget', () => {
     }
 
     expect(lua.lua_tojsstring(L, -4))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua.lua_tojsstring(L, -3))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua.lua_tojsstring(L, -2))
-        .toBe("bye");
+        .toBe('bye');
 
     expect(lua.lua_tojsstring(L, -1))
-        .toBe("bye");
+        .toBe('bye');
 });
 
 
 test('type', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return type(1), type(true), type("hello"), type({}), type(nil)
@@ -135,25 +135,25 @@ test('type', () => {
     }
 
     expect(lua.lua_tojsstring(L, -5))
-        .toBe("number");
+        .toBe('number');
 
     expect(lua.lua_tojsstring(L, -4))
-        .toBe("boolean");
+        .toBe('boolean');
 
     expect(lua.lua_tojsstring(L, -3))
-        .toBe("string");
+        .toBe('string');
 
     expect(lua.lua_tojsstring(L, -2))
-        .toBe("table");
+        .toBe('table');
 
     expect(lua.lua_tojsstring(L, -1))
-        .toBe("nil");
+        .toBe('nil');
 });
 
 
 test('error', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         error("you fucked up")
@@ -170,7 +170,7 @@ test('error', () => {
 
 test('error, protected', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         error("you fucked up")
@@ -187,7 +187,7 @@ test('error, protected', () => {
 
 test('pcall', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local willFail = function ()
@@ -208,7 +208,7 @@ test('pcall', () => {
 
 test('xpcall', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local willFail = function ()
@@ -233,7 +233,7 @@ test('xpcall', () => {
 
 test('ipairs', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {1, 2, 3, 4, 5, ['yo'] = 'lo'}
@@ -257,7 +257,7 @@ test('ipairs', () => {
 
 test('select', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return {select('#', 1, 2, 3)}, {select(2, 1, 2, 3)}, {select(-2, 1, 2, 3)}
@@ -281,7 +281,7 @@ test('select', () => {
 
 test('tonumber', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return tonumber('foo'),
@@ -306,7 +306,7 @@ test('tonumber', () => {
 
 test('assert', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(1 < 0, "this doesn't makes sense")
@@ -323,7 +323,7 @@ test('assert', () => {
 
 test('rawlen', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return rawlen({1, 2, 3}), rawlen('hello')
@@ -341,7 +341,7 @@ test('rawlen', () => {
 
 test('next', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0
@@ -370,7 +370,7 @@ test('next', () => {
 
 test('pairs', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0
@@ -399,7 +399,7 @@ test('pairs', () => {
 
 test('pairs with __pairs', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0

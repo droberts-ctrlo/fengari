@@ -1,8 +1,18 @@
-"use strict";
-
-const { lua_pop } = require('./lua.js');
-const { luaL_requiref } = require('./lauxlib.js');
-const { to_luastring } = require("./fengaricore.js");
+import {lua_pop} from "./lua.js";
+import {luaL_requiref} from "./lauxlib.js";
+import {to_luastring} from "./fengaricore.js";
+import * as lualib from "./lualib.js";
+import {luaopen_base} from "./lbaselib.js";
+import {luaopen_coroutine} from "./lcorolib.js";
+import {luaopen_debug} from "./ldblib.js";
+import {luaopen_math} from "./lmathlib.js";
+import {luaopen_package} from "./loadlib.js";
+import {luaopen_os} from "./loslib.js";
+import {luaopen_string} from "./lstrlib.js";
+import {luaopen_table} from "./ltablib.js";
+import {luaopen_utf8} from "./lutf8lib.js";
+import {luaopen_io} from "./liolib.js";
+import {luaopen_fengari} from "./fengarilib.js";
 
 const loadedlibs = {};
 
@@ -14,20 +24,8 @@ const luaL_openlibs = function(L) {
         lua_pop(L, 1); /* remove lib */
     }
 };
-module.exports.luaL_openlibs = luaL_openlibs;
 
-const lualib = require('./lualib.js');
-const { luaopen_base }      = require('./lbaselib.js');
-const { luaopen_coroutine } = require('./lcorolib.js');
-const { luaopen_debug }     = require('./ldblib.js');
-const { luaopen_math }      = require('./lmathlib.js');
-const { luaopen_package }   = require('./loadlib.js');
-const { luaopen_os }        = require('./loslib.js');
-const { luaopen_string }    = require('./lstrlib.js');
-const { luaopen_table }     = require('./ltablib.js');
-const { luaopen_utf8 }      = require('./lutf8lib.js');
-
-loadedlibs["_G"] = luaopen_base,
+loadedlibs['_G'] = luaopen_base;
 loadedlibs[lualib.LUA_LOADLIBNAME] = luaopen_package;
 loadedlibs[lualib.LUA_COLIBNAME] = luaopen_coroutine;
 loadedlibs[lualib.LUA_TABLIBNAME] = luaopen_table;
@@ -36,9 +34,6 @@ loadedlibs[lualib.LUA_STRLIBNAME] = luaopen_string;
 loadedlibs[lualib.LUA_MATHLIBNAME] = luaopen_math;
 loadedlibs[lualib.LUA_UTF8LIBNAME] = luaopen_utf8;
 loadedlibs[lualib.LUA_DBLIBNAME] = luaopen_debug;
-if (typeof process !== "undefined")
-    loadedlibs[lualib.LUA_IOLIBNAME] = require('./liolib.js').luaopen_io;
-
-/* Extension: fengari library */
-const { luaopen_fengari } = require('./fengarilib.js');
+if (typeof process !== 'undefined')
+    loadedlibs[lualib.LUA_IOLIBNAME] = luaopen_io.luaopen_io;
 loadedlibs[lualib.LUA_FENGARILIBNAME] = luaopen_fengari;

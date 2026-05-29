@@ -1,17 +1,17 @@
-"use strict";
+'use strict';
 
 const lua = require('../../src/lua.js');
 const lauxlib = require('../../src/lauxlib.js');
 const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+const {to_luastring} = require('../../src/fengaricore.js');
 
 const dostring = `
     local function dostring (x) return assert(load(x), "")() end
 `;
 
-test("[test-suite] literals: dostring", () => {
+test('[test-suite] literals: dostring', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         dostring("x \\v\\f = \\t\\r 'a\\0a' \\v\\f\\f")
@@ -25,9 +25,9 @@ test("[test-suite] literals: dostring", () => {
 
 
 // TODO: bell character '\a' in JS is parsed as 'a'
-test("[test-suite] literals: escape sequences", () => {
+test('[test-suite] literals: escape sequences', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert('\\n\\"\\'\\\\' == [[
@@ -42,9 +42,9 @@ test("[test-suite] literals: escape sequences", () => {
 });
 
 
-test("[test-suite] literals: assume ASCII just for tests", () => {
+test('[test-suite] literals: assume ASCII just for tests', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert("\\09912" == 'c12')
@@ -62,9 +62,9 @@ test("[test-suite] literals: assume ASCII just for tests", () => {
 });
 
 
-test("[test-suite] literals: hexadecimal escapes", () => {
+test('[test-suite] literals: hexadecimal escapes', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert("\\x00\\x05\\x10\\x1f\\x3C\\xfF\\xe8" == "\\0\\5\\16\\31\\60\\255\\232")
@@ -97,9 +97,9 @@ assert("abc\\z
 });
 
 
-test("[test-suite] literals: UTF-8 sequences", () => {
+test('[test-suite] literals: UTF-8 sequences', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert("\\u{0}\\u{00000000}\\x00\\0" == string.char(0, 0, 0, 0))
@@ -123,9 +123,9 @@ test("[test-suite] literals: UTF-8 sequences", () => {
 });
 
 
-test("[test-suite] literals: Error in escape sequences", () => {
+test('[test-suite] literals: Error in escape sequences', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function lexerror (s, err)
@@ -177,9 +177,9 @@ test("[test-suite] literals: Error in escape sequences", () => {
 });
 
 
-test("[test-suite] literals: valid characters in variable names", () => {
+test('[test-suite] literals: valid characters in variable names', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = 0, 255 do
@@ -196,9 +196,9 @@ test("[test-suite] literals: valid characters in variable names", () => {
 });
 
 
-test("[test-suite] literals: long variable names", () => {
+test('[test-suite] literals: long variable names', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         var1 = string.rep('a', 15000) .. '1'
@@ -219,9 +219,9 @@ test("[test-suite] literals: long variable names", () => {
 });
 
 
-test("[test-suite] literals: escapes", () => {
+test('[test-suite] literals: escapes', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `assert("\\n\\t" == [[\n\n\t]])
 assert([[\n\n $debug]] == "\\n $debug")
@@ -233,9 +233,9 @@ assert([[ [ ]] ~= [[ ] ]])`;
 });
 
 
-test("[test-suite] literals: long strings", () => {
+test('[test-suite] literals: long strings', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `b = "001234567890123456789012345678901234567891234567890123456789012345678901234567890012345678901234567890123456789012345678912345678901234567890123456789012345678900123456789012345678901234567890123456789123456789012345678901234567890123456789001234567890123456789012345678901234567891234567890123456789012345678901234567890012345678901234567890123456789012345678912345678901234567890123456789012345678900123456789012345678901234567890123456789123456789012345678901234567890123456789001234567890123456789012345678901234567891234567890123456789012345678901234567890012345678901234567890123456789012345678912345678901234567890123456789012345678900123456789012345678901234567890123456789123456789012345678901234567890123456789001234567890123456789012345678901234567891234567890123456789012345678901234567890012345678901234567890123456789012345678912345678901234567890123456789012345678900123456789012345678901234567890123456789123456789012345678901234567890123456789"
 assert(string.len(b) == 960)
@@ -296,9 +296,9 @@ b = nil`;
 });
 
 
-test("[test-suite] literals: testing line ends", () => {
+test('[test-suite] literals: testing line ends', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `prog = [[
 a = 1        -- a comment
@@ -326,9 +326,9 @@ end`;
 });
 
 
-test("[test-suite] literals: testing comments and strings with long brackets", () => {
+test('[test-suite] literals: testing comments and strings with long brackets', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `a = [==[]=]==]
 assert(a == "]=")
@@ -356,9 +356,9 @@ error error]=]===]`;
 });
 
 
-test("[test-suite] literals: generate all strings of four of these chars", () => {
+test('[test-suite] literals: generate all strings of four of these chars', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `local x = {"=", "[", "]", "\\n"}
 local len = 4
@@ -381,9 +381,9 @@ end`;
 });
 
 
-test("[test-suite] literals: testing %q x line ends", () => {
+test('[test-suite] literals: testing %q x line ends', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local s = "a string with \\r and \\n and \\r\\n and \\n\\r"
@@ -397,9 +397,9 @@ test("[test-suite] literals: testing %q x line ends", () => {
 });
 
 
-test("[test-suite] literals: testing errors", () => {
+test('[test-suite] literals: testing errors', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not load"a = 'non-ending string")

@@ -30,8 +30,11 @@
   },
   "homepage": "https://github.com/fengari-lua/fengari#readme",
   "devDependencies": {
-    "eslint": "^9.39.2",
-    "jest": "^30.2.0"
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "babel-jest": "^30.4.1",
+    "eslint": "^5.15.1",
+    "jest": "^24.5.0"
   },
   "dependencies": {
     "readline-sync": "^1.4.10",
