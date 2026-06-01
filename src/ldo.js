@@ -9,7 +9,7 @@ import { Dyndata, luaY_parser } from './lparser.js';
 import { EXTRA_STACK, luaE_freeCI, luaE_extendCI, CIST_LUA, CIST_HOOKED, CIST_TAIL, CIST_YPCALL, CIST_OAH } from './lstate.js';
 import { luaS_newliteral } from './lstring.js';
 import { luaT_gettmbyobj, TMS } from './ltm.js';
-import { LUAI_MAXSTACK } from './luaconf.js';
+import { LUAI_MAXSTACK } from './common.js';
 import { luaU_undump } from './lundump.js';
 import { luaV_execute, luaV_finishOp } from './lvm.js';
 import { MBuffer } from './lzio.js';

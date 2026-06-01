@@ -1,29 +1,27 @@
-"use strict";
-
-const lua     = require('../src/lua.js');
-const lauxlib = require('../src/lauxlib.js');
-const lualib  = require('../src/lualib.js');
-const {to_luastring} = require("../src/fengaricore.js");
+import { LUA_OK, lua_call, lua_isinteger, lua_tointeger, lua_isnumber, lua_tojsstring, lua_isstring } from '../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
+import { luaL_openlibs } from '../src/lualib.js';
+import { to_luastring } from "../src/fengaricore.js";
 
 test('os.time', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return os.time()
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_isinteger(L, -1)).toBe(true);
+    expect(lua_isinteger(L, -1)).toBe(true);
 });
 
 
 test('os.time (with format)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -34,18 +32,18 @@ test('os.time (with format)', () => {
         })
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tointeger(L, -1))
+    expect(lua_tointeger(L, -1))
         .toBe(new Date(2015, 1, 8, 12, 0, 0, 0).getTime() / 1000);
 });
 
 
 test('os.difftime', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -54,17 +52,17 @@ test('os.difftime', () => {
         return os.difftime(t2, t1)
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_isnumber(L, -1)).toBe(true);
+    expect(lua_isnumber(L, -1)).toBe(true);
 });
 
 
 test('os.date', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -75,17 +73,17 @@ test('os.date', () => {
         }))
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("2015-02-08");
+    expect(lua_tojsstring(L, -1)).toBe("2015-02-08");
 });
 
 
 test('os.date normalisation', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -96,17 +94,17 @@ test('os.date normalisation', () => {
         }))
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("2013-11-30");
+    expect(lua_tojsstring(L, -1)).toBe("2013-11-30");
 });
 
 
 test('os.time normalisation of table', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -122,14 +120,14 @@ test('os.time normalisation of table', () => {
         assert(t.wday == 3, "correct wday")
         assert(t.yday == 51, "correct yday")
     `;
-    lualib.luaL_openlibs(L);
-    expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+    lua_call(L, 0, 0);
 });
 
 
 test('os.setlocale', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -139,24 +137,24 @@ test('os.setlocale', () => {
         assert("C" == os.setlocale("POSIX"))
         assert(nil == os.setlocale("any_other_locale"))
     `;
-    lualib.luaL_openlibs(L);
-    expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+    lua_call(L, 0, 0);
 });
 
 
 test('os.getenv', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return os.getenv('PATH')
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_isstring(L, -1)).toBe(true);
+    expect(lua_isstring(L, -1)).toBe(true);
 });

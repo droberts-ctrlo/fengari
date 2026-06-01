@@ -1,13 +1,11 @@
-"use strict";
-
-const lua = require('../src/lua.js');
-const lauxlib = require('../src/lauxlib.js');
-const lualib = require('../src/lualib.js');
-const lstate = require('../src/lstate.js');
-const {to_luastring} = require("../src/fengaricore.js");
+import { LUA_OK, lua_call, lua_tonumber, lua_tojsstring, lua_toboolean, lua_tothread } from '../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
+import { luaL_openlibs } from '../src/lualib.js';
+import { lua_State } from '../src/lstate.js';
+import { to_luastring } from "../src/fengaricore.js";
 
 test('coroutine.create, coroutine.yield, coroutine.resume', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -22,18 +20,18 @@ test('coroutine.create, coroutine.yield, coroutine.resume', () => {
         return pow
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tonumber(L, -1))
+    expect(lua_tonumber(L, -1))
         .toBe(625);
 });
 
 
 test('coroutine.status', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -54,21 +52,21 @@ test('coroutine.status', () => {
         return s1, s2
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -2))
+    expect(lua_tojsstring(L, -2))
         .toBe("suspended");
 
-    expect(lua.lua_tojsstring(L, -1))
+    expect(lua_tojsstring(L, -1))
         .toBe("dead");
 });
 
 
 test('coroutine.isyieldable', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -81,18 +79,18 @@ test('coroutine.isyieldable', () => {
         return yieldable, coroutine.isyieldable()
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_toboolean(L, -2)).toBe(true);
-    expect(lua.lua_toboolean(L, -1)).toBe(false);
+    expect(lua_toboolean(L, -2)).toBe(true);
+    expect(lua_toboolean(L, -1)).toBe(false);
 });
 
 
 test('coroutine.running', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -107,18 +105,18 @@ test('coroutine.running', () => {
         return running, ismain
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tothread(L, -2)).toBeInstanceOf(lstate.lua_State);
-    expect(lua.lua_toboolean(L, -1)).toBe(false);
+    expect(lua_tothread(L, -2)).toBeInstanceOf(lua_State);
+    expect(lua_toboolean(L, -1)).toBe(false);
 });
 
 
 test('coroutine.wrap', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -133,11 +131,11 @@ test('coroutine.wrap', () => {
         return pow
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tonumber(L, -1))
+    expect(lua_tonumber(L, -1))
         .toBe(625);
 });

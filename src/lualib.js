@@ -1,5 +1,6 @@
 export { luaL_openlibs } from './linit.js';
-export { luaopen_io } from "./liolib.js";
+import { luaopen_io } from "./liolib.js";
+export { luaopen_io };
 export { luaopen_table } from "./ltablib.js";
 export { luaopen_coroutine } from "./lcorolib.js";
 export { luaopen_os } from "./loslib.js";
@@ -17,7 +18,7 @@ export { _LUA_VERSUFFIX as LUA_VERSUFFIX };
 
 export function lua_assert(c) { }
 
-export const luaopen_base = luaopen_base;
+export { luaopen_base } from "./lbaselib.js";
 
 const LUA_COLIBNAME = "coroutine";
 const _LUA_COLIBNAME = LUA_COLIBNAME;

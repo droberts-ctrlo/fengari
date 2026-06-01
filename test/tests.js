@@ -1,18 +1,16 @@
-"use strict";
-
-const lua     = require("../src/lua.js");
-const lauxlib = require("../src/lauxlib.js");
-const {to_luastring} = require("../src/fengaricore.js");
+import { LUA_OK, lua_tojsstring, lua_dump } from "../src/lua.js";
+import { luaL_newstate, luaL_loadstring } from "../src/lauxlib.js";
+import { to_luastring } from "../src/fengaricore.js";
 
 const toByteCode = function(luaCode) {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) !== lua.LUA_OK)
-        throw Error(lua.lua_tojsstring(L, -1));
+    if (luaL_loadstring(L, to_luastring(luaCode)) !== LUA_OK)
+        throw Error(lua_tojsstring(L, -1));
 
     let b = [];
-    if (lua.lua_dump(L, function(L, b, size, B) {
+    if (lua_dump(L, function(L, b, size, B) {
         B.push(...b.slice(0, size));
         return 0;
     }, b, false) !== 0)
@@ -20,4 +18,5 @@ const toByteCode = function(luaCode) {
     return Uint8Array.from(b);
 };
 
-module.exports.toByteCode = toByteCode;
+const _toByteCode = toByteCode;
+export { _toByteCode as toByteCode };

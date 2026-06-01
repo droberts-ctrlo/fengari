@@ -1,20 +1,19 @@
 #!/usr/bin/env node
-"use strict";
 
-const lua     = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib  = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 let luaCode = `
     a = "debug me"
     debug.debug()
 `, L;
 
-L = lauxlib.luaL_newstate();
+L = luaL_newstate();
 
-lualib.luaL_openlibs(L);
+luaL_openlibs(L);
 
-lauxlib.luaL_loadstring(L, to_luastring(luaCode));
+luaL_loadstring(L, to_luastring(luaCode));
 
-lua.lua_call(L, 0, 0);
+lua_call(L, 0, 0);

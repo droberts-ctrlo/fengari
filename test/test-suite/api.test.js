@@ -1,11 +1,9 @@
-"use strict";
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
-
-const ltests = require('./ltests.js');
+import { luaopen_tests } from './ltests.js';
 
 // TODO: a lot of gc related tests are skipped
 // TODO: io.read is used in several tests, uncomment them when it's implemented
@@ -27,23 +25,23 @@ const prefix = `
 `;
 
 test("[test-suite] api: registry", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         a = T.testC("pushvalue R; return 1")
         assert(a == debug.getregistry())
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: absindex", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -52,16 +50,16 @@ test("[test-suite] api: absindex", () => {
         assert(T.testC("settop 10; absindex 1; return 1") == 1)
         assert(T.testC("settop 10; absindex R; return 1") < -10)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing alignment", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -77,16 +75,16 @@ test("[test-suite] api: testing alignment", () => {
         a,b,c = f()
         assert(a == 2 and b == 3 and not c)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: test that all trues are equal", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -130,16 +128,16 @@ test("[test-suite] api: test that all trues are equal", () => {
         t = pack(T.testC("copy -3 -1; return *", 2, 3, 4, 5))
         tcheck(t, {n=4,2,3,4,3})
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing 'rotate'", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -166,16 +164,16 @@ test("[test-suite] api: testing 'rotate'", () => {
           tcheck(t, {10, 20, 30, 40})
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing non-function message handlers", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -207,16 +205,16 @@ test("[test-suite] api: testing non-function message handlers", () => {
         t = pack(T.testC("concat 5; return *", "alo", 2, 3, "joao", 12))
         tcheck(t, {n=1,"alo23joao12"})
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing MULTRET", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -224,16 +222,16 @@ test("[test-suite] api: testing MULTRET", () => {
              function (a,b) return 1,2,3,4,a,b end, "alo", "joao"))
         tcheck(t, {n=6,1,2,3,4,"alo", "joao"})
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: test returning more results than fit in the caller stack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -245,16 +243,16 @@ test("[test-suite] api: test returning more results than fit in the caller stack
           assert(b == "10")
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing globals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -268,16 +266,16 @@ test("[test-suite] api: testing globals", () => {
         ]]}
         assert(a[2] == 14 and a[3] == "a31" and a[4] == nil and _G.a == "a31")
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing arith", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -314,32 +312,32 @@ test("[test-suite] api: testing arith", () => {
         assert(T.testC("arith _; arith +; arith %; return 1", b, a, c)[1] ==
                        8 % (4 + (-3)*2))
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: errors in arithmetic", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         checkerr("divide by zero", T.testC, "arith \\\\", 10, 0)
         checkerr("%%0", T.testC, "arith %", 10, 0)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing lessthan and lessequal", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -351,16 +349,16 @@ test("[test-suite] api: testing lessthan and lessequal", () => {
         assert(not T.testC("compare LT 2 -3, return 1", "4", "2", "2", "3", "2", "2"))
         assert(not T.testC("compare LT -3 2, return 1", "3", "2", "2", "4", "2", "2"))
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: non-valid indices produce false", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -382,16 +380,16 @@ test("[test-suite] api: non-valid indices produce false", () => {
         a,b = T.testC("compare LE 5 -6, return 2", a1, 2, 2, a1, 2, 20)
         assert(a == 20 and b == true)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing length", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -421,16 +419,16 @@ test("[test-suite] api: testing length", () => {
         ]], t)
         assert(a == print and c == 1)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing __concat", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -451,16 +449,16 @@ test("[test-suite] api: testing __concat", () => {
         -- concat with 1 element
         assert(T.testC("concat 1; return 1", "xuxu") == "xuxu")
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing lua_is", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -494,16 +492,16 @@ test("[test-suite] api: testing lua_is", () => {
         assert(count(io.stdin) == 1)
         assert(count(nil, 15) == 100)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing lua_to...", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -543,15 +541,15 @@ test("[test-suite] api: testing lua_to...", () => {
         a = to("tocfunction", math.deg)
         assert(a(3) == math.deg(3) and a == math.deg)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 test("[test-suite] api: testing panic function", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -590,16 +588,16 @@ test("[test-suite] api: testing panic function", () => {
 
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing deep JS stack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -634,16 +632,16 @@ test.skip("[test-suite] api: testing deep JS stack", () => {
         assert(next(t) == nil)
         prog, g, t = nil
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing errors", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -665,16 +663,16 @@ test("[test-suite] api: testing errors", () => {
         check3("%.", T.testC("loadfile 2; return *", "."))
         check3("xxxx", T.testC("loadfile 2; return *", "xxxx"))
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: test errors in non protected threads", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -691,16 +689,16 @@ test("[test-suite] api: test errors in non protected threads", () => {
           checkerrnopro("getglobal 'f'; call 0 0;", "stack overflow")
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing table access", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -742,16 +740,16 @@ test("[test-suite] api: testing table access", () => {
         assert(a[b] == 19)
 
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing getfield/setfield with long keys", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -770,16 +768,16 @@ test("[test-suite] api: testing getfield/setfield with long keys", () => {
           _012345678901234567890123456789012345678901234567890123456789 = nil
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing next", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -792,16 +790,16 @@ test("[test-suite] api: testing next", () => {
         t = pack(T.testC("next; pop 1; next; return *", a, nil))
         tcheck(t, {n=1,a})
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing upvalues", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -820,16 +818,16 @@ test("[test-suite] api: testing upvalues", () => {
           -- T.checkmemory()
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing absent upvalues from JS-function pointers", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -844,16 +842,16 @@ test("[test-suite] api: testing absent upvalues from JS-function pointers", () =
         T.upvalue(f, 2, "xuxu")
         assert(T.upvalue(f, 2) == "xuxu")
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: large closures", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -869,16 +867,16 @@ test("[test-suite] api: large closures", () => {
           assert(not A("isnil U256; return 1"))
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing get/setuservalue", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -904,16 +902,16 @@ test("[test-suite] api: testing get/setuservalue", () => {
         -- collectgarbage()   -- number should not be a problem for collector
         assert(debug.getuservalue(b) == 134)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing get/setuservalue", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -923,16 +921,16 @@ test.skip("[test-suite] api: testing get/setuservalue", () => {
         T.gcstate("pause")  -- complete collection
         assert(debug.getuservalue(b).x == 100)  -- uvalue should be there
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: long chain of userdata", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -948,16 +946,16 @@ test.skip("[test-suite] api: long chain of userdata", () => {
         assert(debug.getuservalue(b).x == 100)
         b = nil
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: reuse of references", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1008,16 +1006,16 @@ test.skip("[test-suite] api: reuse of references", () => {
 
         assert(type(T.getref(a)) == 'table')
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: collect in cl the `val' of all collected userdata", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1124,16 +1122,16 @@ test.skip("[test-suite] api: collect in cl the `val' of all collected userdata",
         collectgarbage()
         assert(#cl == 1 and cl[1] == x)   -- old 'x' must be collected
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: test whether udate collection frees memory in the right time", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1168,16 +1166,16 @@ test.skip("[test-suite] api: test whether udate collection frees memory in the r
           collectgarbage("restart")
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing lua_equal", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1188,16 +1186,16 @@ test("[test-suite] api: testing lua_equal", () => {
         assert(not T.testC("compare EQ 2 3; return 1"))
         assert(not T.testC("compare EQ 2 3; return 1", 3))
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing lua_equal with fallbacks", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1218,16 +1216,16 @@ test("[test-suite] api: testing lua_equal with fallbacks", () => {
           assert(f(10) ~= f(10))
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing changing hooks during hooks", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1252,16 +1250,16 @@ test("[test-suite] api: testing changing hooks during hooks", () => {
         assert(t[5] == "line" and t[6] == line + 2)
         assert(t[7] == nil)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing errors during GC", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1292,16 +1290,16 @@ test.skip("[test-suite] api: testing errors during GC", () => {
           assert(A == 10)  -- number of normal collections
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: test for userdata vals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1315,16 +1313,16 @@ test("[test-suite] api: test for userdata vals", () => {
           assert(type(tostring(a[1])) == "string")
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing multiple states", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1374,16 +1372,16 @@ test("[test-suite] api: testing multiple states", () => {
 
         T.closestate(L1)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing memory limits", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1393,11 +1391,11 @@ test.skip("[test-suite] api: testing memory limits", () => {
         checkerr("not enough memory", load"local a={}; for i=1,100000 do a[i]=i end")
         T.totalmem(0)          -- restore high limit
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
@@ -1429,37 +1427,37 @@ const memprefix = `
 
 
 test.skip("[test-suite] api: testing memory errors when creating a new state", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         b = testamem("state creation", T.newstate)
         T.closestate(b);  -- close new state
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 test("[test-suite] api: get main thread from registry (at index LUA_RIDX_MAINTHREAD == 1)", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         mt = T.testC("rawgeti R 1; return 1")
         assert(type(mt) == "thread" and coroutine.running() == mt)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 test.skip("[test-suite] api: test thread creation after stressing GC", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1478,16 +1476,16 @@ test.skip("[test-suite] api: test thread creation after stressing GC", () => {
           return T.doonnewstack("x=1") == 0  -- try to create thread
         end)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing memory x compiler", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1495,16 +1493,16 @@ test.skip("[test-suite] api: testing memory x compiler", () => {
           return load("x=1")  -- try to do load a string
         end)
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: testing memory x dofile", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1529,16 +1527,16 @@ test.skip("[test-suite] api: testing memory x dofile", () => {
         assert(os.remove(t))
         assert(_G.a == "aaax")
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test.skip("[test-suite] api: other generic tests", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1600,16 +1598,16 @@ test.skip("[test-suite] api: other generic tests", () => {
           end)
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + memprefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing some auxlib functions", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1625,16 +1623,16 @@ test("[test-suite] api: testing some auxlib functions", () => {
         assert(gsub("...", ".", "/.") == "/././.")
         assert(gsub("...", "...", "") == "")
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] api: testing luaL_newmetatable", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1685,9 +1683,9 @@ test("[test-suite] api: testing luaL_newmetatable", () => {
           r.xuxu = nil; r.xuxu1 = nil
         end
     `;
-    lualib.luaL_openlibs(L);
-    ltests.luaopen_tests(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    luaopen_tests(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

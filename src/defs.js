@@ -2,7 +2,9 @@
  * Fengari specific string conversion functions
  */
 
-export { LUAI_MAXSTACK } from './luaconf.js';
+import { LUAI_MAXSTACK } from './common.js';
+
+export { LUAI_MAXSTACK };
 
 export const luastring_from = (typeof Uint8Array.from === "function") ?
     Uint8Array.from.bind(Uint8Array) :

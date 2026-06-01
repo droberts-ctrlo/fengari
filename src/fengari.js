@@ -10,10 +10,10 @@ Copyright © 1994–2017 Lua.org, PUC-Rio.
 
 export { FENGARI_AUTHORS, FENGARI_COPYRIGHT, FENGARI_RELEASE, FENGARI_VERSION, FENGARI_VERSION_MAJOR, FENGARI_VERSION_MINOR, FENGARI_VERSION_NUM, FENGARI_VERSION_RELEASE, luastring_eq, luastring_indexOf, luastring_of, to_jsstring, to_luastring, to_uristring } from "./fengaricore.js";
 
-import luaconf from './luaconf.js';
-import lua from './lua.js';
-import lauxlib from './lauxlib.js';
-import lualib from './lualib.js';
+import * as luaconf from './luaconf.js';
+import * as lua from './lua.js';
+import * as lauxlib from './lauxlib.js';
+import * as lualib from './lualib.js';
 
 const _luaconf = luaconf;
 export { _luaconf as luaconf };

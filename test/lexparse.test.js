@@ -1,14 +1,12 @@
-"use strict";
-
-const lua     = require('../src/lua.js');
-const lauxlib = require('../src/lauxlib.js');
-const lualib  = require('../src/lualib.js');
-const lstring = require("../src/lstring.js");
-const {to_luastring} = require("../src/fengaricore.js");
+import { lua_load, lua_call, lua_tojsstring, lua_type, LUA_TTABLE, lua_tointeger, lua_toboolean, lua_tonumber, lua_topointer } from '../src/lua.js';
+import { luaL_newstate } from '../src/lauxlib.js';
+import { luaL_openlibs } from '../src/lualib.js';
+import { luaS_hash } from "../src/lstring.js";
+import { to_luastring } from "../src/fengaricore.js";
 
 // Roughly the same tests as test/lvm.js to cover all opcodes
 test('LOADK, RETURN', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -16,23 +14,23 @@ test('LOADK, RETURN', () => {
         return a
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello world");
+    expect(lua_tojsstring(L, -1)).toBe("hello world");
 });
 
 
 test('MOVE', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -41,23 +39,23 @@ test('MOVE', () => {
         return b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello world");
+    expect(lua_tojsstring(L, -1)).toBe("hello world");
 });
 
 
 test('Binary op', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -66,15 +64,15 @@ test('Binary op', () => {
         return a + b, a - b, a * b, a / b, a % b, a^b, a // b, a & b, a | b, a ~ b, a << b, a >> b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
     expect(L.stack.slice(L.top - 12, L.top).map(e => e.value))
@@ -83,7 +81,7 @@ test('Binary op', () => {
 
 
 test('Unary op, LOADBOOL', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -92,15 +90,15 @@ test('Unary op, LOADBOOL', () => {
         return -a, not b, ~a
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
     expect(L.stack.slice(L.top - 3, L.top).map(e => e.value))
@@ -109,7 +107,7 @@ test('Unary op, LOADBOOL', () => {
 
 
 test('NEWTABLE', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -117,23 +115,23 @@ test('NEWTABLE', () => {
         return a
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_type(L, -1)).toBe(lua.LUA_TTABLE);
+    expect(lua_type(L, -1)).toBe(LUA_TTABLE);
 });
 
 
 test('CALL', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -146,22 +144,22 @@ test('CALL', () => {
         return c
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tointeger(L, -1)).toBe(3);
+    expect(lua_tointeger(L, -1)).toBe(3);
 });
 
 test('Multiple return', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -178,15 +176,15 @@ test('Multiple return', () => {
         return c, d, e
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
     expect(L.stack.slice(L.top - 3, L.top).map(e => e.value))
@@ -195,7 +193,7 @@ test('Multiple return', () => {
 
 
 test('TAILCALL', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -206,23 +204,23 @@ test('TAILCALL', () => {
         return f(1,2)
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tointeger(L, -1)).toBe(3);
+    expect(lua_tointeger(L, -1)).toBe(3);
 });
 
 
 test('VARARG', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -233,15 +231,15 @@ test('VARARG', () => {
         return f(1,2,3)
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
     expect(L.stack.slice(L.top - 3, L.top).map(e => e.value))
@@ -250,7 +248,7 @@ test('VARARG', () => {
 
 
 test('LE, JMP', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -259,23 +257,23 @@ test('LE, JMP', () => {
         return a >= b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_toboolean(L, -1)).toBe(true);
+    expect(lua_toboolean(L, -1)).toBe(true);
 });
 
 
 test('LT', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -284,23 +282,23 @@ test('LT', () => {
         return a > b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_toboolean(L, -1)).toBe(false);
+    expect(lua_toboolean(L, -1)).toBe(false);
 });
 
 
 test('EQ', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -309,23 +307,23 @@ test('EQ', () => {
         return a == b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_toboolean(L, -1)).toBe(true);
+    expect(lua_toboolean(L, -1)).toBe(true);
 });
 
 
 test('TESTSET (and)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -335,23 +333,23 @@ test('TESTSET (and)', () => {
         return a and b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -1)).toBe("hello");
 });
 
 
 test('TESTSET (or)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -361,23 +359,23 @@ test('TESTSET (or)', () => {
         return a or b
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -1)).toBe("hello");
 });
 
 
 test('TEST (false)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -391,23 +389,23 @@ test('TEST (false)', () => {
         return "goodbye"
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("goodbye");
+    expect(lua_tojsstring(L, -1)).toBe("goodbye");
 });
 
 
 test('FORPREP, FORLOOP (int)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -420,23 +418,23 @@ test('FORPREP, FORLOOP (int)', () => {
         return total
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tointeger(L, -1)).toBe(55);
+    expect(lua_tointeger(L, -1)).toBe(55);
 });
 
 
 test('FORPREP, FORLOOP (float)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -449,23 +447,23 @@ test('FORPREP, FORLOOP (float)', () => {
         return total
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tonumber(L, -1)).toBe(60.5);
+    expect(lua_tonumber(L, -1)).toBe(60.5);
 });
 
 
 test('SETTABLE, GETTABLE', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -477,26 +475,26 @@ test('SETTABLE, GETTABLE', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_topointer(L, -1).strong.get(1).value.jsstring())
+    expect(lua_topointer(L, -1).strong.get(1).value.jsstring())
         .toBe("hello");
-    expect(lua.lua_topointer(L, -1).strong.get(lstring.luaS_hash(to_luastring("two"))).value.jsstring())
+    expect(lua_topointer(L, -1).strong.get(luaS_hash(to_luastring("two"))).value.jsstring())
         .toBe("world");
 });
 
 
 test('SETUPVAL, GETUPVAL', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -511,23 +509,23 @@ test('SETUPVAL, GETUPVAL', () => {
         return f()
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("world");
+    expect(lua_tojsstring(L, -1)).toBe("world");
 });
 
 
 test('SETTABUP, GETTABUP', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -539,26 +537,26 @@ test('SETTABUP, GETTABUP', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_topointer(L, -1).strong.get(1).value.jsstring())
+    expect(lua_topointer(L, -1).strong.get(1).value.jsstring())
         .toBe("hello");
-    expect(lua.lua_topointer(L, -1).strong.get(lstring.luaS_hash(to_luastring("two"))).value.jsstring())
+    expect(lua_topointer(L, -1).strong.get(luaS_hash(to_luastring("two"))).value.jsstring())
         .toBe("world");
 });
 
 
 test('SELF', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -572,23 +570,23 @@ test('SELF', () => {
         return t:get()
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -1)).toBe("hello");
 });
 
 
 test('SETLIST', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -597,24 +595,24 @@ test('SETLIST', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect([...lua.lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).sort())
+    expect([...lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).sort())
         .toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 });
 
 
 test('Variable SETLIST', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -627,23 +625,23 @@ test('Variable SETLIST', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect([...lua.lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).sort())
+    expect([...lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).sort())
         .toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 });
 
 test('Long SETLIST', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -652,24 +650,24 @@ test('Long SETLIST', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect([...lua.lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).reverse())
+    expect([...lua_topointer(L, -1).strong.entries()].map(e => e[1].value.value).reverse())
         .toEqual([1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5]);
 });
 
 
 test('TFORCALL, TFORLOOP', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -694,23 +692,23 @@ test('TFORCALL, TFORLOOP', () => {
         return r
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tonumber(L, -1)).toBe(6);
+    expect(lua_tonumber(L, -1)).toBe(6);
 });
 
 
 test('LEN', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -721,41 +719,41 @@ test('LEN', () => {
         return #t, #t2, #s
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tonumber(L, -1)).toBe(5);
-    expect(lua.lua_tonumber(L, -2)).toBe(3);
-    expect(lua.lua_tonumber(L, -3)).toBe(0);
+    expect(lua_tonumber(L, -1)).toBe(5);
+    expect(lua_tonumber(L, -2)).toBe(3);
+    expect(lua_tonumber(L, -3)).toBe(0);
 });
 
 
 test('CONCAT', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return "hello " .. 2 .. " you"
     `;
     {
-        lualib.luaL_openlibs(L);
+        luaL_openlibs(L);
         let reader = function(L, data) {
             let code = luaCode ? luaCode.trim() : null;
             luaCode = null;
             return code ? to_luastring(code) : null;
         };
-        lua.lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
+        lua_load(L, reader, luaCode, to_luastring("test"), to_luastring("text"));
 
-        lua.lua_call(L, 0, -1);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("hello 2 you");
+    expect(lua_tojsstring(L, -1)).toBe("hello 2 you");
 });
