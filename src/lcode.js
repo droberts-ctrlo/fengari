@@ -1,63 +1,18 @@
-import * as defs from './defs.js';
-import {
-    LUA_MULTRET,
-    LUA_OPADD,
-    LUA_OPBAND,
-    LUA_OPBNOT,
-    LUA_OPBOR,
-    LUA_OPBXOR,
-    LUA_OPDIV,
-    LUA_OPIDIV,
-    LUA_OPMOD,
-    LUA_OPSHL,
-    LUA_OPSHR,
-    LUA_OPUNM,
-    to_luastring,
-    LUA_TBOOLEAN,
-    LUA_TLIGHTUSERDATA,
-    LUA_TLNGSTR,
-    LUA_TNIL,
-    LUA_TNUMFLT,
-    LUA_TNUMINT,
-    LUA_TTABLE
-} from './defs.js';
-import { lua_assert } from './llimits.js';
+"use strict";
+
+import { LUA_MULTRET, LUA_OPADD, LUA_OPBAND, LUA_OPBNOT, LUA_OPBOR, LUA_OPBXOR, LUA_OPDIV, LUA_OPIDIV, LUA_OPMOD, LUA_OPSHL, LUA_OPSHR, LUA_OPUNM, constant_types, to_luastring } from './defs.js';
+import { lua_assert } from "./llimits.js";
 import { luaX_syntaxerror } from './llex.js';
-import { TValue, luaO_arith } from './lobject.js';
-import {
-    OpCodesI,
-    SETARG_A,
-    SETARG_B,
-    MAXARG_sBx,
-    SETARG_sBx,
-    testTMode,
-    NO_REG,
-    CREATE_ABC,
-    getOpMode,
-    iABC,
-    getBMode,
-    OpArgN,
-    getCMode,
-    MAXARG_A,
-    MAXARG_B,
-    MAXARG_C,
-    iABx,
-    iAsBx,
-    MAXARG_Bx,
-    CREATE_ABx,
-    MAXARG_Ax,
-    CREATE_Ax,
-    ISK,
-    SETARG_C,
-    MAXINDEXRK,
-    RKASK,
-    LFIELDS_PER_FLUSH
-} from './lopcodes.js';
+import { TValue as _TValue, luaO_arith } from './lobject.js';
+import { OpCodesI as _OpCodesI, SETARG_A, SETARG_B, MAXARG_sBx, SETARG_sBx, testTMode, NO_REG, CREATE_ABC, getOpMode, iABC, getBMode, OpArgN, getCMode, MAXARG_A, MAXARG_B, MAXARG_C, iABx, iAsBx, MAXARG_Bx, CREATE_ABx, MAXARG_Ax, CREATE_Ax, ISK, SETARG_C, MAXINDEXRK, RKASK, LFIELDS_PER_FLUSH } from './lopcodes.js';
 import { expkind, vkisinreg, expdesc } from './lparser.js';
 import { luaH_get, luaH_setfrom } from './ltable.js';
 import { tointeger } from './lvm.js';
 
-const constant_types = {
+const OpCodesI = _OpCodesI;
+const TValue = _TValue;
+
+const {
     LUA_TBOOLEAN,
     LUA_TLIGHTUSERDATA,
     LUA_TLNGSTR,
@@ -65,7 +20,7 @@ const constant_types = {
     LUA_TNUMFLT,
     LUA_TNUMINT,
     LUA_TTABLE
-}
+} = constant_types;
 
 /* Maximum number of registers in a Lua function (must fit in 8 bits) */
 const MAXREGS = 255;
@@ -188,7 +143,7 @@ const fixjump = function (fs, pc, dest) {
     let offset = dest - (pc + 1);
     lua_assert(dest !== NO_JUMP);
     if (Math.abs(offset) > MAXARG_sBx)
-        luaX_syntaxerror(fs.ls, to_luastring('control structure too long', true));
+        luaX_syntaxerror(fs.ls, to_luastring("control structure too long", true));
     SETARG_sBx(jmp, offset);
 };
 
@@ -433,7 +388,7 @@ const luaK_checkstack = function (fs, n) {
     let newstack = fs.freereg + n;
     if (newstack > fs.f.maxstacksize) {
         if (newstack >= MAXREGS)
-            luaX_syntaxerror(fs.ls, to_luastring('function or expression needs too many registers', true));
+            luaX_syntaxerror(fs.ls, to_luastring("function or expression needs too many registers", true));
         fs.f.maxstacksize = newstack;
     }
 };
@@ -1242,6 +1197,92 @@ const luaK_setlist = function (fs, base, nelems, tostore) {
         codeextraarg(fs, c);
     }
     else
-        luaX_syntaxerror(fs.ls, to_luastring('constructor too long', true));
+        luaX_syntaxerror(fs.ls, to_luastring("constructor too long", true));
     fs.freereg = base + 1;  /* free registers with list values */
 };
+
+
+const _BinOpr = BinOpr;
+export { _BinOpr as BinOpr };
+const _NO_JUMP = NO_JUMP;
+export { _NO_JUMP as NO_JUMP };
+const _UnOpr = UnOpr;
+export { _UnOpr as UnOpr };
+const _getinstruction = getinstruction;
+export { _getinstruction as getinstruction };
+const _luaK_checkstack = luaK_checkstack;
+export { _luaK_checkstack as luaK_checkstack };
+const _luaK_code = luaK_code;
+export { _luaK_code as luaK_code };
+const _luaK_codeABC = luaK_codeABC;
+export { _luaK_codeABC as luaK_codeABC };
+const _luaK_codeABx = luaK_codeABx;
+export { _luaK_codeABx as luaK_codeABx };
+const _luaK_codeAsBx = luaK_codeAsBx;
+export { _luaK_codeAsBx as luaK_codeAsBx };
+const _luaK_codek = luaK_codek;
+export { _luaK_codek as luaK_codek };
+const _luaK_concat = luaK_concat;
+export { _luaK_concat as luaK_concat };
+const _luaK_dischargevars = luaK_dischargevars;
+export { _luaK_dischargevars as luaK_dischargevars };
+const _luaK_exp2RK = luaK_exp2RK;
+export { _luaK_exp2RK as luaK_exp2RK };
+const _luaK_exp2anyreg = luaK_exp2anyreg;
+export { _luaK_exp2anyreg as luaK_exp2anyreg };
+const _luaK_exp2anyregup = luaK_exp2anyregup;
+export { _luaK_exp2anyregup as luaK_exp2anyregup };
+const _luaK_exp2nextreg = luaK_exp2nextreg;
+export { _luaK_exp2nextreg as luaK_exp2nextreg };
+const _luaK_exp2val = luaK_exp2val;
+export { _luaK_exp2val as luaK_exp2val };
+const _luaK_fixline = luaK_fixline;
+export { _luaK_fixline as luaK_fixline };
+const _luaK_getlabel = luaK_getlabel;
+export { _luaK_getlabel as luaK_getlabel };
+const _luaK_goiffalse = luaK_goiffalse;
+export { _luaK_goiffalse as luaK_goiffalse };
+const _luaK_goiftrue = luaK_goiftrue;
+export { _luaK_goiftrue as luaK_goiftrue };
+const _luaK_indexed = luaK_indexed;
+export { _luaK_indexed as luaK_indexed };
+const _luaK_infix = luaK_infix;
+export { _luaK_infix as luaK_infix };
+const _luaK_intK = luaK_intK;
+export { _luaK_intK as luaK_intK };
+const _luaK_jump = luaK_jump;
+export { _luaK_jump as luaK_jump };
+const _luaK_jumpto = luaK_jumpto;
+export { _luaK_jumpto as luaK_jumpto };
+const _luaK_nil = luaK_nil;
+export { _luaK_nil as luaK_nil };
+const _luaK_numberK = luaK_numberK;
+export { _luaK_numberK as luaK_numberK };
+const _luaK_patchclose = luaK_patchclose;
+export { _luaK_patchclose as luaK_patchclose };
+const _luaK_patchlist = luaK_patchlist;
+export { _luaK_patchlist as luaK_patchlist };
+const _luaK_patchtohere = luaK_patchtohere;
+export { _luaK_patchtohere as luaK_patchtohere };
+const _luaK_posfix = luaK_posfix;
+export { _luaK_posfix as luaK_posfix };
+const _luaK_prefix = luaK_prefix;
+export { _luaK_prefix as luaK_prefix };
+const _luaK_reserveregs = luaK_reserveregs;
+export { _luaK_reserveregs as luaK_reserveregs };
+const _luaK_ret = luaK_ret;
+export { _luaK_ret as luaK_ret };
+const _luaK_self = luaK_self;
+export { _luaK_self as luaK_self };
+const _luaK_setlist = luaK_setlist;
+export { _luaK_setlist as luaK_setlist };
+const _luaK_setmultret = luaK_setmultret;
+export { _luaK_setmultret as luaK_setmultret };
+const _luaK_setoneret = luaK_setoneret;
+export { _luaK_setoneret as luaK_setoneret };
+const _luaK_setreturns = luaK_setreturns;
+export { _luaK_setreturns as luaK_setreturns };
+const _luaK_storevar = luaK_storevar;
+export { _luaK_storevar as luaK_storevar };
+const _luaK_stringK = luaK_stringK;
+export { _luaK_stringK as luaK_stringK };

@@ -1,20 +1,9 @@
-import {
-    LUA_MINSTACK,
-    constant_types,
-    thread_status,
-    LUA_NUMTAGS, LUA_OK,
-    LUA_RIDX_GLOBALS,
-    LUA_RIDX_MAINTHREAD,
-    LUA_TNIL,
-    LUA_TTABLE,
-    LUA_TTHREAD
-} from "./defs.js";
-
-import * as lobject from "./lobject.js";
-import * as ldo from "./ldo.js";
-import * as lapi from "./lapi.js";
-import * as ltable from "./ltable.js";
-import * as ltm from "./ltm.js";
+import { LUA_MINSTACK, LUA_RIDX_GLOBALS, LUA_RIDX_MAINTHREAD, constant_types, thread_status } from './defs.js';
+import { TValue } from './lobject.js';
+import { luaD_rawrunprotected } from './ldo.js';
+import { lua_version, api_incr_top } from './lapi.js';
+import { luaH_new, luaH_setint } from './ltable.js';
+import { TMS, luaT_init } from './ltm.js';
 
 const {
     LUA_NUMTAGS,
@@ -22,11 +11,12 @@ const {
     LUA_TTABLE,
     LUA_TTHREAD
 } = constant_types;
+
 const {
     LUA_OK
-} =thread_status;
+} = thread_status;
 
-export const EXTRA_STACK = 5;
+const EXTRA_STACK = 5;
 
 const BASIC_STACK_SIZE = 2 * LUA_MINSTACK;
 
@@ -54,7 +44,7 @@ class CallInfo {
 
 }
 
-export class lua_State {
+class lua_State {
 
     constructor(g) {
         this.id = g.id_counter++;
@@ -89,11 +79,11 @@ class global_State {
         this.ids = new WeakMap();
 
         this.mainthread = null;
-        this.l_registry = new lobject.TValue(LUA_TNIL, null);
+        this.l_registry = new TValue(LUA_TNIL, null);
         this.panic = null;
         this.atnativeerror = null;
         this.version = null;
-        this.tmname = new Array(ltm.TMS.TM_N);
+        this.tmname = new Array(TMS.TM_N);
         this.mt = new Array(LUA_NUMTAGS);
     }
 
@@ -123,7 +113,7 @@ const stack_init = function (L1, L) {
     ci.callstatus = 0;
     ci.funcOff = L1.top;
     ci.func = L1.stack[L1.top];
-    L1.stack[L1.top++] = new lobject.TValue(LUA_TNIL, null);
+    L1.stack[L1.top++] = new TValue(LUA_TNIL, null);
     ci.top = L1.top + LUA_MINSTACK;
     L1.ci = ci;
 };
@@ -138,10 +128,10 @@ const freestack = function (L) {
 ** Create registry table and its predefined values
 */
 const init_registry = function (L, g) {
-    let registry = ltable.luaH_new(L);
+    let registry = luaH_new(L);
     g.l_registry.sethvalue(registry);
-    ltable.luaH_setint(registry, LUA_RIDX_MAINTHREAD, new lobject.TValue(LUA_TTHREAD, L));
-    ltable.luaH_setint(registry, LUA_RIDX_GLOBALS, new lobject.TValue(LUA_TTABLE, ltable.luaH_new(L)));
+    luaH_setint(registry, LUA_RIDX_MAINTHREAD, new TValue(LUA_TTHREAD, L));
+    luaH_setint(registry, LUA_RIDX_GLOBALS, new TValue(LUA_TTABLE, luaH_new(L)));
 };
 
 /*
@@ -152,15 +142,15 @@ const f_luaopen = function (L) {
     let g = L.l_G;
     stack_init(L, L);
     init_registry(L, g);
-    ltm.luaT_init(L);
-    g.version = lapi.lua_version(null);
+    luaT_init(L);
+    g.version = lua_version(null);
 };
 
 const lua_newthread = function (L) {
     let g = L.l_G;
     let L1 = new lua_State(g);
-    L.stack[L.top] = new lobject.TValue(LUA_TTHREAD, L1);
-    lapi.api_incr_top(L);
+    L.stack[L.top] = new TValue(LUA_TTHREAD, L1);
+    api_incr_top(L);
     L1.hookmask = L.hookmask;
     L1.basehookcount = L.basehookcount;
     L1.hook = L.hook;
@@ -178,7 +168,7 @@ const lua_newstate = function () {
     let L = new lua_State(g);
     g.mainthread = L;
 
-    if (ldo.luaD_rawrunprotected(L, f_luaopen, null) !== LUA_OK) {
+    if (luaD_rawrunprotected(L, f_luaopen, null) !== LUA_OK) {
         L = null;
     }
 
@@ -193,3 +183,31 @@ const lua_close = function (L) {
     L = L.l_G.mainthread;  /* only the main thread can be closed */
     close_state(L);
 };
+
+const _lua_State = lua_State;
+export { _lua_State as lua_State };
+const _CallInfo = CallInfo;
+export { _CallInfo as CallInfo };
+export const CIST_OAH = (1 << 0);  /* original value of 'allowhook' */
+export const CIST_LUA = (1 << 1);  /* call is running a Lua function */
+export const CIST_HOOKED = (1 << 2);  /* call is running a debug hook */
+export const CIST_FRESH = (1 << 3);  /* call is running on a fresh invocation of luaV_execute */
+export const CIST_YPCALL = (1 << 4);  /* call is a yieldable protected call */
+export const CIST_TAIL = (1 << 5);  /* call was tail called */
+export const CIST_HOOKYIELD = (1 << 6);  /* last hook called yielded */
+export const CIST_LEQ = (1 << 7);  /* using __lt for __le */
+export const CIST_FIN = (1 << 8);   /* call is running a finalizer */
+const _EXTRA_STACK = EXTRA_STACK;
+export { _EXTRA_STACK as EXTRA_STACK };
+const _lua_close = lua_close;
+export { _lua_close as lua_close };
+const _lua_newstate = lua_newstate;
+export { _lua_newstate as lua_newstate };
+const _lua_newthread = lua_newthread;
+export { _lua_newthread as lua_newthread };
+const _luaE_extendCI = luaE_extendCI;
+export { _luaE_extendCI as luaE_extendCI };
+const _luaE_freeCI = luaE_freeCI;
+export { _luaE_freeCI as luaE_freeCI };
+const _luaE_freethread = luaE_freethread;
+export { _luaE_freethread as luaE_freethread };

@@ -1,4 +1,4 @@
-import {luastring_of} from "./defs.js";
+import { luastring_of } from './defs.js';
 
 const luai_ctype_ = luastring_of(
     0x00,  /* EOZ */
@@ -65,3 +65,16 @@ const lislalpha = function(c) {
 const lislalnum = function(c) {
     return (luai_ctype_[c+1] & ((1<<ALPHABIT)|(1<<DIGITBIT))) !== 0;
 };
+
+const _lisdigit = lisdigit;
+export { _lisdigit as lisdigit };
+const _lislalnum = lislalnum;
+export { _lislalnum as lislalnum };
+const _lislalpha = lislalpha;
+export { _lislalpha as lislalpha };
+const _lisprint = lisprint;
+export { _lisprint as lisprint };
+const _lisspace = lisspace;
+export { _lisspace as lisspace };
+const _lisxdigit = lisxdigit;
+export { _lisxdigit as lisxdigit };
