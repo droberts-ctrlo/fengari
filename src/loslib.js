@@ -1,5 +1,8 @@
 "use strict";
 
+import fs from 'fs';
+import tmp from 'tmp';
+import child_process from 'child_process';
 import { LUA_TNIL, LUA_TTABLE, lua_close, lua_createtable, lua_getfield, lua_isboolean, lua_isnoneornil, lua_pop, lua_pushboolean, lua_pushfstring, lua_pushinteger, lua_pushliteral, lua_pushnil, lua_pushnumber, lua_pushstring, lua_setfield, lua_settop, lua_toboolean, lua_tointegerx } from './lua.js';
 import { luaL_Buffer, luaL_addchar, luaL_addstring, luaL_argerror, luaL_buffinit, luaL_checkinteger, luaL_checkoption, luaL_checkstring, luaL_checktype, luaL_error, luaL_execresult, luaL_fileresult, luaL_newlib, luaL_optinteger, luaL_optlstring, luaL_optstring, luaL_pushresult } from './lauxlib.js';
 import { luastring_eq, to_jsstring, to_luastring } from "./fengaricore.js";
@@ -441,9 +444,6 @@ if (typeof process === "undefined") {
     };
 } else {
     /* Only with Node */
-    const fs = require('fs');
-    const tmp = require('tmp');
-    const child_process = require('child_process');
 
     syslib.exit = function(L) {
         let status;
