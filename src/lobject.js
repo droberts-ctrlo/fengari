@@ -10,9 +10,6 @@ import { luaV_concat, luaV_imul, luaV_mod, luaV_div, luaV_shiftl, tointeger, ton
 import { MAX_INT, luai_nummod, lua_assert } from "./llimits.js";
 import { luaT_trybinTM, TMS } from './ltm.js';
 
-const LUA_TPROTO = LUA_NUMTAGS;
-const LUA_TDEADKEY = LUA_NUMTAGS + 1;
-
 const {
     LUA_NUMTAGS,
     LUA_TBOOLEAN,
@@ -32,6 +29,9 @@ const {
     LUA_TTHREAD,
     LUA_TUSERDATA
 } = constant_types;
+
+const LUA_TPROTO = LUA_NUMTAGS;
+const LUA_TDEADKEY = LUA_NUMTAGS + 1;
 
 class TValue {
 

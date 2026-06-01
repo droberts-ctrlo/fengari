@@ -1,9 +1,7 @@
-"use strict";
-
-const lua = require('../src/lua.js');
-const lauxlib = require('../src/lauxlib.js');
-const lualib = require('../src/lualib.js');
-const {to_luastring} = require("../src/fengaricore.js");
+import { LUA_OK, lua_call, lua_tojsstring, lua_topointer, lua_tointeger } from '../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
+import { luaL_openlibs } from '../src/lualib.js';
+import { to_luastring } from "../src/fengaricore.js";
 
 const inttable2array = function(t) {
     let a = [];
@@ -15,36 +13,36 @@ const inttable2array = function(t) {
 };
 
 test('table.concat', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return table.concat({1, 2, 3, 4, 5, 6, 7}, ",", 3, 5)
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -1)).toBe("3,4,5");
+    expect(lua_tojsstring(L, -1)).toBe("3,4,5");
 });
 
 
 test('table.pack', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return table.pack(1, 2, 3)
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect([...lua.lua_topointer(L, -1).strong.entries()]
+    expect([...lua_topointer(L, -1).strong.entries()]
         .filter(e => e[1].key.ttisnumber()) // Filter out the 'n' field
         .map(e => e[1].value.value).reverse()
     ).toEqual([1, 2, 3]);
@@ -52,26 +50,26 @@ test('table.pack', () => {
 
 
 test('table.unpack', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         return table.unpack({1, 2, 3, 4, 5}, 2, 4)
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tointeger(L, -3)).toBe(2);
-    expect(lua.lua_tointeger(L, -2)).toBe(3);
-    expect(lua.lua_tointeger(L, -1)).toBe(4);
+    expect(lua_tointeger(L, -3)).toBe(2);
+    expect(lua_tointeger(L, -2)).toBe(3);
+    expect(lua_tointeger(L, -1)).toBe(4);
 });
 
 
 test('table.insert', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -81,13 +79,13 @@ test('table.insert', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
     expect(
-        [...lua.lua_topointer(L, -1).strong.entries()]
+        [...lua_topointer(L, -1).strong.entries()]
             .filter(e => e[1].key.ttisnumber())
             .map(e => e[1].value.value).sort()
     ).toEqual([1, 2, 3, 4, 5]);
@@ -95,7 +93,7 @@ test('table.insert', () => {
 
 
 test('table.remove', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -105,13 +103,13 @@ test('table.remove', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
     expect(
-        [...lua.lua_topointer(L, -1).strong.entries()]
+        [...lua_topointer(L, -1).strong.entries()]
             .filter(e => e[1].key.ttisnumber())
             .map(e => e[1].value.value).sort()
     ).toEqual([1, 2, 3, 4]);
@@ -119,7 +117,7 @@ test('table.remove', () => {
 
 
 test('table.move', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -128,13 +126,13 @@ test('table.move', () => {
         return table.move(t1, 1, #t1, 3, t2)
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
     expect(
-        [...lua.lua_topointer(L, -1).strong.entries()]
+        [...lua_topointer(L, -1).strong.entries()]
             .filter(e => e[1].key.ttisnumber())
             .map(e => e[1].value.value).sort()
     ).toEqual([1, 2, 3, 4, 5, 6]);
@@ -142,7 +140,7 @@ test('table.move', () => {
 
 
 test('table.sort (<)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -151,18 +149,18 @@ test('table.sort (<)', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(inttable2array(lua.lua_topointer(L, -1)))
+    expect(inttable2array(lua_topointer(L, -1)))
         .toEqual([1, 2, 3, 4, 5]);
 });
 
 
 test('table.sort with cmp function', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -173,11 +171,11 @@ test('table.sort with cmp function', () => {
         return t
     `;
     {
-        lualib.luaL_openlibs(L);
-        expect(lauxlib.luaL_loadstring(L, to_luastring(luaCode))).toBe(lua.LUA_OK);
-        lua.lua_call(L, 0, -1);
+        luaL_openlibs(L);
+        expect(luaL_loadstring(L, to_luastring(luaCode))).toBe(LUA_OK);
+        lua_call(L, 0, -1);
     }
 
-    expect(inttable2array(lua.lua_topointer(L, -1)))
+    expect(inttable2array(lua_topointer(L, -1)))
         .toEqual([5, 4, 3, 2, 1]);
 });

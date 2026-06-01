@@ -36,7 +36,7 @@ const LUA_VDIR = LUA_VERSION_MAJOR + "." + LUA_VERSION_MINOR;
 const _LUA_VDIR = LUA_VDIR;
 export { _LUA_VDIR as LUA_VDIR };
 
-export let LUA_DIRSEP, LUA_LDIR, LUA_JSDIR, LUA_SHRDIR, LUA_PATH_DEFAULT, LUA_JSPATH_DEFAULT;
+export let LUA_DIRSEP, LUA_LDIR, LUA_JSDIR, LUA_SHRDIR, LUA_PATH_DEFAULT, LUA_JSPATH_DEFAULT, LUA_ROOT, LUA_ROOT2, LUA_LDIR2, LUA_JSDIR2;
 
 if (typeof process === "undefined") {
     LUA_DIRSEP = "/";
@@ -116,14 +116,6 @@ const LUA_MAXINTEGER = 2147483647;
 const LUA_MININTEGER = -2147483648;
 
 /*
-@@ LUAI_MAXSTACK limits the size of the Lua stack.
-** CHANGE it if you need a different limit. This limit is arbitrary;
-** its only purpose is to stop Lua from consuming unlimited stack
-** space (and to reserve some numbers for pseudo-indices).
-*/
-const LUAI_MAXSTACK = conf.LUAI_MAXSTACK || 1000000;
-
-/*
 @@ LUA_IDSIZE gives the maximum size for the description of the source
 @@ of a function in debug information.
 ** CHANGE it if you want a different size.
@@ -184,8 +176,6 @@ const ldexp = function (mantissa, exponent) {
     return result;
 };
 
-const _LUAI_MAXSTACK = LUAI_MAXSTACK;
-export { _LUAI_MAXSTACK as LUAI_MAXSTACK };
 const _LUA_COMPAT_FLOATSTRING = LUA_COMPAT_FLOATSTRING;
 export { _LUA_COMPAT_FLOATSTRING as LUA_COMPAT_FLOATSTRING };
 const _LUA_IDSIZE = LUA_IDSIZE;

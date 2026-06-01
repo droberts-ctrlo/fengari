@@ -1,9 +1,9 @@
 "use strict";
 
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 const prefix = `
     local minint = math.mininteger
@@ -53,22 +53,22 @@ const prefix = `
 `;
 
 test("[test-suite] math: int bits", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         assert(minint == 1 << (intbits - 1))
         assert(maxint == minint - 1)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: number of bits in the mantissa of a floating-point number", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -87,15 +87,15 @@ test("[test-suite] math: number of bits in the mantissa of a floating-point numb
         assert(math.type(0) == "integer" and math.type(0.0) == "float"
                and math.type("10") == nil)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: basic float notation", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -139,30 +139,30 @@ test("[test-suite] math: basic float notation", () => {
           assert(eqT(a, minint) and eqT(b, 0.0))
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: math.huge", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
         assert(math.huge > 10e30)
         assert(-math.huge < -10e30)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: integer arithmetic", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -172,15 +172,15 @@ test("[test-suite] math: integer arithmetic", () => {
         assert(minint * minint == 0)
         assert(maxint * maxint * maxint == maxint)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing floor division and conversions", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -215,15 +215,15 @@ test("[test-suite] math: testing floor division and conversions", () => {
         assert(minint // -2 == 2^(intbits - 2))
         assert(maxint // -1 == -maxint)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: negative exponents", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -240,15 +240,15 @@ test("[test-suite] math: negative exponents", () => {
           end
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: comparison between floats and integers (border cases)", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -268,15 +268,15 @@ test("[test-suite] math: comparison between floats and integers (border cases)",
         assert(minint + 0.0 == minint)
         assert(minint + 0.0 == -2.0^(intbits - 1))
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: order between floats and integers", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -305,15 +305,15 @@ test("[test-suite] math: order between floats and integers", () => {
           assert(-2^(intbits - 1) <= minint)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing order (floats can represent all integers)", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -347,15 +347,15 @@ test("[test-suite] math: testing order (floats can represent all integers)", () 
         assert(not (minint + 0.5 <= minint))
         assert(not (minint <= minint - 1.0))
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: NaN order", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -368,15 +368,15 @@ test("[test-suite] math: NaN order", () => {
         assert(not (minint <= NaN))
         assert(not (minint < NaN))
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: avoiding errors at compile time", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -387,14 +387,14 @@ test("[test-suite] math: avoiding errors at compile time", () => {
         checkcompt(msgf2i, ("return 1 | 2.0^%d"):format(intbits - 1))
         checkcompt(msgf2i, "return 2.3 ~ '0.0'")
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 test("[test-suite] math: testing overflow errors when converting from float to integer (runtime)", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -428,15 +428,15 @@ test("[test-suite] math: testing overflow errors when converting from float to i
         -- 'minint' should be representable as a float no matter the precision
         assert(f2i(minint + 0.0) == minint)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing numeric strings", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -445,15 +445,15 @@ test("[test-suite] math: testing numeric strings", () => {
         assert(" -2 " + 1 == -1)
         assert(" -0xa " + 1 == -9)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: Literal integer Overflows (new behavior in 5.3.3)", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -491,15 +491,15 @@ test("[test-suite] math: Literal integer Overflows (new behavior in 5.3.3)", () 
           assert(eqT(-10000000000000000000000.0, -10000000000000000000000))
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: 'tonumber' with numbers", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -508,15 +508,15 @@ test("[test-suite] math: 'tonumber' with numbers", () => {
         assert(eqT(tonumber(maxint), maxint) and eqT(tonumber(minint), minint))
         assert(tonumber(1/0) == 1/0)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: 'tonumber' with strings", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -558,15 +558,15 @@ test("[test-suite] math: 'tonumber' with strings", () => {
           assert(tonumber('\\t10000000000\\t', i) == i10)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: tests with very long numerals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -584,15 +584,15 @@ test("[test-suite] math: tests with very long numerals", () => {
         assert(tonumber('0xe03' .. string.rep('0', 1000) .. 'p-4000') == 3587.0)
         assert(tonumber('0x.' .. string.rep('0', 1000) .. '74p4004') == 0x7.4)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing 'tonumber' for invalid formats", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -628,15 +628,15 @@ test("[test-suite] math: testing 'tonumber' for invalid formats", () => {
         assert(f(tonumber('e  1')) == nil)
         assert(f(tonumber(' 3.4.5 ')) == nil)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing 'tonumber' for invalid hexadecimal formats", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -653,15 +653,15 @@ test("[test-suite] math: testing 'tonumber' for invalid hexadecimal formats", ()
         assert(tonumber('0x0.51p') == nil)
         assert(tonumber('0x5p+-2') == nil)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing hexadecimal numerals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -675,15 +675,15 @@ test("[test-suite] math: testing hexadecimal numerals", () => {
         -- possible confusion with decimal exponent
         assert(0E+1 == 0 and 0xE+1 == 15 and 0xe-1 == 13)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: floating hexas", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -711,15 +711,15 @@ test("[test-suite] math: floating hexas", () => {
 
         assert(tonumber('+1.23E18') == 1.23*10.0^18)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing order operators", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -733,15 +733,15 @@ test("[test-suite] math: testing order operators", () => {
         assert(('a'>='a') and not('a'>='b') and ('b'>='a'))
         assert(1.3 < 1.4 and 1.3 <= 1.4 and not (1.3 < 1.3) and 1.3 <= 1.3)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing mod operator", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -762,15 +762,15 @@ test("[test-suite] math: testing mod operator", () => {
         assert(minint % -2 == 0)
         assert(maxint % -2 == -1)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: non-portable tests because Windows C library cannot compute fmod(1, huge) correctly", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -787,15 +787,15 @@ test("[test-suite] math: non-portable tests because Windows C library cannot com
         assert(-1 % math.huge == math.huge)
         assert(-1 % -math.huge == -1)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing unsigned comparisons", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -831,15 +831,15 @@ test("[test-suite] math: testing unsigned comparisons", () => {
         assert(tonumber(' 1.3e-2 ') == 1.3e-2)
         assert(tonumber(' -1.00000000000001 ') == -1.00000000000001)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing constant limits", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -847,15 +847,15 @@ test("[test-suite] math: testing constant limits", () => {
         assert(8388608 + -8388608 == 0)
         assert(8388607 + -8388607 == 0)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing floor & ceil", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -902,15 +902,15 @@ test("[test-suite] math: testing floor & ceil", () => {
           assert(math.tointeger(0/0) == nil)    -- NaN
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing fmod for integers", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -934,15 +934,15 @@ test("[test-suite] math: testing fmod for integers", () => {
 
         checkerror("zero", math.fmod, 3, 0)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing max/min", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -962,15 +962,15 @@ test("[test-suite] math: testing max/min", () => {
           assert(eqT(math.min(maxint - 2, maxint, maxint - 1), maxint - 2))
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing implicit convertions", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -978,15 +978,15 @@ test("[test-suite] math: testing implicit convertions", () => {
         assert(a*b == 200 and a+b == 30 and a-b == -10 and a/b == 0.5 and -b == -20)
         assert(a == '10' and b == '20')
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: testing -0 and NaN", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1024,15 +1024,15 @@ test("[test-suite] math: testing -0 and NaN", () => {
           assert(a3 == a5)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: test random for floats", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1055,15 +1055,15 @@ test("[test-suite] math: test random for floats", () => {
          ::ok::
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: test random for small intervals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1099,15 +1099,15 @@ test("[test-suite] math: test random for small intervals", () => {
           aux({maxint - 3, maxint})
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: test random for large intervals", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1145,15 +1145,15 @@ test("[test-suite] math: test random for large intervals", () => {
 
         assert(not pcall(math.random, 1, 2, 3))    -- too many arguments
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: test random for empty interval", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1161,15 +1161,15 @@ test("[test-suite] math: test random for empty interval", () => {
         assert(not pcall(math.random, maxint, maxint - 1))
         assert(not pcall(math.random, maxint, minint))
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] math: interval too large", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -1177,8 +1177,8 @@ test("[test-suite] math: interval too large", () => {
         assert(not pcall(math.random, -1, maxint))
         assert(not pcall(math.random, minint // 2, maxint // 2 + 1))
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

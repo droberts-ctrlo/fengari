@@ -1,12 +1,10 @@
-"use strict";
-
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 test('[test-suite] locals: bug in 5.1', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -19,15 +17,15 @@ test('[test-suite] locals: bug in 5.1', () => {
         local function f(x) x = nil; local y; return x, y end
         assert(f(10) == nil and select(2, f(20)) == nil)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test('[test-suite] locals: local scope', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -79,10 +77,10 @@ test('[test-suite] locals: local scope', () => {
         f(2)
         assert(type(f) == 'function')
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
@@ -96,7 +94,7 @@ const getenv = `
 
 
 test('[test-suite] locals: test for global table of loaded chunks', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -107,15 +105,15 @@ test('[test-suite] locals: test for global table of loaded chunks', () => {
         f()
         assert(c.a == 3)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(getenv + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(getenv + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test('[test-suite] locals: old test for limits for special instructions (now just a generic test)', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -138,15 +136,15 @@ test('[test-suite] locals: old test for limits for special instructions (now jus
           until p <= 0
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test('[test-suite] locals: testing lexical environments', () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -180,8 +178,8 @@ test('[test-suite] locals: testing lexical environments', () => {
           assert(x==20)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(getenv + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(getenv + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

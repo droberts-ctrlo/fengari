@@ -1,12 +1,10 @@
-"use strict";
-
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 test("[test-suite] closure: testing equality", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -22,15 +20,15 @@ test("[test-suite] closure: testing equality", () => {
         end
         assert(f() == f())
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing closures with 'for' control variable", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -63,15 +61,15 @@ test("[test-suite] closure: testing closures with 'for' control variable", () =>
         r,s = a[2].get()
         assert(r == "a" and s == "b")
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing closures with 'for' control variable x break", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -91,15 +89,15 @@ test("[test-suite] closure: testing closures with 'for' control variable x break
         assert(({f()})[1] == 1)
         assert(({f()})[2] == "a")
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing closure x break x return x errors", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -135,15 +133,15 @@ test("[test-suite] closure: testing closure x break x return x errors", () => {
         assert(b('get') == 'xuxu')
         b('set', 10); assert(b('get') == 14)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing multi-level closure", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -158,15 +156,15 @@ test("[test-suite] closure: testing multi-level closure", () => {
         w = 1.345
         assert(y(20)(30) == 60+w)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing closures x repeat-until", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -178,15 +176,15 @@ test("[test-suite] closure: testing closures x repeat-until", () => {
         until i > 10 or a[i]() ~= x
         assert(i == 11 and a[1]() == 1 and a[3]() == 3 and i == 4)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: testing closures created in 'then' and 'else' parts of 'if's", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -219,15 +217,15 @@ test("[test-suite] closure: testing closures created in 'then' and 'else' parts 
           assert(a[i](i * 10) == i % 3 and a[i]() == i * 10)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] closure: test for correctly closing upvalues in tail calls of vararg functions", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -239,8 +237,8 @@ test("[test-suite] closure: test for correctly closing upvalues in tail calls of
         end
         t()
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

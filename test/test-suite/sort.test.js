@@ -1,9 +1,7 @@
-"use strict";
-
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 const prefix = `
     local unpack = table.unpack
@@ -31,7 +29,7 @@ const prefix = `
 `;
 
 test("[test-suite] sort: testing unpack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -60,15 +58,15 @@ test("[test-suite] sort: testing unpack", () => {
         a,x = unpack({1,2}, 1, 1)
         assert(a==1 and x==nil)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing unpack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -100,15 +98,15 @@ test("[test-suite] sort: testing unpack", () => {
           a, b = unpack(t, minI + 1, minI); assert(a == nil and b == nil)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing unpack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -118,15 +116,15 @@ test("[test-suite] sort: testing unpack", () => {
           checkerror("object length is not an integer", table.insert, t, 1)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing pack", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -139,15 +137,15 @@ test("[test-suite] sort: testing pack", () => {
         a = table.pack(nil, nil, nil, nil)
         assert(a[1] == nil and a.n == 4)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing move", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -222,15 +220,15 @@ test("[test-suite] sort: testing move", () => {
           assert(not stat and msg == b)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing long move", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -261,15 +259,15 @@ test("[test-suite] sort: testing long move", () => {
         checkerror("wrap around", table.move, {}, 1, 2, maxI)
         checkerror("wrap around", table.move, {}, minI, -2, 2)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: testing sort, strange lengths", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -279,15 +277,15 @@ test("[test-suite] sort: testing sort, strange lengths", () => {
         a = setmetatable({}, {__len = function () return maxI end})
         checkerror("too big", table.sort, a)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: test checks for invalid order functions", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -300,15 +298,15 @@ test("[test-suite] sort: test checks for invalid order functions", () => {
         check{1,2,3,4,5}
         check{1,2,3,4,5,6}
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: sort alpha", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -325,15 +323,15 @@ test("[test-suite] sort: sort alpha", () => {
         table.sort(a)
         check(a)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: sort perm", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -370,15 +368,15 @@ test("[test-suite] sort: sort perm", () => {
         perm{1,2,3,4,5,6}
         perm{2,2,3,3,5,6}
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: Invert-sorting", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -408,15 +406,15 @@ test("[test-suite] sort: Invert-sorting", () => {
 
         for i,v in pairs(a) do assert(v == false) end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] sort: sorting", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -445,8 +443,8 @@ test("[test-suite] sort: sorting", () => {
         check(a, tt.__lt)
         check(a)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(prefix + luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(prefix + luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

@@ -1,12 +1,10 @@
-"use strict";
-
-const lua = require('../../src/lua.js');
-const lauxlib = require('../../src/lauxlib.js');
-const lualib = require('../../src/lualib.js');
-const {to_luastring} = require("../../src/fengaricore.js");
+import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
+import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
+import { luaL_openlibs } from '../../src/lualib.js';
+import { to_luastring } from "../../src/fengaricore.js";
 
 test("[test-suite] goto: error messages", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -46,15 +44,15 @@ test("[test-suite] goto: error messages", () => {
           until xuxu < x
         ]], "local 'xuxu'")
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] goto", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -113,15 +111,15 @@ test("[test-suite] goto", () => {
           ::l1:: ; ::l2:: ;;
         else end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] goto: to repeat a label in a different function is OK", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -141,15 +139,15 @@ test("[test-suite] goto: to repeat a label in a different function is OK", () =>
 
         ::l6:: foo()
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] goto: bug in 5.2 -> 5.3.2", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -168,15 +166,15 @@ test("[test-suite] goto: bug in 5.2 -> 5.3.2", () => {
           assert(x == 2 and y == true)
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] goto: testing closing of upvalues", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -241,15 +239,15 @@ test("[test-suite] goto: testing closing of upvalues", () => {
           end
         end
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });
 
 
 test("[test-suite] goto: testing if x goto optimizations", () => {
-    let L = lauxlib.luaL_newstate();
+    let L = luaL_newstate();
     if (!L) throw Error("failed to create lua state");
 
     let luaCode = `
@@ -283,8 +281,8 @@ test("[test-suite] goto: testing if x goto optimizations", () => {
         assert(testG(4) == 5)
         assert(testG(5) == 10)
     `;
-    lualib.luaL_openlibs(L);
-    if (lauxlib.luaL_loadstring(L, to_luastring(luaCode)) === lua.LUA_ERRSYNTAX)
-        throw new SyntaxError(lua.lua_tojsstring(L, -1));
-    lua.lua_call(L, 0, 0);
+    luaL_openlibs(L);
+    if (luaL_loadstring(L, to_luastring(luaCode)) === LUA_ERRSYNTAX)
+        throw new SyntaxError(lua_tojsstring(L, -1));
+    lua_call(L, 0, 0);
 });

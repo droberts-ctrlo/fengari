@@ -8,7 +8,7 @@ import { TValue as _TValue, CClosure as _CClosure, luaO_nilobject, setobj2s, pus
 import { EXTRA_STACK, lua_State, CIST_LUA, CIST_OAH, CIST_YPCALL } from './lstate.js';
 import { luaS_bless, luaS_new, luaS_newliteral } from './lstring.js';
 import { ttypename } from './ltm.js';
-import { LUAI_MAXSTACK } from './luaconf.js';
+import { LUAI_MAXSTACK } from './common.js';
 import { settable, luaV_gettable, cvt2str, tointeger, tonumber, luaV_equalobj, luaV_lessthan, luaV_lessequal, luaV_concat, luaV_objlen } from './lvm.js';
 import { luaH_getint, luaH_setfrom, invalidateTMcache, luaH_setint, luaH_get, luaH_new, luaH_getn, luaH_next } from './ltable.js';
 import { ZIO } from './lzio.js';

@@ -2,16 +2,27 @@ import { lua_pop } from './lua.js';
 import { luaL_requiref } from './lauxlib.js';
 import { to_luastring } from "./fengaricore.js";
 import { luaopen_fengari } from './fengarilib.js';
-import { LUA_LOADLIBNAME, LUA_COLIBNAME, LUA_TABLIBNAME, LUA_OSLIBNAME, LUA_STRLIBNAME, LUA_MATHLIBNAME, LUA_UTF8LIBNAME, LUA_DBLIBNAME, LUA_IOLIBNAME, LUA_FENGARILIBNAME, luaopen_io } from './lualib.js';
 import { luaopen_base } from './lbaselib.js';
 import { luaopen_coroutine } from './lcorolib.js';
 import { luaopen_debug } from './ldblib.js';
+import { luaopen_io } from './liolib.js';
 import { luaopen_math } from './lmathlib.js';
 import { luaopen_package } from './loadlib.js';
 import { luaopen_os } from './loslib.js';
 import { luaopen_string } from './lstrlib.js';
 import { luaopen_table } from './ltablib.js';
 import { luaopen_utf8 } from './lutf8lib.js';
+
+const LUA_COLIBNAME = "coroutine";
+const LUA_TABLIBNAME = "table";
+const LUA_IOLIBNAME = "io";
+const LUA_OSLIBNAME = "os";
+const LUA_STRLIBNAME = "string";
+const LUA_MATHLIBNAME = "math";
+const LUA_UTF8LIBNAME = "utf8";
+const LUA_DBLIBNAME = "debug";
+const LUA_LOADLIBNAME = "package";
+const LUA_FENGARILIBNAME = "fengari";
 
 const loadedlibs = {};
 
