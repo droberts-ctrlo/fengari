@@ -1,27 +1,21 @@
-import {
-    LUA_SIGNATURE,
-    LUA_TBOOLEAN,
-    LUA_TLNGSTR,
-    LUA_TNIL,
-    LUA_TNUMFLT, LUA_TNUMINT, LUA_TSHRSTR,
-    LUA_VERSION_MAJOR,
-    LUA_VERSION_MINOR, luastring_of
-} from "./defs.js";
+"use strict";
 
-const constant_types = {
+import { LUA_SIGNATURE, LUA_VERSION_MAJOR, LUA_VERSION_MINOR, constant_types, luastring_of } from './defs.js';
+
+const {
     LUA_TBOOLEAN,
     LUA_TLNGSTR,
     LUA_TNIL,
     LUA_TNUMFLT,
     LUA_TNUMINT,
     LUA_TSHRSTR
-}
+} = constant_types;
 
-const LUAC_DATA    = luastring_of(25, 147, 13, 10, 26, 10);
-const LUAC_INT     = 0x5678;
-const LUAC_NUM     = 370.5;
+const LUAC_DATA = luastring_of(25, 147, 13, 10, 26, 10);
+const LUAC_INT = 0x5678;
+const LUAC_NUM = 370.5;
 const LUAC_VERSION = Number(LUA_VERSION_MAJOR) * 16 + Number(LUA_VERSION_MINOR);
-const LUAC_FORMAT  = 0;   /* this is the official format */
+const LUAC_FORMAT = 0;   /* this is the official format */
 
 class DumpState {
     constructor() {
@@ -33,16 +27,16 @@ class DumpState {
     }
 }
 
-const DumpBlock = function(b, size, D) {
+const DumpBlock = function (b, size, D) {
     if (D.status === 0 && size > 0)
         D.status = D.writer(D.L, b, size, D.data);
 };
 
-const DumpByte = function(y, D) {
+const DumpByte = function (y, D) {
     DumpBlock(luastring_of(y), 1, D);
 };
 
-const DumpInt = function(x, D) {
+const DumpInt = function (x, D) {
     let ab = new ArrayBuffer(4);
     let dv = new DataView(ab);
     dv.setInt32(0, x, true);
@@ -50,7 +44,7 @@ const DumpInt = function(x, D) {
     DumpBlock(t, 4, D);
 };
 
-const DumpInteger = function(x, D) {
+const DumpInteger = function (x, D) {
     let ab = new ArrayBuffer(4);
     let dv = new DataView(ab);
     dv.setInt32(0, x, true);
@@ -58,7 +52,7 @@ const DumpInteger = function(x, D) {
     DumpBlock(t, 4, D);
 };
 
-const DumpNumber = function(x, D) {
+const DumpNumber = function (x, D) {
     let ab = new ArrayBuffer(8);
     let dv = new DataView(ab);
     dv.setFloat64(0, x, true);
@@ -66,7 +60,7 @@ const DumpNumber = function(x, D) {
     DumpBlock(t, 8, D);
 };
 
-const DumpString = function(s, D) {
+const DumpString = function (s, D) {
     if (s === null)
         DumpByte(0, D);
     else {
@@ -82,7 +76,7 @@ const DumpString = function(s, D) {
     }
 };
 
-const DumpCode = function(f, D) {
+const DumpCode = function (f, D) {
     let s = f.code.map(e => e.code);
     DumpInt(s.length, D);
 
@@ -90,7 +84,7 @@ const DumpCode = function(f, D) {
         DumpInt(s[i], D);
 };
 
-const DumpConstants = function(f, D) {
+const DumpConstants = function (f, D) {
     let n = f.k.length;
     DumpInt(n, D);
     for (let i = 0; i < n; i++) {
@@ -116,14 +110,14 @@ const DumpConstants = function(f, D) {
     }
 };
 
-const DumpProtos = function(f, D) {
+const DumpProtos = function (f, D) {
     let n = f.p.length;
     DumpInt(n, D);
     for (let i = 0; i < n; i++)
         DumpFunction(f.p[i], f.source, D);
 };
 
-const DumpUpvalues = function(f, D) {
+const DumpUpvalues = function (f, D) {
     let n = f.upvalues.length;
     DumpInt(n, D);
     for (let i = 0; i < n; i++) {
@@ -132,7 +126,7 @@ const DumpUpvalues = function(f, D) {
     }
 };
 
-const DumpDebug = function(f, D) {
+const DumpDebug = function (f, D) {
     let n = D.strip ? 0 : f.lineinfo.length;
     DumpInt(n, D);
     for (let i = 0; i < n; i++)
@@ -150,7 +144,7 @@ const DumpDebug = function(f, D) {
         DumpString(f.upvalues[i].name, D);
 };
 
-const DumpFunction = function(f, psource, D) {
+const DumpFunction = function (f, psource, D) {
     if (D.strip || f.source === psource)
         DumpString(null, D);  /* no debug info or same source as its parent */
     else
@@ -158,7 +152,7 @@ const DumpFunction = function(f, psource, D) {
     DumpInt(f.linedefined, D);
     DumpInt(f.lastlinedefined, D);
     DumpByte(f.numparams, D);
-    DumpByte(f.is_vararg?1:0, D);
+    DumpByte(f.is_vararg ? 1 : 0, D);
     DumpByte(f.maxstacksize, D);
     DumpCode(f, D);
     DumpConstants(f, D);
@@ -167,7 +161,7 @@ const DumpFunction = function(f, psource, D) {
     DumpDebug(f, D);
 };
 
-const DumpHeader = function(D) {
+const DumpHeader = function (D) {
     DumpBlock(LUA_SIGNATURE, LUA_SIGNATURE.length, D);
     DumpByte(LUAC_VERSION, D);
     DumpByte(LUAC_FORMAT, D);
@@ -184,7 +178,7 @@ const DumpHeader = function(D) {
 /*
 ** dump Lua function as precompiled chunk
 */
-export const luaU_dump = function(L, f, w, data, strip) {
+const luaU_dump = function (L, f, w, data, strip) {
     let D = new DumpState();
     D.L = L;
     D.writer = w;
@@ -196,3 +190,6 @@ export const luaU_dump = function(L, f, w, data, strip) {
     DumpFunction(f, null, D);
     return D.status;
 };
+
+const _luaU_dump = luaU_dump;
+export { _luaU_dump as luaU_dump };

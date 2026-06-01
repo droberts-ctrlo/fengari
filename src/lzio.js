@@ -1,4 +1,4 @@
-import {lua_assert} from "./llimits.js";
+import { lua_assert } from "./llimits.js";
 
 class MBuffer {
     constructor() {
@@ -26,10 +26,10 @@ const luaZ_resizebuffer = function(L, buff, size) {
     buff.buffer = newbuff;
 };
 
-export class ZIO {
+class ZIO {
     constructor(L, reader, data) {
         this.L = L;           /* Lua state (for reader) */
-        lua_assert(typeof reader == 'function', 'ZIO requires a reader');
+        lua_assert(typeof reader == "function", "ZIO requires a reader");
         this.reader = reader; /* reader function */
         this.data = data;     /* additional data */
         this.n = 0;           /* bytes still unread */
@@ -48,7 +48,7 @@ const luaZ_fill = function(z) {
     let buff = z.reader(z.L, z.data);
     if (buff === null)
         return EOZ;
-    lua_assert(buff instanceof Uint8Array, 'Should only load binary of array of bytes');
+    lua_assert(buff instanceof Uint8Array, "Should only load binary of array of bytes");
     let size = buff.length;
     if (size === 0)
         return EOZ;
@@ -82,3 +82,22 @@ const luaZ_read = function(z, b, b_offset, n) {
 
     return 0;
 };
+
+const _EOZ = EOZ;
+export { _EOZ as EOZ };
+const _luaZ_buffer = luaZ_buffer;
+export { _luaZ_buffer as luaZ_buffer };
+const _luaZ_buffremove = luaZ_buffremove;
+export { _luaZ_buffremove as luaZ_buffremove };
+const _luaZ_fill = luaZ_fill;
+export { _luaZ_fill as luaZ_fill };
+const _luaZ_read = luaZ_read;
+export { _luaZ_read as luaZ_read };
+const _luaZ_resetbuffer = luaZ_resetbuffer;
+export { _luaZ_resetbuffer as luaZ_resetbuffer };
+const _luaZ_resizebuffer = luaZ_resizebuffer;
+export { _luaZ_resizebuffer as luaZ_resizebuffer };
+const _MBuffer = MBuffer;
+export { _MBuffer as MBuffer };
+const _ZIO = ZIO;
+export { _ZIO as ZIO };

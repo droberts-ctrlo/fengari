@@ -1,20 +1,20 @@
-import {
-    from_userstring,
+import { LUA_OPADD, LUA_OPBAND, LUA_OPBNOT, LUA_OPBOR, LUA_OPBXOR, LUA_OPDIV, LUA_OPIDIV, LUA_OPMOD, LUA_OPMUL, LUA_OPPOW, LUA_OPSHL, LUA_OPSHR, LUA_OPSUB, LUA_OPUNM, constant_types, from_userstring, luastring_indexOf, luastring_of, to_jsstring, to_luastring } from './defs.js';
+import { lisdigit, lisprint, lisspace, lisxdigit } from './ljstype.js';
+import { luaG_runerror } from './ldebug.js';
+import { luaD_inctop, luaD_checkstack } from './ldo.js';
+import { lua_State } from './lstate.js';
+import { luaS_bless, luaS_new } from './lstring.js';
+import { Table } from './ltable.js';
+import { LUA_COMPAT_FLOATSTRING, ldexp, lua_integer2str, lua_number2str } from './luaconf.js';
+import { luaV_concat, luaV_imul, luaV_mod, luaV_div, luaV_shiftl, tointeger, tonumber } from './lvm.js';
+import { MAX_INT, luai_nummod, lua_assert } from "./llimits.js";
+import { luaT_trybinTM, TMS } from './ltm.js';
+
+const LUA_TPROTO = LUA_NUMTAGS;
+const LUA_TDEADKEY = LUA_NUMTAGS + 1;
+
+const {
     LUA_NUMTAGS,
-    LUA_OPADD,
-    LUA_OPBAND,
-    LUA_OPBNOT,
-    LUA_OPBOR,
-    LUA_OPBXOR,
-    LUA_OPDIV,
-    LUA_OPIDIV,
-    LUA_OPMOD,
-    LUA_OPMUL,
-    LUA_OPPOW,
-    LUA_OPSHL,
-    LUA_OPSHR,
-    LUA_OPSUB,
-    LUA_OPUNM,
     LUA_TBOOLEAN,
     LUA_TCCL,
     LUA_TFUNCTION,
@@ -28,43 +28,12 @@ import {
     LUA_TNUMINT,
     LUA_TSHRSTR,
     LUA_TSTRING,
-    LUA_TTABLE, LUA_TTHREAD, LUA_TUSERDATA, luastring_indexOf, luastring_of, to_jsstring, to_luastring
-} from "./defs.js";
-import * as ltm from "./ltm.js";
-import {lua_assert, luai_nummod, MAX_INT} from "./llimits.js";
-import * as lvm from "./lvm.js";
-import {ldexp, LUA_COMPAT_FLOATSTRING, lua_integer2str, lua_number2str} from "./luaconf.js";
-import * as ltable from "./ltable.js";
-import {luaS_bless, luaS_new} from "./lstring.js";
-import * as lstate from "./lstate.js";
-import * as ldo from "./ldo.js";
-import * as ldebug from "./ldebug.js";
-import {lisdigit, lisprint, lisspace, lisxdigit} from "./ljstype.js";
+    LUA_TTABLE,
+    LUA_TTHREAD,
+    LUA_TUSERDATA
+} = constant_types;
 
-const constant_types = {
-    LUA_NUMTAGS,
-        LUA_TBOOLEAN,
-        LUA_TCCL,
-        LUA_TFUNCTION,
-        LUA_TLCF,
-        LUA_TLCL,
-        LUA_TLIGHTUSERDATA,
-        LUA_TLNGSTR,
-        LUA_TNIL,
-        LUA_TNUMBER,
-        LUA_TNUMFLT,
-        LUA_TNUMINT,
-        LUA_TSHRSTR,
-        LUA_TSTRING,
-        LUA_TTABLE,
-        LUA_TTHREAD,
-        LUA_TUSERDATA
-}
-
-const LUA_TPROTO = LUA_NUMTAGS;
-const LUA_TDEADKEY = LUA_NUMTAGS+1;
-
-export class TValue {
+class TValue {
 
     constructor(type, value) {
         this.type = type;
@@ -263,26 +232,28 @@ export class TValue {
     }
 }
 
-export const pushobj2s = function(L, tv) {
+const pushobj2s = function (L, tv) {
     L.stack[L.top++] = new TValue(tv.type, tv.value);
 };
-export const pushsvalue2s = function(L, ts) {
+const pushsvalue2s = function (L, ts) {
     L.stack[L.top++] = new TValue(LUA_TLNGSTR, ts);
 };
 /* from stack to (same) stack */
-export const setobjs2s = function(L, newidx, oldidx) {
+const setobjs2s = function (L, newidx, oldidx) {
     L.stack[newidx].setfrom(L.stack[oldidx]);
 };
 /* to stack (not from same stack) */
-export const setobj2s = function(L, newidx, oldtv) {
+const setobj2s = function (L, newidx, oldtv) {
     L.stack[newidx].setfrom(oldtv);
 };
-const setsvalue2s = function(L, newidx, ts) {
+const setsvalue2s = function (L, newidx, ts) {
     L.stack[newidx].setsvalue(ts);
 };
 
-export const luaO_nilobject = new TValue(LUA_TNIL, null);
+const luaO_nilobject = new TValue(LUA_TNIL, null);
 Object.freeze(luaO_nilobject);
+const _luaO_nilobject = luaO_nilobject;
+export { _luaO_nilobject as luaO_nilobject };
 
 class LClosure {
 
@@ -296,7 +267,7 @@ class LClosure {
 
 }
 
-export class CClosure {
+class CClosure {
 
     constructor(L, f, n) {
         this.id = L.l_G.id_counter++;
@@ -311,7 +282,7 @@ export class CClosure {
 
 }
 
-export class Udata {
+class Udata {
 
     constructor(L, size) {
         this.id = L.l_G.id_counter++;
@@ -336,24 +307,24 @@ class LocVar {
     }
 }
 
-const RETS = to_luastring('...');
-const PRE  = to_luastring('[string "');
-const POS  = to_luastring('"]');
+const RETS = to_luastring("...");
+const PRE = to_luastring("[string \"");
+const POS = to_luastring("\"]");
 
-const luaO_chunkid = function(source, bufflen) {
+const luaO_chunkid = function (source, bufflen) {
     let l = source.length;
     let out;
     if (source[0] === 61 /* ('=').charCodeAt(0) */) {  /* 'literal' source */
         if (l < bufflen) {  /* small enough? */
-            out = new Uint8Array(l-1);
+            out = new Uint8Array(l - 1);
             out.set(source.subarray(1));
         } else {  /* truncate it */
             out = new Uint8Array(bufflen);
-            out.set(source.subarray(1, bufflen+1));
+            out.set(source.subarray(1, bufflen + 1));
         }
     } else if (source[0] === 64 /* ('@').charCodeAt(0) */) {  /* file name */
         if (l <= bufflen) {  /* small enough? */
-            out = new Uint8Array(l-1);
+            out = new Uint8Array(l - 1);
             out.set(source.subarray(1));
         } else {  /* add '...' before rest of name */
             out = new Uint8Array(bufflen);
@@ -385,14 +356,14 @@ const luaO_chunkid = function(source, bufflen) {
     return out;
 };
 
-const luaO_hexavalue = function(c) {
+const luaO_hexavalue = function (c) {
     if (lisdigit(c)) return c - 48;
     else return (c & 0xdf) - 55;
 };
 
 const UTF8BUFFSZ = 8;
 
-const luaO_utf8esc = function(buff, x) {
+const luaO_utf8esc = function (buff, x) {
     let n = 1;  /* number of bytes put in buffer (backwards) */
     lua_assert(x <= 0x10FFFF);
     if (x < 0x80)  /* ascii? */
@@ -417,7 +388,7 @@ const MAXSIGDIG = 30;
 ** convert an hexadecimal numeric string to a number, following
 ** C99 specification for 'strtod'
 */
-const lua_strx2number = function(s) {
+const lua_strx2number = function (s) {
     let i = 0;
     let r = 0.0;  /* result (accumulator) */
     let sigdig = 0;  /* number of significant digits */
@@ -428,7 +399,7 @@ const lua_strx2number = function(s) {
     while (lisspace(s[i])) i++;  /* skip initial spaces */
     if ((neg = (s[i] === 45 /* ('-').charCodeAt(0) */))) i++;  /* check signal */
     else if (s[i] === 43 /* ('+').charCodeAt(0) */) i++;
-    if (!(s[i] === 48 /* ('0').charCodeAt(0) */ && (s[i+1] === 120 /* ('x').charCodeAt(0) */ || s[i+1] === 88 /* ('X').charCodeAt(0) */)))  /* check '0x' */
+    if (!(s[i] === 48 /* ('0').charCodeAt(0) */ && (s[i + 1] === 120 /* ('x').charCodeAt(0) */ || s[i + 1] === 88 /* ('X').charCodeAt(0) */)))  /* check '0x' */
         return null;  /* invalid format (no '0x') */
     for (i += 2; ; i++) {  /* skip '0x' and read numeral */
         if (s[i] === 46 /* ('.').charCodeAt(0) i.e. dot/lua_getlocaledecpoint(); */) {
@@ -467,7 +438,7 @@ const lua_strx2number = function(s) {
     };
 };
 
-const lua_str2number = function(s) {
+const lua_str2number = function (s) {
     try {
         s = to_jsstring(s);
     } catch (e) {
@@ -482,7 +453,7 @@ const lua_str2number = function(s) {
     return !isNaN(flt) ? { n: flt, i: r[0].length } : null;
 };
 
-const l_str2dloc = function(s, mode) {
+const l_str2dloc = function (s, mode) {
     let result = mode === 'x' ? lua_strx2number(s) : lua_str2number(s); /* try to convert */
     if (result === null) return null;
     while (lisspace(s[result.i])) result.i++;  /* skip trailing spaces */
@@ -497,16 +468,16 @@ const SIGILS = [
     78  /* ("N").charCodeAt(0) */
 ];
 const modes = {
-    [ 46]: '.',
-    [120]: 'x',
-    [ 88]: 'x',
-    [110]: 'n',
-    [ 78]: 'n'
+    [46]: ".",
+    [120]: "x",
+    [88]: "x",
+    [110]: "n",
+    [78]: "n"
 };
-const l_str2d = function(s) {
+const l_str2d = function (s) {
     let l = s.length;
     let pmode = 0;
-    for (let i=0; i<l; i++) {
+    for (let i = 0; i < l; i++) {
         let v = s[i];
         if (SIGILS.indexOf(v) !== -1) {
             pmode = v;
@@ -523,10 +494,10 @@ const l_str2d = function(s) {
     return end;
 };
 
-const MAXBY10  = Math.floor(MAX_INT / 10);
+const MAXBY10 = Math.floor(MAX_INT / 10);
 const MAXLASTD = MAX_INT % 10;
 
-const l_str2int = function(s) {
+const l_str2int = function (s) {
     let i = 0;
     let a = 0;
     let empty = true;
@@ -535,10 +506,10 @@ const l_str2int = function(s) {
     while (lisspace(s[i])) i++;  /* skip initial spaces */
     if ((neg = (s[i] === 45 /* ('-').charCodeAt(0) */))) i++;
     else if (s[i] === 43 /* ('+').charCodeAt(0) */) i++;
-    if (s[i] === 48 /* ('0').charCodeAt(0) */ && (s[i+1] === 120 /* ('x').charCodeAt(0) */ || s[i+1] === 88 /* ('X').charCodeAt(0) */)) {  /* hex? */
+    if (s[i] === 48 /* ('0').charCodeAt(0) */ && (s[i + 1] === 120 /* ('x').charCodeAt(0) */ || s[i + 1] === 88 /* ('X').charCodeAt(0) */)) {  /* hex? */
         i += 2;  /* skip '0x' */
         for (; i < s.length && lisxdigit(s[i]); i++) {
-            a = (a * 16 + luaO_hexavalue(s[i]))|0;
+            a = (a * 16 + luaO_hexavalue(s[i])) | 0;
             empty = false;
         }
     } else {  /* decimal */
@@ -546,7 +517,7 @@ const l_str2int = function(s) {
             let d = s[i] - 48 /* ('0').charCodeAt(0) */;
             if (a >= MAXBY10 && (a > MAXBY10 || d > MAXLASTD + neg))  /* overflow? */
                 return null;  /* do not accept it (as integer) */
-            a = (a * 10 + d)|0;
+            a = (a * 10 + d) | 0;
             empty = false;
         }
     }
@@ -554,28 +525,28 @@ const l_str2int = function(s) {
     if (empty || (i !== s.length && s[i] !== 0)) return null;  /* something wrong in the numeral */
     else {
         return {
-            n: (neg ? -a : a)|0,
+            n: (neg ? -a : a) | 0,
             i: i
         };
     }
 };
 
-export const luaO_str2num = function(s, o) {
+const luaO_str2num = function (s, o) {
     let s2i = l_str2int(s);
     if (s2i !== null) {   /* try as an integer */
         o.setivalue(s2i.n);
-        return s2i.i+1;
+        return s2i.i + 1;
     } else {   /* else try as a float */
         s2i = l_str2d(s);
         if (s2i !== null) {
             o.setfltvalue(s2i.n);
-            return s2i.i+1;
+            return s2i.i + 1;
         } else
             return 0;  /* conversion failed */
     }
 };
 
-export const luaO_tostring = function(L, obj) {
+const luaO_tostring = function (L, obj) {
     let buff;
     if (obj.ttisinteger())
         buff = to_luastring(lua_integer2str(obj.value));
@@ -589,24 +560,24 @@ export const luaO_tostring = function(L, obj) {
     obj.setsvalue(luaS_bless(L, buff));
 };
 
-const pushstr = function(L, str) {
-    ldo.luaD_inctop(L);
-    setsvalue2s(L, L.top-1, luaS_new(L, str));
+const pushstr = function (L, str) {
+    luaD_inctop(L);
+    setsvalue2s(L, L.top - 1, luaS_new(L, str));
 };
 
-export const luaO_pushvfstring = function(L, fmt, argp) {
+const luaO_pushvfstring = function (L, fmt, argp) {
     let n = 0;
     let i = 0;
     let a = 0;
     let e;
-    for (;;) {
+    for (; ;) {
         e = luastring_indexOf(fmt, 37 /* ('%').charCodeAt(0) */, i);
         if (e == -1) break;
         pushstr(L, fmt.subarray(i, e));
-        switch(fmt[e+1]) {
+        switch (fmt[e + 1]) {
             case 115 /* ('s').charCodeAt(0) */: {
                 let s = argp[a++];
-                if (s === null) s = to_luastring('(null)', true);
+                if (s === null) s = to_luastring("(null)", true);
                 else {
                     s = from_userstring(s);
                     /* respect null terminator */
@@ -622,60 +593,60 @@ export const luaO_pushvfstring = function(L, fmt, argp) {
                 if (lisprint(buff))
                     pushstr(L, luastring_of(buff));
                 else
-                    luaO_pushfstring(L, to_luastring('<\\%d>', true), buff);
+                    luaO_pushfstring(L, to_luastring("<\\%d>", true), buff);
                 break;
             }
             case 100 /* ('d').charCodeAt(0) */:
             case 73 /* ('I').charCodeAt(0) */:
-                ldo.luaD_inctop(L);
-                L.stack[L.top-1].setivalue(argp[a++]);
-                luaO_tostring(L, L.stack[L.top-1]);
+                luaD_inctop(L);
+                L.stack[L.top - 1].setivalue(argp[a++]);
+                luaO_tostring(L, L.stack[L.top - 1]);
                 break;
             case 102 /* ('f').charCodeAt(0) */:
-                ldo.luaD_inctop(L);
-                L.stack[L.top-1].setfltvalue(argp[a++]);
-                luaO_tostring(L, L.stack[L.top-1]);
+                luaD_inctop(L);
+                L.stack[L.top - 1].setfltvalue(argp[a++]);
+                luaO_tostring(L, L.stack[L.top - 1]);
                 break;
             case 112 /* ('p').charCodeAt(0) */: {
                 let v = argp[a++];
-                if (v instanceof lstate.lua_State ||
-                    v instanceof ltable.Table ||
+                if (v instanceof lua_State ||
+                    v instanceof Table ||
                     v instanceof Udata ||
                     v instanceof LClosure ||
                     v instanceof CClosure) {
-                    pushstr(L, to_luastring('0x'+v.id.toString(16)));
+                    pushstr(L, to_luastring("0x" + v.id.toString(16)));
                 } else {
-                    switch(typeof v) {
-                        case 'undefined':
-                            pushstr(L, to_luastring('undefined'));
+                    switch (typeof v) {
+                        case "undefined":
+                            pushstr(L, to_luastring("undefined"));
                             break;
-                        case 'number':  /* before check object as null is an object */
-                            pushstr(L, to_luastring('Number('+v+')'));
+                        case "number":  /* before check object as null is an object */
+                            pushstr(L, to_luastring("Number(" + v + ")"));
                             break;
-                        case 'string':  /* before check object as null is an object */
-                            pushstr(L, to_luastring('String('+JSON.stringify(v)+')'));
+                        case "string":  /* before check object as null is an object */
+                            pushstr(L, to_luastring("String(" + JSON.stringify(v) + ")"));
                             break;
-                        case 'boolean':  /* before check object as null is an object */
-                            pushstr(L, to_luastring(v?'Boolean(true)':'Boolean(false)'));
+                        case "boolean":  /* before check object as null is an object */
+                            pushstr(L, to_luastring(v ? "Boolean(true)" : "Boolean(false)"));
                             break;
-                        case 'object':
+                        case "object":
                             if (v === null) { /* null is special */
-                                pushstr(L, to_luastring('null'));
+                                pushstr(L, to_luastring("null"));
                                 break;
                             }
-                            /* fall through */
-                        case 'function': {
+                        /* fall through */
+                        case "function": {
                             let id = L.l_G.ids.get(v);
                             if (!id) {
                                 id = L.l_G.id_counter++;
                                 L.l_G.ids.set(v, id);
                             }
-                            pushstr(L, to_luastring('0x'+id.toString(16)));
+                            pushstr(L, to_luastring("0x" + id.toString(16)));
                             break;
                         }
                         default:
                             /* user provided object. no id available */
-                            pushstr(L, to_luastring('<id NYI>'));
+                            pushstr(L, to_luastring("<id NYI>"));
                     }
                 }
                 break;
@@ -687,21 +658,21 @@ export const luaO_pushvfstring = function(L, fmt, argp) {
                 break;
             }
             case 37 /* ('%').charCodeAt(0) */:
-                pushstr(L, to_luastring('%', true));
+                pushstr(L, to_luastring("%", true));
                 break;
             default:
-                ldebug.luaG_runerror(L, to_luastring('invalid option \'%%%c\' to \'lua_pushfstring\''), fmt[e + 1]);
+                luaG_runerror(L, to_luastring("invalid option '%%%c' to 'lua_pushfstring'"), fmt[e + 1]);
         }
         n += 2;
         i = e + 2;
     }
-    ldo.luaD_checkstack(L, 1);
+    luaD_checkstack(L, 1);
     pushstr(L, fmt.subarray(i));
-    if (n > 0) lvm.luaV_concat(L, n+1);
-    return L.stack[L.top-1].svalue();
+    if (n > 0) luaV_concat(L, n + 1);
+    return L.stack[L.top - 1].svalue();
 };
 
-const luaO_pushfstring = function(L, fmt, ...argp) {
+const luaO_pushfstring = function (L, fmt, ...argp) {
     return luaO_pushvfstring(L, fmt, argp);
 };
 
@@ -711,7 +682,7 @@ const luaO_pushfstring = function(L, fmt, ...argp) {
 ** (eeeeexxx), where the real value is (1xxx) * 2^(eeeee - 1) if
 ** eeeee !== 0 and (xxx) otherwise.
 */
-const luaO_int2fb = function(x) {
+const luaO_int2fb = function (x) {
     let e = 0;  /* exponent */
     if (x < 8) return x;
     while (x >= (8 << 4)) {  /* coarse steps */
@@ -722,51 +693,51 @@ const luaO_int2fb = function(x) {
         x = (x + 1) >> 1;  /* x = ceil(x / 2) */
         e++;
     }
-    return ((e+1) << 3) | (x - 8);
+    return ((e + 1) << 3) | (x - 8);
 };
 
-const intarith = function(L, op, v1, v2) {
+const intarith = function (L, op, v1, v2) {
     switch (op) {
-        case LUA_OPADD:  return (v1 + v2)|0;
-        case LUA_OPSUB:  return (v1 - v2)|0;
-        case LUA_OPMUL:  return lvm.luaV_imul(v1, v2);
-        case LUA_OPMOD:  return lvm.luaV_mod(L, v1, v2);
-        case LUA_OPIDIV: return lvm.luaV_div(L, v1, v2);
+        case LUA_OPADD: return (v1 + v2) | 0;
+        case LUA_OPSUB: return (v1 - v2) | 0;
+        case LUA_OPMUL: return luaV_imul(v1, v2);
+        case LUA_OPMOD: return luaV_mod(L, v1, v2);
+        case LUA_OPIDIV: return luaV_div(L, v1, v2);
         case LUA_OPBAND: return (v1 & v2);
-        case LUA_OPBOR:  return (v1 | v2);
+        case LUA_OPBOR: return (v1 | v2);
         case LUA_OPBXOR: return (v1 ^ v2);
-        case LUA_OPSHL:  return lvm.luaV_shiftl(v1, v2);
-        case LUA_OPSHR:  return lvm.luaV_shiftl(v1, -v2);
-        case LUA_OPUNM:  return (0 - v1)|0;
+        case LUA_OPSHL: return luaV_shiftl(v1, v2);
+        case LUA_OPSHR: return luaV_shiftl(v1, -v2);
+        case LUA_OPUNM: return (0 - v1) | 0;
         case LUA_OPBNOT: return (~0 ^ v1);
         default: lua_assert(0);
     }
 };
 
 
-const numarith = function(L, op, v1, v2) {
+const numarith = function (L, op, v1, v2) {
     switch (op) {
-        case LUA_OPADD:  return v1 + v2;
-        case LUA_OPSUB:  return v1 - v2;
-        case LUA_OPMUL:  return v1 * v2;
-        case LUA_OPDIV:  return v1 / v2;
-        case LUA_OPPOW:  return Math.pow(v1, v2);
+        case LUA_OPADD: return v1 + v2;
+        case LUA_OPSUB: return v1 - v2;
+        case LUA_OPMUL: return v1 * v2;
+        case LUA_OPDIV: return v1 / v2;
+        case LUA_OPPOW: return Math.pow(v1, v2);
         case LUA_OPIDIV: return Math.floor(v1 / v2);
-        case LUA_OPUNM:  return -v1;
-        case LUA_OPMOD:  return luai_nummod(L, v1, v2);
+        case LUA_OPUNM: return -v1;
+        case LUA_OPMOD: return luai_nummod(L, v1, v2);
         default: lua_assert(0);
     }
 };
 
-export const luaO_arith = function(L, op, p1, p2, p3) {
-    let res = (typeof p3 === 'number') ? L.stack[p3] : p3;  /* FIXME */
+const luaO_arith = function (L, op, p1, p2, p3) {
+    let res = (typeof p3 === "number") ? L.stack[p3] : p3;  /* FIXME */
 
     switch (op) {
         case LUA_OPBAND: case LUA_OPBOR: case LUA_OPBXOR:
         case LUA_OPSHL: case LUA_OPSHR:
         case LUA_OPBNOT: {  /* operate only on integers */
             let i1, i2;
-            if ((i1 = lvm.tointeger(p1)) !== false && (i2 = lvm.tointeger(p2)) !== false) {
+            if ((i1 = tointeger(p1)) !== false && (i2 = tointeger(p2)) !== false) {
                 res.setivalue(intarith(L, op, i1, i2));
                 return;
             }
@@ -774,7 +745,7 @@ export const luaO_arith = function(L, op, p1, p2, p3) {
         }
         case LUA_OPDIV: case LUA_OPPOW: {  /* operate only on floats */
             let n1, n2;
-            if ((n1 = lvm.tonumber(p1)) !== false && (n2 = lvm.tonumber(p2)) !== false) {
+            if ((n1 = tonumber(p1)) !== false && (n2 = tonumber(p2)) !== false) {
                 res.setfltvalue(numarith(L, op, n1, n2));
                 return;
             }
@@ -786,7 +757,7 @@ export const luaO_arith = function(L, op, p1, p2, p3) {
                 res.setivalue(intarith(L, op, p1.value, p2.value));
                 return;
             }
-            else if ((n1 = lvm.tonumber(p1)) !== false && (n2 = lvm.tonumber(p2)) !== false) {
+            else if ((n1 = tonumber(p1)) !== false && (n2 = tonumber(p2)) !== false) {
                 res.setfltvalue(numarith(L, op, n1, n2));
                 return;
             }
@@ -795,5 +766,53 @@ export const luaO_arith = function(L, op, p1, p2, p3) {
     }
     /* could not perform raw operation; try metamethod */
     lua_assert(L !== null);  /* should not fail when folding (compile time) */
-    ltm.luaT_trybinTM(L, p1, p2, p3, (op - LUA_OPADD) + ltm.TMS.TM_ADD);
+    luaT_trybinTM(L, p1, p2, p3, (op - LUA_OPADD) + TMS.TM_ADD);
 };
+
+
+const _CClosure = CClosure;
+export { _CClosure as CClosure };
+const _LClosure = LClosure;
+export { _LClosure as LClosure };
+const _LUA_TDEADKEY = LUA_TDEADKEY;
+export { _LUA_TDEADKEY as LUA_TDEADKEY };
+const _LUA_TPROTO = LUA_TPROTO;
+export { _LUA_TPROTO as LUA_TPROTO };
+const _LocVar = LocVar;
+export { _LocVar as LocVar };
+const _TValue = TValue;
+export { _TValue as TValue };
+const _Udata = Udata;
+export { _Udata as Udata };
+const _UTF8BUFFSZ = UTF8BUFFSZ;
+export { _UTF8BUFFSZ as UTF8BUFFSZ };
+const _luaO_arith = luaO_arith;
+export { _luaO_arith as luaO_arith };
+const _luaO_chunkid = luaO_chunkid;
+export { _luaO_chunkid as luaO_chunkid };
+const _luaO_hexavalue = luaO_hexavalue;
+export { _luaO_hexavalue as luaO_hexavalue };
+const _luaO_int2fb = luaO_int2fb;
+export { _luaO_int2fb as luaO_int2fb };
+const _luaO_pushfstring = luaO_pushfstring;
+export { _luaO_pushfstring as luaO_pushfstring };
+const _luaO_pushvfstring = luaO_pushvfstring;
+export { _luaO_pushvfstring as luaO_pushvfstring };
+const _luaO_str2num = luaO_str2num;
+export { _luaO_str2num as luaO_str2num };
+const _luaO_tostring = luaO_tostring;
+export { _luaO_tostring as luaO_tostring };
+const _luaO_utf8esc = luaO_utf8esc;
+export { _luaO_utf8esc as luaO_utf8esc };
+const _numarith = numarith;
+export { _numarith as numarith };
+const _pushobj2s = pushobj2s;
+export { _pushobj2s as pushobj2s };
+const _pushsvalue2s = pushsvalue2s;
+export { _pushsvalue2s as pushsvalue2s };
+const _setobjs2s = setobjs2s;
+export { _setobjs2s as setobjs2s };
+const _setobj2s = setobj2s;
+export { _setobj2s as setobj2s };
+const _setsvalue2s = setsvalue2s;
+export { _setsvalue2s as setsvalue2s };
