@@ -4,6 +4,8 @@ import { LUA_LOADED_TABLE, LUA_PRELOAD_TABLE, luaL_Buffer, luaL_addvalue, luaL_b
 import { LUA_VERSUFFIX } from './lualib.js';
 import { luastring_indexOf, to_jsstring, to_luastring, to_uristring } from "./fengaricore.js";
 import fengari from './fengari.js';
+import pathlib from 'path';
+import fs from 'fs';
 
 const global_env = (function () {
     if (typeof process !== "undefined") {
@@ -87,13 +89,12 @@ if (typeof process === "undefined") {
         }
     };
 } else {
-    const pathlib = require('path');
-    lsys_load = function (L, path, seeglb) {
+    lsys_load = async function (L, path, seeglb) {
         path = to_jsstring(path);
         /* relative paths should be relative to cwd, not this js file */
         path = pathlib.resolve(process.cwd(), path);
         try {
-            return require(path);
+            return await import(path); // TODO: use dynamic import - require is not supported in ESM modules
         } catch (e) {
             lua_pushstring(L, to_luastring(e.message));
             return null;
@@ -129,8 +130,6 @@ const noenv = function (L) {
 
 let readable;
 if (typeof process !== "undefined") { // Only with Node
-    const fs = require('fs');
-
     readable = function (filename) {
         try {
             let fd = fs.openSync(filename, 'r');

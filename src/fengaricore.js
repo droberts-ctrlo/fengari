@@ -6,7 +6,7 @@
  * avoid a dependency on defs.js from lauxlib.js they are defined in this file.
  */
 
-import { LUA_COPYRIGHT, is_luastring, luastring_eq, luastring_from, luastring_indexOf, luastring_of, to_jsstring, to_luastring, to_uristring, from_userstring } from "./defs.js";
+export { LUA_COPYRIGHT, is_luastring, luastring_eq, luastring_from, luastring_indexOf, luastring_of, to_jsstring, to_luastring, to_uristring, from_userstring } from "./defs.js";
 
 const FENGARI_VERSION_MAJOR   = "0";
 const FENGARI_VERSION_MINOR   = "1";
@@ -33,12 +33,3 @@ const _FENGARI_VERSION_NUM = FENGARI_VERSION_NUM;
 export { _FENGARI_VERSION_NUM as FENGARI_VERSION_NUM };
 const _FENGARI_VERSION_RELEASE = FENGARI_VERSION_RELEASE;
 export { _FENGARI_VERSION_RELEASE as FENGARI_VERSION_RELEASE };
-export const is_luastring            = is_luastring;
-export const luastring_eq            = luastring_eq;
-export const luastring_from          = luastring_from;
-export const luastring_indexOf       = luastring_indexOf;
-export const luastring_of            = luastring_of;
-export const to_jsstring             = to_jsstring;
-export const to_luastring            = to_luastring;
-export const to_uristring            = to_uristring;
-export const from_userstring         = from_userstring;

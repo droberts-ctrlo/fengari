@@ -2,6 +2,7 @@ import { LUA_MASKCALL, LUA_MASKCOUNT, LUA_MASKLINE, LUA_MASKRET, LUA_REGISTRYIND
 import { luaL_argcheck, luaL_argerror, luaL_checkany, luaL_checkinteger, luaL_checkstring, luaL_checktype, luaL_error, luaL_loadbuffer, luaL_newlib, luaL_optinteger, luaL_optstring, luaL_traceback, lua_writestringerror } from './lauxlib.js';
 import { lua_assert } from './lualib.js';
 import { luastring_indexOf, to_luastring } from "./fengaricore.js";
+import readlineSync from 'readline-sync';
 
 /*
 ** If L1 != L, L1 can be in any state, and therefore there are no
@@ -394,7 +395,6 @@ const dblib = {
 
 let getinput;
 if (typeof process !== "undefined") { // Only with Node
-    const readlineSync = require('readline-sync');
     readlineSync.setDefaultOptions({
         prompt: 'lua_debug> '
     });
