@@ -1,7 +1,7 @@
 {
   "name": "fengari",
   "version": "0.1.6",
-  "description": "A Lua VM written in JS ES6 targeting the browser",
+  "description": "A Lua VM written in JS modules targeting the browser",
   "main": "src/fengari.js",
   "type": "module",
   "directories": {
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fengari-lua/fengari.git"
+    "url": "git+https://github.com/droberts-ctrlo/fengari.git"
   },
   "keywords": [
     "lua",
@@ -37,12 +37,12 @@
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
     "babel-jest": "^30.4.1",
-    "eslint": "^5.15.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.0.0",
     "globals": "^17.6.0",
     "jest": "^24.5.0"
   },
   "dependencies": {
-    "eslint": "^10.0.0",
     "readline-sync": "^1.4.9",
     "sprintf-js": "^1.1.2",
     "tmp": "^0.0.33"
