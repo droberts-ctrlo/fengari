@@ -23,21 +23,26 @@
   ],
   "contributors": [
     "Benoit Giannangeli",
-    "Daurnimator <quae@daurnimator.com>"
+    "Daurnimator <quae@daurnimator.com>",
+    "Dave Roberts <d.roberts@ctrlo.com>"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fengari-lua/fengari/issues"
+    "url": "https://github.com/droberts-ctrlo/fengari/issues"
   },
-  "homepage": "https://github.com/fengari-lua/fengari#readme",
+  "homepage": "https://github.com/droberts-ctrlo/fengari#readme",
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
+    "@eslint/js": "^10.0.1",
     "babel-jest": "^30.4.1",
     "eslint": "^5.15.1",
+    "globals": "^17.6.0",
     "jest": "^24.5.0"
   },
   "dependencies": {
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.0.0",
     "readline-sync": "^1.4.9",
     "sprintf-js": "^1.1.2",
     "tmp": "^0.0.33"
