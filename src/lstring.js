@@ -1,5 +1,5 @@
 import { is_luastring, luastring_eq, luastring_from, to_luastring } from './defs.js';
-import { lua_assert } from "./llimits.js";
+import { lua_assert } from './llimits.js';
 
 class TString {
 
@@ -29,7 +29,7 @@ const luaS_eqlngstr = function (a, b) {
 const luaS_hash = function (str) {
     lua_assert(is_luastring(str));
     let len = str.length;
-    let s = "|";
+    let s = '|';
     for (let i = 0; i < len; i++)
         s += str[i].toString(16);
     return s;

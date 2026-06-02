@@ -49,11 +49,11 @@ const seterrorobj = function (L, errcode, oldtop) {
 
     switch (errcode) {
         case LUA_ERRMEM: {
-            setsvalue2s(L, oldtop, luaS_newliteral(L, "not enough memory"));
+            setsvalue2s(L, oldtop, luaS_newliteral(L, 'not enough memory'));
             break;
         }
         case LUA_ERRERR: {
-            setsvalue2s(L, oldtop, luaS_newliteral(L, "error in error handling"));
+            setsvalue2s(L, oldtop, luaS_newliteral(L, 'error in error handling'));
             break;
         }
         default: {
@@ -85,7 +85,7 @@ const luaD_growstack = function (L, n) {
         if (newsize < needed) newsize = needed;
         if (newsize > LUAI_MAXSTACK) {  /* stack overflow? */
             luaD_reallocstack(L, ERRORSTACKSIZE);
-            luaG_runerror(L, to_luastring("stack overflow", true));
+            luaG_runerror(L, to_luastring('stack overflow', true));
         }
         else
             luaD_reallocstack(L, newsize);
@@ -150,8 +150,8 @@ const luaD_precall = function (L, off, nresults) {
             if (L.hookmask & LUA_MASKCALL)
                 luaD_hook(L, LUA_HOOKCALL, -1);
             let n = f(L); /* do the actual call */
-            if (typeof n !== "number" || n < 0 || (n | 0) !== n)
-                throw Error("invalid return value from JS function (expected integer)");
+            if (typeof n !== 'number' || n < 0 || (n | 0) !== n)
+                throw Error('invalid return value from JS function (expected integer)');
             api_checknelems(L, n);
 
             luaD_poscall(L, ci, L.top - n, n);
@@ -315,7 +315,7 @@ const adjust_varargs = function (L, p, actual) {
 const tryfuncTM = function (L, off, func) {
     let tm = luaT_gettmbyobj(L, func, TMS.TM_CALL);
     if (!tm.ttisfunction(tm))
-        luaG_typeerror(L, func, to_luastring("call", true));
+        luaG_typeerror(L, func, to_luastring('call', true));
     /* Open a hole inside the stack at 'func' */
     pushobj2s(L, L.stack[L.top - 1]); /* push top of stack again */
     for (let p = L.top - 2; p > off; p--)
@@ -332,7 +332,7 @@ const tryfuncTM = function (L, off, func) {
 */
 const stackerror = function (L) {
     if (L.nCcalls === LUAI_MAXCCALLS)
-        luaG_runerror(L, to_luastring("JS stack overflow", true));
+        luaG_runerror(L, to_luastring('JS stack overflow', true));
     else if (L.nCcalls >= LUAI_MAXCCALLS + (LUAI_MAXCCALLS >> 3))
         luaD_throw(L, LUA_ERRERR);  /* error while handing stack error */
 };
@@ -516,7 +516,7 @@ const resume_error = function (L, msg, narg) {
     let ts = luaS_newliteral(L, msg);
     if (narg === 0) {
         pushsvalue2s(L, ts);
-        api_check(L, L.top <= L.ci.top, "stack overflow");
+        api_check(L, L.top <= L.ci.top, 'stack overflow');
     } else {
         /* remove args from the stack */
         for (let i = 1; i < narg; i++)
@@ -566,13 +566,13 @@ const lua_resume = function (L, from, nargs) {
 
     if (L.status === LUA_OK) {  /* may be starting a coroutine */
         if (L.ci !== L.base_ci)  /* not in base level? */
-            return resume_error(L, "cannot resume non-suspended coroutine", nargs);
+            return resume_error(L, 'cannot resume non-suspended coroutine', nargs);
     } else if (L.status !== LUA_YIELD)
-        return resume_error(L, "cannot resume dead coroutine", nargs);
+        return resume_error(L, 'cannot resume dead coroutine', nargs);
 
     L.nCcalls = from ? from.nCcalls + 1 : 1;
     if (L.nCcalls >= LUAI_MAXCCALLS)
-        return resume_error(L, "JS stack overflow", nargs);
+        return resume_error(L, 'JS stack overflow', nargs);
 
     L.nny = 0;  /* allow yields */
 
@@ -611,15 +611,15 @@ const lua_yieldk = function (L, nresults, ctx, k) {
 
     if (L.nny > 0) {
         if (L !== L.l_G.mainthread)
-            luaG_runerror(L, to_luastring("attempt to yield across a JS-call boundary", true));
+            luaG_runerror(L, to_luastring('attempt to yield across a JS-call boundary', true));
         else
-            luaG_runerror(L, to_luastring("attempt to yield from outside a coroutine", true));
+            luaG_runerror(L, to_luastring('attempt to yield from outside a coroutine', true));
     }
 
     L.status = LUA_YIELD;
     ci.extra = ci.funcOff;  /* save current 'func' */
     if (ci.callstatus & CIST_LUA)  /* inside a hook? */
-        api_check(L, k === null, "hooks cannot continue after yielding");
+        api_check(L, k === null, 'hooks cannot continue after yielding');
     else {
         ci.c_k = k;
         if (k !== null)  /* is there a continuation? */
@@ -685,7 +685,7 @@ class SParser {
 const checkmode = function (L, mode, x) {
     if (mode && luastring_indexOf(mode, x[0]) === -1) {
         luaO_pushfstring(L,
-            to_luastring("attempt to load a %s chunk (mode is '%s')"), x, mode);
+            to_luastring('attempt to load a %s chunk (mode is \'%s\')'), x, mode);
         luaD_throw(L, LUA_ERRSYNTAX);
     }
 };
@@ -694,10 +694,10 @@ const f_parser = function (L, p) {
     let cl;
     let c = p.z.zgetc();  /* read first character */
     if (c === LUA_SIGNATURE[0]) {
-        checkmode(L, p.mode, to_luastring("binary", true));
+        checkmode(L, p.mode, to_luastring('binary', true));
         cl = luaU_undump(L, p.z, p.name);
     } else {
-        checkmode(L, p.mode, to_luastring("text", true));
+        checkmode(L, p.mode, to_luastring('text', true));
         cl = luaY_parser(L, p.z, p.buff, p.dyd, p.name, c);
     }
 

@@ -38,10 +38,10 @@ const get_lightuserdata_hash = function (v) {
 const table_hash = function (L, key) {
     switch (key.type) {
         case LUA_TNIL:
-            return luaG_runerror(L, to_luastring("table index is nil", true));
+            return luaG_runerror(L, to_luastring('table index is nil', true));
         case LUA_TNUMFLT:
             if (isNaN(key.value))
-                return luaG_runerror(L, to_luastring("table index is NaN", true));
+                return luaG_runerror(L, to_luastring('table index is NaN', true));
         /* fall through */
         case LUA_TNUMINT: /* takes advantage of floats and integers being same in JS */
         case LUA_TBOOLEAN:
@@ -58,22 +58,22 @@ const table_hash = function (L, key) {
         case LUA_TLIGHTUSERDATA: {
             let v = key.value;
             switch (typeof v) {
-                case "string":
+                case 'string':
                     /* possible conflict with LUA_TSTRING.
                        prefix this string with "*" so they don't clash */
-                    return "*" + v;
-                case "number":
+                    return '*' + v;
+                case 'number':
                     /* possible conflict with LUA_TNUMBER.
                        turn into string and prefix with "#" to avoid clash with other strings */
-                    return "#" + v;
-                case "boolean":
+                    return '#' + v;
+                case 'boolean':
                     /* possible conflict with LUA_TBOOLEAN. use strings ?true and ?false instead */
-                    return v ? "?true" : "?false";
-                case "function":
+                    return v ? '?true' : '?false';
+                case 'function':
                     /* possible conflict with LUA_TLCF.
                        indirect via a weakmap */
                     return get_lightuserdata_hash(v);
-                case "object":
+                case 'object':
                     /* v could be a lua_State, CClosure, LClosure, Table or Userdata from this state as returned by lua_topointer */
                     if ((v instanceof lua_State && v.l_G === L.l_G) ||
                         v instanceof Table ||
@@ -89,7 +89,7 @@ const table_hash = function (L, key) {
             }
         }
         default:
-            throw new Error("unknown key type: " + key.type);
+            throw new Error('unknown key type: ' + key.type);
     }
 };
 
@@ -164,7 +164,7 @@ const getgeneric = function (t, hash) {
 };
 
 const luaH_getint = function (t, key) {
-    lua_assert(typeof key == "number" && (key | 0) === key);
+    lua_assert(typeof key == 'number' && (key | 0) === key);
     return getgeneric(t, key);
 };
 
@@ -181,7 +181,7 @@ const luaH_get = function (L, t, key) {
 };
 
 const luaH_setint = function (t, key, value) {
-    lua_assert(typeof key == "number" && (key | 0) === key && value instanceof TValue);
+    lua_assert(typeof key == 'number' && (key | 0) === key && value instanceof TValue);
     let hash = key; /* table_hash known result */
     if (value.ttisnil()) {
         mark_dead(t, hash);
@@ -272,7 +272,7 @@ const luaH_next = function (L, table, keyI) {
             entry = (table.dead_weak && table.dead_weak.get(hash)) || table.dead_strong.get(hash);
             if (!entry)
                 /* item not in table */
-                return luaG_runerror(L, to_luastring("invalid key to 'next'"));
+                return luaG_runerror(L, to_luastring('invalid key to \'next\''));
             /* Iterate until either out of keys, or until finding a non-dead key */
             do {
                 entry = entry.n;

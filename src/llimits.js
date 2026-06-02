@@ -1,5 +1,5 @@
 const lua_assert = function (c) {
-    if (!c) throw Error("assertion failed");
+    if (!c) throw Error('assertion failed');
 };
 const _lua_assert = lua_assert;
 export { _lua_assert as lua_assert };

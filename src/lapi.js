@@ -34,23 +34,23 @@ const {
     LUA_TUSERDATA
 } = constant_types;
 
-const {LUA_OK} = thread_status;
+const { LUA_OK } = thread_status;
 
 const api_incr_top = function (L) {
     L.top++;
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
 };
 
 const api_checknelems = function (L, n) {
-    api_check(L, n < (L.top - L.ci.funcOff), "not enough elements in the stack");
+    api_check(L, n < (L.top - L.ci.funcOff), 'not enough elements in the stack');
 };
 
 const fengari_argcheck = function (c) {
-    if (!c) throw TypeError("invalid argument");
+    if (!c) throw TypeError('invalid argument');
 };
 
 const fengari_argcheckinteger = function (n) {
-    fengari_argcheck(typeof n === "number" && (n | 0) === n);
+    fengari_argcheck(typeof n === 'number' && (n | 0) === n);
 };
 
 const isvalid = function (o) {
@@ -79,17 +79,17 @@ const index2addr = function (L, idx) {
     let ci = L.ci;
     if (idx > 0) {
         let o = ci.funcOff + idx;
-        api_check(L, idx <= ci.top - (ci.funcOff + 1), "unacceptable index");
+        api_check(L, idx <= ci.top - (ci.funcOff + 1), 'unacceptable index');
         if (o >= L.top) return luaO_nilobject;
         else return L.stack[o];
     } else if (idx > LUA_REGISTRYINDEX) {
-        api_check(L, idx !== 0 && -idx <= L.top, "invalid index");
+        api_check(L, idx !== 0 && -idx <= L.top, 'invalid index');
         return L.stack[L.top + idx];
     } else if (idx === LUA_REGISTRYINDEX) {
         return L.l_G.l_registry;
     } else { /* upvalues */
         idx = LUA_REGISTRYINDEX - idx;
-        api_check(L, idx <= MAXUPVAL + 1, "upvalue index too large");
+        api_check(L, idx <= MAXUPVAL + 1, 'upvalue index too large');
         if (ci.func.ttislcf()) /* light C function? */
             return luaO_nilobject; /* it has no upvalues */
         else {
@@ -103,21 +103,21 @@ const index2addr_ = function (L, idx) {
     let ci = L.ci;
     if (idx > 0) {
         let o = ci.funcOff + idx;
-        api_check(L, idx <= ci.top - (ci.funcOff + 1), "unacceptable index");
+        api_check(L, idx <= ci.top - (ci.funcOff + 1), 'unacceptable index');
         if (o >= L.top) return null;
         else return o;
     } else if (idx > LUA_REGISTRYINDEX) {
-        api_check(L, idx !== 0 && -idx <= L.top, "invalid index");
+        api_check(L, idx !== 0 && -idx <= L.top, 'invalid index');
         return L.top + idx;
     } else { /* registry or upvalue */
-        throw Error("attempt to use pseudo-index");
+        throw Error('attempt to use pseudo-index');
     }
 };
 
 const lua_checkstack = function (L, n) {
     let res;
     let ci = L.ci;
-    api_check(L, n >= 0, "negative 'n'");
+    api_check(L, n >= 0, 'negative \'n\'');
     if (L.stack_last - L.top > n) /* stack large enough? */
         res = true;
     else { /* no; need to grow stack */
@@ -139,8 +139,8 @@ const lua_checkstack = function (L, n) {
 const lua_xmove = function (from, to, n) {
     if (from === to) return;
     api_checknelems(from, n);
-    api_check(from, from.l_G === to.l_G, "moving among independent states");
-    api_check(from, to.ci.top - to.top >= n, "stack overflow");
+    api_check(from, from.l_G === to.l_G, 'moving among independent states');
+    api_check(from, to.ci.top - to.top >= n, 'stack overflow');
     from.top -= n;
     for (let i = 0; i < n; i++) {
         to.stack[to.top] = new _TValue();
@@ -169,17 +169,17 @@ const lua_gettop = function (L) {
 
 const lua_pushvalue = function (L, idx) {
     pushobj2s(L, index2addr(L, idx));
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
 };
 
 const lua_settop = function (L, idx) {
     let func = L.ci.funcOff;
     let newtop;
     if (idx >= 0) {
-        api_check(L, idx <= L.stack_last - (func + 1), "new top too large");
+        api_check(L, idx <= L.stack_last - (func + 1), 'new top too large');
         newtop = func + 1 + idx;
     } else {
-        api_check(L, -(idx + 1) <= L.top - (func + 1), "invalid new top");
+        api_check(L, -(idx + 1) <= L.top - (func + 1), 'invalid new top');
         newtop = L.top + idx + 1; /* 'subtract' index (index is negative) */
     }
     adjust_top(L, newtop);
@@ -206,8 +206,8 @@ const lua_rotate = function (L, idx, n) {
     let t = L.top - 1;
     let pIdx = index2addr_(L, idx);
     let p = L.stack[pIdx];
-    api_check(L, isvalid(p) && idx > LUA_REGISTRYINDEX, "index not in the stack");
-    api_check(L, (n >= 0 ? n : -n) <= (t - pIdx + 1), "invalid 'n'");
+    api_check(L, isvalid(p) && idx > LUA_REGISTRYINDEX, 'index not in the stack');
+    api_check(L, (n >= 0 ? n : -n) <= (t - pIdx + 1), 'invalid \'n\'');
     let m = n >= 0 ? t - n : pIdx - n - 1;  /* end of prefix */
     reverse(L, pIdx, m);
     reverse(L, m + 1, L.top - 1);
@@ -243,7 +243,7 @@ const lua_pushnil = function (L) {
 };
 
 const lua_pushnumber = function (L, n) {
-    fengari_argcheck(typeof n === "number");
+    fengari_argcheck(typeof n === 'number');
     L.stack[L.top] = new TValue(LUA_TNUMFLT, n);
     api_incr_top(L);
 };
@@ -258,15 +258,15 @@ const lua_pushlstring = function (L, s, len) {
     fengari_argcheckinteger(len);
     let ts;
     if (len === 0) {
-        s = to_luastring("", true);
+        s = to_luastring('', true);
         ts = luaS_bless(L, s);
     } else {
         s = from_userstring(s);
-        api_check(L, s.length >= len, "invalid length to lua_pushlstring");
+        api_check(L, s.length >= len, 'invalid length to lua_pushlstring');
         ts = luaS_new(L, s.subarray(0, len));
     }
     pushsvalue2s(L, ts);
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     return ts.value;
 };
 
@@ -279,7 +279,7 @@ const lua_pushstring = function (L, s) {
         pushsvalue2s(L, ts);
         s = ts.getstr(); /* internal copy */
     }
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     return s;
 };
 
@@ -299,24 +299,24 @@ const lua_pushliteral = function (L, s) {
         L.stack[L.top] = new TValue(LUA_TNIL, null);
         L.top++;
     } else {
-        fengari_argcheck(typeof s === "string");
+        fengari_argcheck(typeof s === 'string');
         let ts = luaS_newliteral(L, s);
         pushsvalue2s(L, ts);
         s = ts.getstr(); /* internal copy */
     }
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
 
     return s;
 };
 
 const lua_pushcclosure = function (L, fn, n) {
-    fengari_argcheck(typeof fn === "function");
+    fengari_argcheck(typeof fn === 'function');
     fengari_argcheckinteger(n);
     if (n === 0)
         L.stack[L.top] = new TValue(LUA_TLCF, fn);
     else {
         api_checknelems(L, n);
-        api_check(L, n <= MAXUPVAL, "upvalue index too large");
+        api_check(L, n <= MAXUPVAL, 'upvalue index too large');
         let cl = new CClosure(L, fn, n);
         for (let i = 0; i < n; i++)
             cl.upvalue[i].setfrom(L.stack[L.top - n + i]);
@@ -368,7 +368,7 @@ const auxsetstr = function (L, t, k) {
     let str = luaS_new(L, from_userstring(k));
     api_checknelems(L, 1);
     pushsvalue2s(L, str); /* push 'str' (to make it a TValue) */
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     settable(L, t, L.stack[L.top - 1], L.stack[L.top - 2]);
     /* pop value and key */
     delete L.stack[--L.top];
@@ -386,7 +386,7 @@ const lua_setmetatable = function (L, objindex) {
     if (L.stack[L.top - 1].ttisnil())
         mt = null;
     else {
-        api_check(L, L.stack[L.top - 1].ttistable(), "table expected");
+        api_check(L, L.stack[L.top - 1].ttistable(), 'table expected');
         mt = L.stack[L.top - 1].value;
     }
 
@@ -433,7 +433,7 @@ const lua_seti = function (L, idx, n) {
 const lua_rawset = function (L, idx) {
     api_checknelems(L, 2);
     let o = index2addr(L, idx);
-    api_check(L, o.ttistable(), "table expected");
+    api_check(L, o.ttistable(), 'table expected');
     let k = L.stack[L.top - 2];
     let v = L.stack[L.top - 1];
     luaH_setfrom(L, o.value, k, v);
@@ -446,7 +446,7 @@ const lua_rawseti = function (L, idx, n) {
     fengari_argcheckinteger(n);
     api_checknelems(L, 1);
     let o = index2addr(L, idx);
-    api_check(L, o.ttistable(), "table expected");
+    api_check(L, o.ttistable(), 'table expected');
     luaH_setint(o.value, n, L.stack[L.top - 1]);
     delete L.stack[--L.top];
 };
@@ -454,7 +454,7 @@ const lua_rawseti = function (L, idx, n) {
 const lua_rawsetp = function (L, idx, p) {
     api_checknelems(L, 1);
     let o = index2addr(L, idx);
-    api_check(L, o.ttistable(), "table expected");
+    api_check(L, o.ttistable(), 'table expected');
     let k = new TValue(LUA_TLIGHTUSERDATA, p);
     let v = L.stack[L.top - 1];
     luaH_setfrom(L, o.value, k, v);
@@ -468,7 +468,7 @@ const lua_rawsetp = function (L, idx, p) {
 const auxgetstr = function (L, t, k) {
     let str = luaS_new(L, from_userstring(k));
     pushsvalue2s(L, str);
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     luaV_gettable(L, t, L.stack[L.top - 1], L.top - 1);
     return L.stack[L.top - 1].ttnov();
 };
@@ -476,24 +476,24 @@ const auxgetstr = function (L, t, k) {
 const lua_rawgeti = function (L, idx, n) {
     let t = index2addr(L, idx);
     fengari_argcheckinteger(n);
-    api_check(L, t.ttistable(), "table expected");
+    api_check(L, t.ttistable(), 'table expected');
     pushobj2s(L, luaH_getint(t.value, n));
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     return L.stack[L.top - 1].ttnov();
 };
 
 const lua_rawgetp = function (L, idx, p) {
     let t = index2addr(L, idx);
-    api_check(L, t.ttistable(), "table expected");
+    api_check(L, t.ttistable(), 'table expected');
     let k = new TValue(LUA_TLIGHTUSERDATA, p);
     pushobj2s(L, luaH_get(L, t.value, k));
-    api_check(L, L.top <= L.ci.top, "stack overflow");
+    api_check(L, L.top <= L.ci.top, 'stack overflow');
     return L.stack[L.top - 1].ttnov();
 };
 
 const lua_rawget = function (L, idx) {
     let t = index2addr(L, idx);
-    api_check(L, t.ttistable(t), "table expected");
+    api_check(L, t.ttistable(t), 'table expected');
     setobj2s(L, L.top - 1, luaH_get(L, t.value, L.stack[L.top - 1]));
     return L.stack[L.top - 1].ttnov();
 };
@@ -523,7 +523,7 @@ const aux_upvalue = function (L, fi, n) {
             let f = fi.value;
             if (!(1 <= n && n <= f.nupvalues)) return null;
             return {
-                name: to_luastring("", true),
+                name: to_luastring('', true),
                 val: f.upvalue[n - 1]
             };
         }
@@ -533,7 +533,7 @@ const aux_upvalue = function (L, fi, n) {
             if (!(1 <= n && n <= p.upvalues.length)) return null;
             let name = p.upvalues[n - 1].name;
             return {
-                name: name ? name.getstr() : to_luastring("(*no name)", true),
+                name: name ? name.getstr() : to_luastring('(*no name)', true),
                 val: f.upvals[n - 1]
             };
         }
@@ -547,7 +547,7 @@ const lua_getupvalue = function (L, funcindex, n) {
         let name = up.name;
         let val = up.val;
         pushobj2s(L, val);
-        api_check(L, L.top <= L.ci.top, "stack overflow");
+        api_check(L, L.top <= L.ci.top, 'stack overflow');
         return name;
     }
     return null;
@@ -601,7 +601,7 @@ const lua_getmetatable = function (L, objindex) {
 
 const lua_getuservalue = function (L, idx) {
     let o = index2addr(L, idx);
-    api_check(L, o.ttisfulluserdata(), "full userdata expected");
+    api_check(L, o.ttisfulluserdata(), 'full userdata expected');
     let uv = o.value.uservalue;
     L.stack[L.top] = new TValue(uv.type, uv.value);
     api_incr_top(L);
@@ -759,7 +759,7 @@ const lua_isproxy = function (p, L) {
 /* Use 'create_proxy' helper function so that 'L' is not in scope */
 const create_proxy = function (G, type, value) {
     let proxy = function (L) {
-        api_check(L, L instanceof lua_State && G === L.l_G, "must be from same global state");
+        api_check(L, L instanceof lua_State && G === L.l_G, 'must be from same global state');
         L.stack[L.top] = new TValue(type, value);
         api_incr_top(L);
     };
@@ -785,7 +785,7 @@ const lua_compare = function (L, index1, index2, op) {
             case LUA_OPEQ: i = luaV_equalobj(L, o1, o2); break;
             case LUA_OPLT: i = luaV_lessthan(L, o1, o2); break;
             case LUA_OPLE: i = luaV_lessequal(L, o1, o2); break;
-            default: api_check(L, false, "invalid option");
+            default: api_check(L, false, 'invalid option');
         }
     }
 
@@ -812,7 +812,7 @@ const lua_type = function (L, idx) {
 };
 
 const lua_typename = function (L, t) {
-    api_check(L, LUA_TNONE <= t && t < LUA_NUMTAGS, "invalid tag");
+    api_check(L, LUA_TNONE <= t && t < LUA_NUMTAGS, 'invalid tag');
     return ttypename(t);
 };
 
@@ -883,7 +883,7 @@ const lua_arith = function (L, op) {
     else {  /* for unary operations, add fake 2nd operand */
         api_checknelems(L, 1);
         pushobj2s(L, L.stack[L.top - 1]);
-        api_check(L, L.top <= L.ci.top, "stack overflow");
+        api_check(L, L.top <= L.ci.top, 'stack overflow');
     }
     /* first operand at top - 2, second at top - 1; result go to top - 2 */
     luaO_arith(L, op, L.stack[L.top - 2], L.stack[L.top - 1], L.stack[L.top - 2]);
@@ -894,7 +894,7 @@ const lua_arith = function (L, op) {
 ** 'load' and 'call' functions (run Lua code)
 */
 
-const default_chunkname = to_luastring("?");
+const default_chunkname = to_luastring('?');
 const lua_load = function (L, reader, data, chunkname, mode) {
     if (!chunkname) chunkname = default_chunkname;
     else chunkname = from_userstring(chunkname);
@@ -928,20 +928,20 @@ const lua_status = function (L) {
 const lua_setuservalue = function (L, idx) {
     api_checknelems(L, 1);
     let o = index2addr(L, idx);
-    api_check(L, o.ttisfulluserdata(), "full userdata expected");
+    api_check(L, o.ttisfulluserdata(), 'full userdata expected');
     o.value.uservalue.setfrom(L.stack[L.top - 1]);
     delete L.stack[--L.top];
 };
 
 const checkresults = function (L, na, nr) {
     api_check(L, nr === LUA_MULTRET || (L.ci.top - L.top >= (nr) - (na)),
-        "results from function overflow current stack size");
+        'results from function overflow current stack size');
 };
 
 const lua_callk = function (L, nargs, nresults, ctx, k) {
-    api_check(L, k === null || !(L.ci.callstatus & CIST_LUA), "cannot use continuations inside hooks");
+    api_check(L, k === null || !(L.ci.callstatus & CIST_LUA), 'cannot use continuations inside hooks');
     api_checknelems(L, nargs + 1);
-    api_check(L, L.status === LUA_OK, "cannot do calls on non-normal thread");
+    api_check(L, L.status === LUA_OK, 'cannot do calls on non-normal thread');
     checkresults(L, nargs, nresults);
     let func = L.top - (nargs + 1);
     if (k !== null && L.nny === 0) { /* need to prepare continuation? */
@@ -961,9 +961,9 @@ const lua_call = function (L, n, r) {
 };
 
 const lua_pcallk = function (L, nargs, nresults, errfunc, ctx, k) {
-    api_check(L, k === null || !(L.ci.callstatus & CIST_LUA), "cannot use continuations inside hooks");
+    api_check(L, k === null || !(L.ci.callstatus & CIST_LUA), 'cannot use continuations inside hooks');
     api_checknelems(L, nargs + 1);
-    api_check(L, L.status === LUA_OK, "cannot do calls on non-normal thread");
+    api_check(L, L.status === LUA_OK, 'cannot do calls on non-normal thread');
     checkresults(L, nargs, nresults);
     let status;
     let func;
@@ -1016,7 +1016,7 @@ const lua_error = function (L) {
 
 const lua_next = function (L, idx) {
     let t = index2addr(L, idx);
-    api_check(L, t.ttistable(), "table expected");
+    api_check(L, t.ttistable(), 'table expected');
     L.stack[L.top] = new TValue();
     let more = luaH_next(L, t.value, L.top - 1);
     if (more) {
@@ -1034,8 +1034,8 @@ const lua_concat = function (L, n) {
     if (n >= 2)
         luaV_concat(L, n);
     else if (n === 0) {
-        pushsvalue2s(L, luaS_bless(L, to_luastring("", true)));
-        api_check(L, L.top <= L.ci.top, "stack overflow");
+        pushsvalue2s(L, luaS_bless(L, to_luastring('', true)));
+        api_check(L, L.top <= L.ci.top, 'stack overflow');
     }
 };
 
@@ -1049,10 +1049,10 @@ const lua_len = function (L, idx) {
 
 const getupvalref = function (L, fidx, n) {
     let fi = index2addr(L, fidx);
-    api_check(L, fi.ttisLclosure(), "Lua function expected");
+    api_check(L, fi.ttisLclosure(), 'Lua function expected');
     let f = fi.value;
     fengari_argcheckinteger(n);
-    api_check(L, 1 <= n && n <= f.p.upvalues.length, "invalid upvalue index");
+    api_check(L, 1 <= n && n <= f.p.upvalues.length, 'invalid upvalue index');
     return {
         f: f,
         i: n - 1
@@ -1068,11 +1068,11 @@ const lua_upvalueid = function (L, fidx, n) {
         }
         case LUA_TCCL: {  /* C closure */
             let f = fi.value;
-            api_check(L, (n | 0) === n && n > 0 && n <= f.nupvalues, "invalid upvalue index");
+            api_check(L, (n | 0) === n && n > 0 && n <= f.nupvalues, 'invalid upvalue index');
             return f.upvalue[n - 1];
         }
         default: {
-            api_check(L, false, "closure expected");
+            api_check(L, false, 'closure expected');
             return null;
         }
     }
@@ -1089,17 +1089,17 @@ const lua_upvaluejoin = function (L, fidx1, n1, fidx2, n2) {
 const lua_gc = function () { };
 
 const lua_getallocf = function () {
-    console.warn("lua_getallocf is not available");
+    console.warn('lua_getallocf is not available');
     return 0;
 };
 
 const lua_setallocf = function () {
-    console.warn("lua_setallocf is not available");
+    console.warn('lua_setallocf is not available');
     return 0;
 };
 
 const lua_getextraspace = function () {
-    console.warn("lua_getextraspace is not available");
+    console.warn('lua_getextraspace is not available');
     return 0;
 };
 

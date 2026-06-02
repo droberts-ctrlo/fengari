@@ -11,15 +11,15 @@ import { LUA_VERSION_MAJOR, LUA_VERSION_MINOR, to_luastring } from './defs.js';
 ** LUA_EXEC_DIR in a Windows path is replaced by the executable's
 ** directory.
 */
-const LUA_PATH_SEP = ";";
+const LUA_PATH_SEP = ';';
 const _LUA_PATH_SEP = LUA_PATH_SEP;
 export { _LUA_PATH_SEP as LUA_PATH_SEP };
 
-const LUA_PATH_MARK = "?";
+const LUA_PATH_MARK = '?';
 const _LUA_PATH_MARK = LUA_PATH_MARK;
 export { _LUA_PATH_MARK as LUA_PATH_MARK };
 
-const LUA_EXEC_DIR = "!";
+const LUA_EXEC_DIR = '!';
 const _LUA_EXEC_DIR = LUA_EXEC_DIR;
 export { _LUA_EXEC_DIR as LUA_EXEC_DIR };
 
@@ -32,75 +32,76 @@ export { _LUA_EXEC_DIR as LUA_EXEC_DIR };
 ** hierarchy or if you want to install your libraries in
 ** non-conventional directories.
 */
-const LUA_VDIR = LUA_VERSION_MAJOR + "." + LUA_VERSION_MINOR;
+const LUA_VDIR = LUA_VERSION_MAJOR + '.' + LUA_VERSION_MINOR;
 const _LUA_VDIR = LUA_VDIR;
 export { _LUA_VDIR as LUA_VDIR };
 
-export let LUA_DIRSEP, LUA_LDIR, LUA_JSDIR, LUA_SHRDIR, LUA_PATH_DEFAULT, LUA_JSPATH_DEFAULT, LUA_ROOT, LUA_ROOT2, LUA_LDIR2, LUA_JSDIR2;
+export let LUA_DIRSEP, LUA_LDIR, LUA_JSDIR, LUA_SHRDIR, LUA_PATH_DEFAULT, LUA_JSPATH_DEFAULT, LUA_ROOT;
 
-if (typeof process === "undefined") {
-    LUA_DIRSEP = "/";
+if (typeof process === 'undefined') {
+    LUA_DIRSEP = '/';
 
-    LUA_LDIR = "./lua/" + LUA_VDIR + "/";
+    LUA_LDIR = './lua/' + LUA_VDIR + '/';
 
     LUA_JSDIR = LUA_LDIR;
 
     LUA_PATH_DEFAULT = to_luastring(
-        LUA_LDIR + "?.lua;" + LUA_LDIR + "?/init.lua;" +
+        LUA_LDIR + '?.lua;' + LUA_LDIR + '?/init.lua;' +
         /* LUA_JSDIR excluded as it is equal to LUA_LDIR */
-        "./?.lua;./?/init.lua"
+        './?.lua;./?/init.lua'
     );
 
     LUA_JSPATH_DEFAULT = to_luastring(
-        LUA_JSDIR + "?.js;" + LUA_JSDIR + "loadall.js;./?.js"
+        LUA_JSDIR + '?.js;' + LUA_JSDIR + 'loadall.js;./?.js'
     );
 } else if (platform() === 'win32') {
-    LUA_DIRSEP = "\\";
+    LUA_DIRSEP = '\\';
 
     /*
     ** In Windows, any exclamation mark ('!') in the path is replaced by the
     ** path of the directory of the executable file of the current process.
     */
-    LUA_LDIR = "!\\lua\\";
+    LUA_LDIR = '!\\lua\\';
 
-    LUA_JSDIR = "!\\";
+    LUA_JSDIR = '!\\';
 
-    LUA_SHRDIR = "!\\..\\share\\lua\\" + LUA_VDIR + "\\";
+    LUA_SHRDIR = '!\\..\\share\\lua\\' + LUA_VDIR + '\\';
 
     LUA_PATH_DEFAULT = to_luastring(
-        LUA_LDIR + "?.lua;" + LUA_LDIR + "?\\init.lua;" +
-        LUA_JSDIR + "?.lua;" + LUA_JSDIR + "?\\init.lua;" +
-        LUA_SHRDIR + "?.lua;" + LUA_SHRDIR + "?\\init.lua;" +
-        ".\\?.lua;.\\?\\init.lua"
+        LUA_LDIR + '?.lua;' + LUA_LDIR + '?\\init.lua;' +
+        LUA_JSDIR + '?.lua;' + LUA_JSDIR + '?\\init.lua;' +
+        LUA_SHRDIR + '?.lua;' + LUA_SHRDIR + '?\\init.lua;' +
+        '.\\?.lua;.\\?\\init.lua'
     );
 
     LUA_JSPATH_DEFAULT = to_luastring(
-        LUA_JSDIR + "?.js;" +
-        LUA_JSDIR + "..\\share\\lua\\" + LUA_VDIR + "\\?.js;" +
-        LUA_JSDIR + "loadall.js;.\\?.js"
+        LUA_JSDIR + '?.js;' +
+        LUA_JSDIR + '..\\share\\lua\\' + LUA_VDIR + '\\?.js;' +
+        LUA_JSDIR + 'loadall.js;.\\?.js'
     );
 } else {
-    LUA_DIRSEP = "/";
+    LUA_DIRSEP = '/';
 
-    LUA_ROOT = "/usr/local/";
+    LUA_ROOT = '/usr/local/';
+    const LUA_ROOT2 = '/usr/';
 
-    LUA_LDIR = LUA_ROOT + "share/lua/" + LUA_VDIR + "/";
-    LUA_LDIR2 = LUA_ROOT2 + "share/lua/" + LUA_VDIR + "/";
+    LUA_LDIR = LUA_ROOT + 'share/lua/' + LUA_VDIR + '/';
+    const LUA_LDIR2 = LUA_ROOT2 + 'share/lua/' + LUA_VDIR + '/';
 
     LUA_JSDIR = LUA_LDIR;
-    LUA_JSDIR2 = LUA_LDIR2;
+    const LUA_JSDIR2 = LUA_LDIR2;
 
     LUA_PATH_DEFAULT = to_luastring(
-        LUA_LDIR + "?.lua;" + LUA_LDIR + "?/init.lua;" +
-        LUA_LDIR2 + "?.lua;" + LUA_LDIR2 + "?/init.lua;" +
+        LUA_LDIR + '?.lua;' + LUA_LDIR + '?/init.lua;' +
+        LUA_LDIR2 + '?.lua;' + LUA_LDIR2 + '?/init.lua;' +
         /* LUA_JSDIR(2) excluded as it is equal to LUA_LDIR(2) */
-        "./?.lua;./?/init.lua"
+        './?.lua;./?/init.lua'
     );
 
     LUA_JSPATH_DEFAULT = to_luastring(
-        LUA_JSDIR + "?.js;" + LUA_JSDIR + "loadall.js;" +
-        LUA_JSDIR2 + "?.js;" + LUA_JSDIR2 + "loadall.js;" +
-        "./?.js"
+        LUA_JSDIR + '?.js;' + LUA_JSDIR + 'loadall.js;' +
+        LUA_JSDIR2 + '?.js;' + LUA_JSDIR2 + 'loadall.js;' +
+        './?.js'
     );
 }
 
@@ -134,11 +135,11 @@ const lua_numbertointeger = function (n) {
     return n >= LUA_MININTEGER && n < -LUA_MININTEGER ? n : false;
 };
 
-const LUA_INTEGER_FRMLEN = "";
-const LUA_NUMBER_FRMLEN = "";
+const LUA_INTEGER_FRMLEN = '';
+const LUA_NUMBER_FRMLEN = '';
 
 const LUA_INTEGER_FMT = `%${LUA_INTEGER_FRMLEN}d`;
-const LUA_NUMBER_FMT = "%.14g";
+const LUA_NUMBER_FMT = '%.14g';
 
 const lua_getlocaledecpoint = function () {
     /* we hard-code the decimal point to '.' as a user cannot change the

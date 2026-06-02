@@ -1,4 +1,4 @@
-import { lua_assert } from "./llimits.js";
+import { lua_assert } from './llimits.js';
 
 class MBuffer {
     constructor() {
@@ -29,7 +29,7 @@ const luaZ_resizebuffer = function(L, buff, size) {
 class ZIO {
     constructor(L, reader, data) {
         this.L = L;           /* Lua state (for reader) */
-        lua_assert(typeof reader == "function", "ZIO requires a reader");
+        lua_assert(typeof reader == 'function', 'ZIO requires a reader');
         this.reader = reader; /* reader function */
         this.data = data;     /* additional data */
         this.n = 0;           /* bytes still unread */
@@ -48,7 +48,7 @@ const luaZ_fill = function(z) {
     let buff = z.reader(z.L, z.data);
     if (buff === null)
         return EOZ;
-    lua_assert(buff instanceof Uint8Array, "Should only load binary of array of bytes");
+    lua_assert(buff instanceof Uint8Array, 'Should only load binary of array of bytes');
     let size = buff.length;
     if (size === 0)
         return EOZ;
