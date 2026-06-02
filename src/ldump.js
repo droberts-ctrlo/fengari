@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import { LUA_SIGNATURE, LUA_VERSION_MAJOR, LUA_VERSION_MINOR, constant_types, luastring_of } from './defs.js';
 

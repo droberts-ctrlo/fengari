@@ -3,7 +3,7 @@ import { luaD_throw, luaD_inctop } from './ldo.js';
 import { Proto, luaF_newLclosure } from './lfunc.js';
 import { TValue, luaO_pushfstring } from './lobject.js';
 import { MAXARG_sBx, POS_A, POS_Ax, POS_B, POS_Bx, POS_C, POS_OP, SIZE_A, SIZE_Ax, SIZE_B, SIZE_Bx, SIZE_C, SIZE_OP } from './lopcodes.js';
-import { lua_assert } from "./llimits.js";
+import { lua_assert } from './llimits.js';
 import { luaS_bless } from './lstring.js';
 import { luaZ_read, ZIO } from './lzio.js';
 
@@ -29,13 +29,13 @@ class BytecodeParser {
         this.integerSize = 4;
         this.numberSize = 8;
 
-        lua_assert(Z instanceof ZIO, "BytecodeParser only operates on a ZIO");
+        lua_assert(Z instanceof ZIO, 'BytecodeParser only operates on a ZIO');
         lua_assert(is_luastring(name));
 
         if (name[0] === 64 /* ('@').charCodeAt(0) */ || name[0] === 61 /* ('=').charCodeAt(0) */)
             this.name = name.subarray(1);
         else if (name[0] == LUA_SIGNATURE[0])
-            this.name = to_luastring("binary string", true);
+            this.name = to_luastring('binary string', true);
         else
             this.name = name;
 
@@ -53,31 +53,31 @@ class BytecodeParser {
     read(size) {
         let u8 = new Uint8Array(size);
         if (luaZ_read(this.Z, u8, 0, size) !== 0)
-            this.error("truncated");
+            this.error('truncated');
         return u8;
     }
 
     LoadByte() {
         if (luaZ_read(this.Z, this.u8, 0, 1) !== 0)
-            this.error("truncated");
+            this.error('truncated');
         return this.u8[0];
     }
 
     LoadInt() {
         if (luaZ_read(this.Z, this.u8, 0, this.intSize) !== 0)
-            this.error("truncated");
+            this.error('truncated');
         return this.dv.getInt32(0, true);
     }
 
     LoadNumber() {
         if (luaZ_read(this.Z, this.u8, 0, this.numberSize) !== 0)
-            this.error("truncated");
+            this.error('truncated');
         return this.dv.getFloat64(0, true);
     }
 
     LoadInteger() {
         if (luaZ_read(this.Z, this.u8, 0, this.integerSize) !== 0)
-            this.error("truncated");
+            this.error('truncated');
         return this.dv.getInt32(0, true);
     }
 
@@ -105,7 +105,7 @@ class BytecodeParser {
 
         for (let i = 0; i < n; i++) {
             if (luaZ_read(this.Z, this.u8, 0, this.instructionSize) !== 0)
-                this.error("truncated");
+                this.error('truncated');
             let ins = this.dv.getUint32(0, true);
             f.code[i] = {
                 code: ins,
@@ -213,15 +213,15 @@ class BytecodeParser {
     }
 
     checkHeader() {
-        this.checkliteral(LUA_SIGNATURE.subarray(1), "not a"); /* 1st char already checked */
+        this.checkliteral(LUA_SIGNATURE.subarray(1), 'not a'); /* 1st char already checked */
 
         if (this.LoadByte() !== 0x53)
-            this.error("version mismatch in");
+            this.error('version mismatch in');
 
         if (this.LoadByte() !== 0)
-            this.error("format mismatch in");
+            this.error('format mismatch in');
 
-        this.checkliteral(LUAC_DATA, "corrupted");
+        this.checkliteral(LUAC_DATA, 'corrupted');
 
         this.intSize = this.LoadByte();
         this.size_tSize = this.LoadByte();
@@ -229,22 +229,22 @@ class BytecodeParser {
         this.integerSize = this.LoadByte();
         this.numberSize = this.LoadByte();
 
-        this.checksize(this.intSize, 4, "int");
-        this.checksize(this.size_tSize, 4, "size_t");
-        this.checksize(this.instructionSize, 4, "instruction");
-        this.checksize(this.integerSize, 4, "integer");
-        this.checksize(this.numberSize, 8, "number");
+        this.checksize(this.intSize, 4, 'int');
+        this.checksize(this.size_tSize, 4, 'size_t');
+        this.checksize(this.instructionSize, 4, 'instruction');
+        this.checksize(this.integerSize, 4, 'integer');
+        this.checksize(this.numberSize, 8, 'number');
 
         if (this.LoadInteger() !== 0x5678)
-            this.error("endianness mismatch in");
+            this.error('endianness mismatch in');
 
         if (this.LoadNumber() !== 370.5)
-            this.error("float format mismatch in");
+            this.error('float format mismatch in');
 
     }
 
     error(why) {
-        luaO_pushfstring(this.L, to_luastring("%s: %s precompiled chunk"), this.name, to_luastring(why));
+        luaO_pushfstring(this.L, to_luastring('%s: %s precompiled chunk'), this.name, to_luastring(why));
         luaD_throw(this.L, LUA_ERRSYNTAX);
     }
 

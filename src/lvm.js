@@ -585,13 +585,13 @@ const luaV_execute = function (L) {
                 } else { /* try making all values floats */
                     let nlimit, nstep, ninit;
                     if ((nlimit = tonumber(plimit)) === false)
-                        luaG_runerror(L, to_luastring("'for' limit must be a number", true));
+                        luaG_runerror(L, to_luastring('\'for\' limit must be a number', true));
                     L.stack[ra + 1].setfltvalue(nlimit);
                     if ((nstep = tonumber(pstep)) === false)
-                        luaG_runerror(L, to_luastring("'for' step must be a number", true));
+                        luaG_runerror(L, to_luastring('\'for\' step must be a number', true));
                     L.stack[ra + 2].setfltvalue(nstep);
                     if ((ninit = tonumber(init)) === false)
-                        luaG_runerror(L, to_luastring("'for' initial value must be a number", true));
+                        luaG_runerror(L, to_luastring('\'for\' initial value must be a number', true));
                     L.stack[ra].setfltvalue(ninit - nstep);
                 }
 
@@ -670,7 +670,7 @@ const luaV_execute = function (L) {
                 break;
             }
             case OP_EXTRAARG: {
-                throw Error("invalid opcode");
+                throw Error('invalid opcode');
             }
         }
     }
@@ -895,7 +895,7 @@ const luaV_objlen = function (L, ra, rb) {
         default: {
             tm = luaT_gettmbyobj(L, rb, TMS.TM_LEN);
             if (tm.ttisnil())
-                luaG_typeerror(L, rb, to_luastring("get length of", true));
+                luaG_typeerror(L, rb, to_luastring('get length of', true));
             break;
         }
     }
@@ -918,14 +918,14 @@ const luaV_imul = Math.imul || function (a, b) {
 
 const luaV_div = function (L, m, n) {
     if (n === 0)
-        luaG_runerror(L, to_luastring("attempt to divide by zero"));
+        luaG_runerror(L, to_luastring('attempt to divide by zero'));
     return Math.floor(m / n) | 0;
 };
 
 // % semantic on negative numbers is different in js
 const luaV_mod = function (L, m, n) {
     if (n === 0)
-        luaG_runerror(L, to_luastring("attempt to perform 'n%%0'"));
+        luaG_runerror(L, to_luastring('attempt to perform \'n%%0\''));
     return (m - Math.floor(m / n) * n) | 0;
 };
 
@@ -1085,7 +1085,7 @@ const luaV_gettable = function (L, t, key, ra) {
         t = tm;  /* else try to access 'tm[key]' */
     }
 
-    luaG_runerror(L, to_luastring("'__index' chain too long; possible loop", true));
+    luaG_runerror(L, to_luastring('\'__index\' chain too long; possible loop', true));
 };
 
 const settable = function (L, t, key, val) {
@@ -1112,7 +1112,7 @@ const settable = function (L, t, key, val) {
         t = tm;  /* else repeat assignment over 'tm' */
     }
 
-    luaG_runerror(L, to_luastring("'__newindex' chain too long; possible loop", true));
+    luaG_runerror(L, to_luastring('\'__newindex\' chain too long; possible loop', true));
 };
 
 

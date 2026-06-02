@@ -7,7 +7,7 @@ import { luaS_bless, luaS_new } from './lstring.js';
 import { Table } from './ltable.js';
 import { LUA_COMPAT_FLOATSTRING, ldexp, lua_integer2str, lua_number2str } from './luaconf.js';
 import { luaV_concat, luaV_imul, luaV_mod, luaV_div, luaV_shiftl, tointeger, tonumber } from './lvm.js';
-import { MAX_INT, luai_nummod, lua_assert } from "./llimits.js";
+import { MAX_INT, luai_nummod, lua_assert } from './llimits.js';
 import { luaT_trybinTM, TMS } from './ltm.js';
 
 const {
@@ -307,9 +307,9 @@ class LocVar {
     }
 }
 
-const RETS = to_luastring("...");
-const PRE = to_luastring("[string \"");
-const POS = to_luastring("\"]");
+const RETS = to_luastring('...');
+const PRE = to_luastring('[string "');
+const POS = to_luastring('"]');
 
 const luaO_chunkid = function (source, bufflen) {
     let l = source.length;
@@ -468,11 +468,11 @@ const SIGILS = [
     78  /* ("N").charCodeAt(0) */
 ];
 const modes = {
-    [46]: ".",
-    [120]: "x",
-    [88]: "x",
-    [110]: "n",
-    [78]: "n"
+    [46]: '.',
+    [120]: 'x',
+    [88]: 'x',
+    [110]: 'n',
+    [78]: 'n'
 };
 const l_str2d = function (s) {
     let l = s.length;
@@ -577,7 +577,7 @@ const luaO_pushvfstring = function (L, fmt, argp) {
         switch (fmt[e + 1]) {
             case 115 /* ('s').charCodeAt(0) */: {
                 let s = argp[a++];
-                if (s === null) s = to_luastring("(null)", true);
+                if (s === null) s = to_luastring('(null)', true);
                 else {
                     s = from_userstring(s);
                     /* respect null terminator */
@@ -593,7 +593,7 @@ const luaO_pushvfstring = function (L, fmt, argp) {
                 if (lisprint(buff))
                     pushstr(L, luastring_of(buff));
                 else
-                    luaO_pushfstring(L, to_luastring("<\\%d>", true), buff);
+                    luaO_pushfstring(L, to_luastring('<\\%d>', true), buff);
                 break;
             }
             case 100 /* ('d').charCodeAt(0) */:
@@ -614,39 +614,39 @@ const luaO_pushvfstring = function (L, fmt, argp) {
                     v instanceof Udata ||
                     v instanceof LClosure ||
                     v instanceof CClosure) {
-                    pushstr(L, to_luastring("0x" + v.id.toString(16)));
+                    pushstr(L, to_luastring('0x' + v.id.toString(16)));
                 } else {
                     switch (typeof v) {
-                        case "undefined":
-                            pushstr(L, to_luastring("undefined"));
+                        case 'undefined':
+                            pushstr(L, to_luastring('undefined'));
                             break;
-                        case "number":  /* before check object as null is an object */
-                            pushstr(L, to_luastring("Number(" + v + ")"));
+                        case 'number':  /* before check object as null is an object */
+                            pushstr(L, to_luastring('Number(' + v + ')'));
                             break;
-                        case "string":  /* before check object as null is an object */
-                            pushstr(L, to_luastring("String(" + JSON.stringify(v) + ")"));
+                        case 'string':  /* before check object as null is an object */
+                            pushstr(L, to_luastring('String(' + JSON.stringify(v) + ')'));
                             break;
-                        case "boolean":  /* before check object as null is an object */
-                            pushstr(L, to_luastring(v ? "Boolean(true)" : "Boolean(false)"));
+                        case 'boolean':  /* before check object as null is an object */
+                            pushstr(L, to_luastring(v ? 'Boolean(true)' : 'Boolean(false)'));
                             break;
-                        case "object":
+                        case 'object':
                             if (v === null) { /* null is special */
-                                pushstr(L, to_luastring("null"));
+                                pushstr(L, to_luastring('null'));
                                 break;
                             }
                         /* fall through */
-                        case "function": {
+                        case 'function': {
                             let id = L.l_G.ids.get(v);
                             if (!id) {
                                 id = L.l_G.id_counter++;
                                 L.l_G.ids.set(v, id);
                             }
-                            pushstr(L, to_luastring("0x" + id.toString(16)));
+                            pushstr(L, to_luastring('0x' + id.toString(16)));
                             break;
                         }
                         default:
                             /* user provided object. no id available */
-                            pushstr(L, to_luastring("<id NYI>"));
+                            pushstr(L, to_luastring('<id NYI>'));
                     }
                 }
                 break;
@@ -658,10 +658,10 @@ const luaO_pushvfstring = function (L, fmt, argp) {
                 break;
             }
             case 37 /* ('%').charCodeAt(0) */:
-                pushstr(L, to_luastring("%", true));
+                pushstr(L, to_luastring('%', true));
                 break;
             default:
-                luaG_runerror(L, to_luastring("invalid option '%%%c' to 'lua_pushfstring'"), fmt[e + 1]);
+                luaG_runerror(L, to_luastring('invalid option \'%%%c\' to \'lua_pushfstring\''), fmt[e + 1]);
         }
         n += 2;
         i = e + 2;
@@ -730,7 +730,7 @@ const numarith = function (L, op, v1, v2) {
 };
 
 const luaO_arith = function (L, op, p1, p2, p3) {
-    let res = (typeof p3 === "number") ? L.stack[p3] : p3;  /* FIXME */
+    let res = (typeof p3 === 'number') ? L.stack[p3] : p3;  /* FIXME */
 
     switch (op) {
         case LUA_OPBAND: case LUA_OPBOR: case LUA_OPBXOR:

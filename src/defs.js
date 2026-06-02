@@ -6,7 +6,7 @@ import { LUAI_MAXSTACK } from './common.js';
 
 export { LUAI_MAXSTACK };
 
-export const luastring_from = (typeof Uint8Array.from === "function") ?
+export const luastring_from = (typeof Uint8Array.from === 'function') ?
     Uint8Array.from.bind(Uint8Array) :
     function (a) {
         let i = 0;
@@ -16,19 +16,19 @@ export const luastring_from = (typeof Uint8Array.from === "function") ?
         return r;
     };
 
-export const luastring_indexOf = (typeof (new Uint8Array().indexOf) === "function") ?
+export const luastring_indexOf = (typeof (new Uint8Array().indexOf) === 'function') ?
     function (s, v, i) {
         return s.indexOf(v, i);
     } :
     /* Browsers that don't support Uint8Array.indexOf seem to allow using Array.indexOf on Uint8Array objects e.g. IE11 */
     function (s, v, i) {
         let array_indexOf = [].indexOf;
-        if (array_indexOf.call(new Uint8Array(1), 0) !== 0) throw Error("missing .indexOf");
+        if (array_indexOf.call(new Uint8Array(1), 0) !== 0) throw Error('missing .indexOf');
         return array_indexOf.call(s, v, i);
     };
 
 
-export const luastring_of = (typeof Uint8Array.of === "function") ?
+export const luastring_of = (typeof Uint8Array.of === 'function') ?
     Uint8Array.of.bind(Uint8Array) :
     function () {
         return luastring_from(arguments);
@@ -36,7 +36,7 @@ export const luastring_of = (typeof Uint8Array.of === "function") ?
 
 export function is_luastring(s) {
     return s instanceof Uint8Array;
-};
+}
 
 /* test two lua strings for equality */
 export function luastring_eq(a, b) {
@@ -48,11 +48,11 @@ export function luastring_eq(a, b) {
             if (a[i] !== b[i]) return false;
     }
     return true;
-};
+}
 
-const unicode_error_message = "cannot convert invalid utf8 to javascript string";
+const unicode_error_message = 'cannot convert invalid utf8 to javascript string';
 export function to_jsstring(value, from, to, replacement_char) {
-    if (!is_luastring(value)) throw new TypeError("to_jsstring expects a Uint8Array");
+    if (!is_luastring(value)) throw new TypeError('to_jsstring expects a Uint8Array');
 
     if (to === void 0) {
         to = value.length;
@@ -60,7 +60,7 @@ export function to_jsstring(value, from, to, replacement_char) {
         to = Math.min(value.length, to);
     }
 
-    let str = "";
+    let str = '';
     for (let i = (from !== void 0 ? from : 0); i < to;) {
         let u0 = value[i++];
         if (u0 < 0x80) {
@@ -68,18 +68,18 @@ export function to_jsstring(value, from, to, replacement_char) {
             str += String.fromCharCode(u0);
         } else if (u0 < 0xC2 || u0 > 0xF4) {
             if (!replacement_char) throw RangeError(unicode_error_message);
-            str += "�";
+            str += '�';
         } else if (u0 <= 0xDF) {
             /* two byte sequence */
             if (i >= to) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u1 = value[i++];
             if ((u1 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             str += String.fromCharCode(((u0 & 0x1F) << 6) + (u1 & 0x3F));
@@ -87,19 +87,19 @@ export function to_jsstring(value, from, to, replacement_char) {
             /* three byte sequence */
             if (i + 1 >= to) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u1 = value[i++];
             if ((u1 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u2 = value[i++];
             if ((u2 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u = ((u0 & 0x0F) << 12) + ((u1 & 0x3F) << 6) + (u2 & 0x3F);
@@ -115,25 +115,25 @@ export function to_jsstring(value, from, to, replacement_char) {
             /* four byte sequence */
             if (i + 2 >= to) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u1 = value[i++];
             if ((u1 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u2 = value[i++];
             if ((u2 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             let u3 = value[i++];
             if ((u3 & 0xC0) !== 0x80) {
                 if (!replacement_char) throw RangeError(unicode_error_message);
-                str += "�";
+                str += '�';
                 continue;
             }
             /* Has to be astral codepoint */
@@ -145,33 +145,33 @@ export function to_jsstring(value, from, to, replacement_char) {
         }
     }
     return str;
-};
+}
 
 /* bytes allowed unescaped in a uri */
-const uri_allowed = (";,/?:@&=+$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,-_.!~*'()#").split('').reduce(function (uri_allowed, c) {
+const uri_allowed = (';,/?:@&=+$abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,-_.!~*\'()#').split('').reduce(function (uri_allowed, c) {
     uri_allowed[c.charCodeAt(0)] = true;
     return uri_allowed;
 }, {});
 
 /* utility function to convert a lua string to a js string with uri escaping */
 export function to_uristring(a) {
-    if (!is_luastring(a)) throw new TypeError("to_uristring expects a Uint8Array");
-    let s = "";
+    if (!is_luastring(a)) throw new TypeError('to_uristring expects a Uint8Array');
+    let s = '';
     for (let i = 0; i < a.length; i++) {
         let v = a[i];
         if (uri_allowed[v]) {
             s += String.fromCharCode(v);
         } else {
-            s += "%" + (v < 0x10 ? "0" : "") + v.toString(16);
+            s += '%' + (v < 0x10 ? '0' : '') + v.toString(16);
         }
     }
     return s;
-};
+}
 
 const to_luastring_cache = {};
 
 export function to_luastring(str, cache) {
-    if (typeof str !== "string") throw new TypeError("to_luastring expects a javascript string");
+    if (typeof str !== 'string') throw new TypeError('to_luastring expects a javascript string');
 
     if (cache) {
         let cached = to_luastring_cache[str];
@@ -216,31 +216,31 @@ export function to_luastring(str, cache) {
     if (cache) to_luastring_cache[str] = outU8Array;
 
     return outU8Array;
-};
+}
 
 export function from_userstring(str) {
     if (!is_luastring(str)) {
-        if (typeof str === "string") {
+        if (typeof str === 'string') {
             str = to_luastring(str);
         } else {
-            throw new TypeError("expects an array of bytes or javascript string");
+            throw new TypeError('expects an array of bytes or javascript string');
         }
     }
     return str;
-};
+}
 
 /* mark for precompiled code ('<esc>Lua') */
-export const LUA_SIGNATURE = to_luastring("\x1bLua");
+export const LUA_SIGNATURE = to_luastring('\x1bLua');
 
-export const LUA_VERSION_MAJOR = "5";
-export const LUA_VERSION_MINOR = "3";
+export const LUA_VERSION_MAJOR = '5';
+export const LUA_VERSION_MINOR = '3';
 export const LUA_VERSION_NUM = 503;
-export const LUA_VERSION_RELEASE = "4";
+export const LUA_VERSION_RELEASE = '4';
 
-export const LUA_VERSION = "Lua " + LUA_VERSION_MAJOR + "." + LUA_VERSION_MINOR;
-export const LUA_RELEASE = LUA_VERSION + "." + LUA_VERSION_RELEASE;
-export const LUA_COPYRIGHT = LUA_RELEASE + "  Copyright (C) 1994-2017 Lua.org, PUC-Rio";
-export const LUA_AUTHORS = "R. Ierusalimschy, L. H. de Figueiredo, W. Celes";
+export const LUA_VERSION = 'Lua ' + LUA_VERSION_MAJOR + '.' + LUA_VERSION_MINOR;
+export const LUA_RELEASE = LUA_VERSION + '.' + LUA_VERSION_RELEASE;
+export const LUA_COPYRIGHT = LUA_RELEASE + '  Copyright (C) 1994-2017 Lua.org, PUC-Rio';
+export const LUA_AUTHORS = 'R. Ierusalimschy, L. H. de Figueiredo, W. Celes';
 
 export const thread_status = {
     LUA_OK: 0,
@@ -307,7 +307,7 @@ export const LUA_REGISTRYINDEX = -LUAI_MAXSTACK - 1000;
 
 export function lua_upvalueindex(i) {
     return LUA_REGISTRYINDEX - i;
-};
+}
 
 /* predefined values in the registry */
 export const LUA_RIDX_MAINTHREAD = 1;
