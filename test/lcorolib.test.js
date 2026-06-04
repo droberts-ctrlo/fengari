@@ -2,11 +2,11 @@ import { LUA_OK, lua_call, lua_tonumber, lua_tojsstring, lua_toboolean, lua_toth
 import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
 import { luaL_openlibs } from '../src/lualib.js';
 import { lua_State } from '../src/lstate.js';
-import { to_luastring } from "../src/fengaricore.js";
+import { to_luastring } from '../src/fengaricore.js';
 
 test('coroutine.create, coroutine.yield, coroutine.resume', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co = coroutine.create(function (start)
@@ -32,7 +32,7 @@ test('coroutine.create, coroutine.yield, coroutine.resume', () => {
 
 test('coroutine.status', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co = coroutine.create(function (start)
@@ -58,16 +58,16 @@ test('coroutine.status', () => {
     }
 
     expect(lua_tojsstring(L, -2))
-        .toBe("suspended");
+        .toBe('suspended');
 
     expect(lua_tojsstring(L, -1))
-        .toBe("dead");
+        .toBe('dead');
 });
 
 
 test('coroutine.isyieldable', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co = coroutine.create(function ()
@@ -91,7 +91,7 @@ test('coroutine.isyieldable', () => {
 
 test('coroutine.running', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local running, ismain
@@ -117,7 +117,7 @@ test('coroutine.running', () => {
 
 test('coroutine.wrap', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co = coroutine.wrap(function (start)

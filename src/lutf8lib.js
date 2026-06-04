@@ -1,6 +1,6 @@
-import { lua_gettop, lua_pushcfunction, lua_pushfstring, lua_pushinteger, lua_pushnil, lua_pushstring, lua_pushvalue, lua_setfield, lua_tointeger } from './lua.js';
-import { luaL_Buffer, luaL_addvalue, luaL_argcheck, luaL_buffinit, luaL_checkinteger, luaL_checkstack, luaL_checkstring, luaL_error, luaL_newlib, luaL_optinteger, luaL_pushresult } from './lauxlib.js';
-import { luastring_of, to_luastring } from './fengaricore.js';
+import * as lua from './lua.js';
+import * as lauxlib from './lauxlib.js';
+import * as fengaricore from './fengaricore.js';
 
 const MAXUNICODE = 0x10FFFF;
 
@@ -53,50 +53,50 @@ const utf8_decode = function(s, pos) {
 */
 const utflen = function(L) {
     let n = 0;
-    let s = luaL_checkstring(L, 1);
+    let s = lauxlib.luaL_checkstring(L, 1);
     let len = s.length;
-    let posi = u_posrelat(luaL_optinteger(L, 2, 1), len);
-    let posj = u_posrelat(luaL_optinteger(L, 3, -1), len);
+    let posi = u_posrelat(lauxlib.luaL_optinteger(L, 2, 1), len);
+    let posj = u_posrelat(lauxlib.luaL_optinteger(L, 3, -1), len);
 
-    luaL_argcheck(L, 1 <= posi && --posi <= len, 2, 'initial position out of string');
-    luaL_argcheck(L, --posj < len, 3, 'final position out of string');
+    lauxlib.luaL_argcheck(L, 1 <= posi && --posi <= len, 2, 'initial position out of string');
+    lauxlib.luaL_argcheck(L, --posj < len, 3, 'final position out of string');
 
     while (posi <= posj) {
         let dec = utf8_decode(s, posi);
         if (dec === null) { /* conversion error? */
-            lua_pushnil(L);  /* return nil ... */
-            lua_pushinteger(L, posi + 1);  /* ... and current position */
+            lua.lua_pushnil(L);  /* return nil ... */
+            lua.lua_pushinteger(L, posi + 1);  /* ... and current position */
             return 2;
         }
         posi = dec.pos;
         n++;
     }
-    lua_pushinteger(L, n);
+    lua.lua_pushinteger(L, n);
     return 1;
 };
 
-const p_U = to_luastring('%U');
+const p_U = fengaricore.to_luastring('%U');
 const pushutfchar = function(L, arg) {
-    let code = luaL_checkinteger(L, arg);
-    luaL_argcheck(L, 0 <= code && code <= MAXUNICODE, arg, 'value out of range');
-    lua_pushfstring(L, p_U, code);
+    let code = lauxlib.luaL_checkinteger(L, arg);
+    lauxlib.luaL_argcheck(L, 0 <= code && code <= MAXUNICODE, arg, 'value out of range');
+    lua.lua_pushfstring(L, p_U, code);
 };
 
 /*
 ** utfchar(n1, n2, ...)  -> char(n1)..char(n2)...
 */
 const utfchar = function(L) {
-    let n = lua_gettop(L);  /* number of arguments */
+    let n = lua.lua_gettop(L);  /* number of arguments */
     if (n === 1)  /* optimize common case of single char */
         pushutfchar(L, 1);
     else {
-        let b = new luaL_Buffer();
-        luaL_buffinit(L, b);
+        let b = new lauxlib.luaL_Buffer();
+        lauxlib.luaL_buffinit(L, b);
         for (let i = 1; i <= n; i++) {
             pushutfchar(L, i);
-            luaL_addvalue(b);
+            lauxlib.luaL_addvalue(b);
         }
-        luaL_pushresult(b);
+        lauxlib.luaL_pushresult(b);
     }
     return 1;
 };
@@ -106,19 +106,19 @@ const utfchar = function(L) {
 **   position 'i' starts; 0 means character at 'i'.
 */
 const byteoffset = function(L) {
-    let s = luaL_checkstring(L, 1);
-    let n = luaL_checkinteger(L, 2);
+    let s = lauxlib.luaL_checkstring(L, 1);
+    let n = lauxlib.luaL_checkinteger(L, 2);
     let posi = n >= 0 ? 1 : s.length + 1;
-    posi = u_posrelat(luaL_optinteger(L, 3, posi), s.length);
+    posi = u_posrelat(lauxlib.luaL_optinteger(L, 3, posi), s.length);
 
-    luaL_argcheck(L, 1 <= posi && --posi <= s.length, 3, 'position out of range');
+    lauxlib.luaL_argcheck(L, 1 <= posi && --posi <= s.length, 3, 'position out of range');
 
     if (n === 0) {
         /* find beginning of current byte sequence */
         while (posi > 0 && iscont(s[posi])) posi--;
     } else {
         if (iscont(s[posi]))
-            luaL_error(L, 'initial position is a continuation byte');
+            lauxlib.luaL_error(L, 'initial position is a continuation byte');
 
         if (n < 0) {
             while (n < 0 && posi > 0) {  /* move back */
@@ -139,9 +139,9 @@ const byteoffset = function(L) {
     }
 
     if (n === 0)  /* did it find given character? */
-        lua_pushinteger(L, posi + 1);
+        lua.lua_pushinteger(L, posi + 1);
     else  /* no such character */
-        lua_pushnil(L);
+        lua.lua_pushnil(L);
 
     return 1;
 };
@@ -151,24 +151,24 @@ const byteoffset = function(L) {
 ** that start in the range [i,j]
 */
 const codepoint = function(L) {
-    let s = luaL_checkstring(L, 1);
-    let posi = u_posrelat(luaL_optinteger(L, 2, 1), s.length);
-    let pose = u_posrelat(luaL_optinteger(L, 3, posi), s.length);
+    let s = lauxlib.luaL_checkstring(L, 1);
+    let posi = u_posrelat(lauxlib.luaL_optinteger(L, 2, 1), s.length);
+    let pose = u_posrelat(lauxlib.luaL_optinteger(L, 3, posi), s.length);
 
-    luaL_argcheck(L, posi >= 1, 2, 'out of range');
-    luaL_argcheck(L, pose <= s.length, 3, 'out of range');
+    lauxlib.luaL_argcheck(L, posi >= 1, 2, 'out of range');
+    lauxlib.luaL_argcheck(L, pose <= s.length, 3, 'out of range');
 
     if (posi > pose) return 0;  /* empty interval; return no values */
     if (pose - posi >= Number.MAX_SAFE_INTEGER)
-        return luaL_error(L, 'string slice too long');
+        return lauxlib.luaL_error(L, 'string slice too long');
     let n = (pose - posi) + 1;
-    luaL_checkstack(L, n, 'string slice too long');
+    lauxlib.luaL_checkstack(L, n, 'string slice too long');
     n = 0;
     for (posi -= 1; posi < pose;) {
         let dec = utf8_decode(s, posi);
         if (dec === null)
-            return luaL_error(L, 'invalid UTF-8 code');
-        lua_pushinteger(L, dec.code);
+            return lauxlib.luaL_error(L, 'invalid UTF-8 code');
+        lua.lua_pushinteger(L, dec.code);
         posi = dec.pos;
         n++;
     }
@@ -176,9 +176,9 @@ const codepoint = function(L) {
 };
 
 const iter_aux = function(L) {
-    let s = luaL_checkstring(L, 1);
+    let s = lauxlib.luaL_checkstring(L, 1);
     let len = s.length;
-    let n = lua_tointeger(L, 2) - 1;
+    let n = lua.lua_tointeger(L, 2) - 1;
 
     if (n < 0)  /* first iteration? */
         n = 0;  /* start from here */
@@ -192,18 +192,18 @@ const iter_aux = function(L) {
     else {
         let dec = utf8_decode(s, n);
         if (dec === null || iscont(s[dec.pos]))
-            return luaL_error(L, to_luastring('invalid UTF-8 code'));
-        lua_pushinteger(L, n + 1);
-        lua_pushinteger(L, dec.code);
+            return lauxlib.luaL_error(L, fengaricore.to_luastring('invalid UTF-8 code'));
+        lua.lua_pushinteger(L, n + 1);
+        lua.lua_pushinteger(L, dec.code);
         return 2;
     }
 };
 
 const iter_codes = function(L) {
-    luaL_checkstring(L, 1);
-    lua_pushcfunction(L, iter_aux);
-    lua_pushvalue(L, 1);
-    lua_pushinteger(L, 0);
+    lauxlib.luaL_checkstring(L, 1);
+    lua.lua_pushcfunction(L, iter_aux);
+    lua.lua_pushvalue(L, 1);
+    lua.lua_pushinteger(L, 0);
     return 3;
 };
 
@@ -216,14 +216,11 @@ const funcs = {
 };
 
 /* pattern to match a single UTF-8 character */
-const UTF8PATT = luastring_of(91, 0, 45, 127, 194, 45, 244, 93, 91, 128, 45, 191, 93, 42);
+const UTF8PATT = fengaricore.luastring_of(91, 0, 45, 127, 194, 45, 244, 93, 91, 128, 45, 191, 93, 42);
 
-const luaopen_utf8 = function(L) {
-    luaL_newlib(L, funcs);
-    lua_pushstring(L, UTF8PATT);
-    lua_setfield(L, -2, to_luastring('charpattern', true));
+export const luaopen_utf8 = function(L) {
+    lauxlib.luaL_newlib(L, funcs);
+    lua.lua_pushstring(L, UTF8PATT);
+    lua.lua_setfield(L, -2, fengaricore.to_luastring('charpattern', true));
     return 1;
 };
-
-const _luaopen_utf8 = luaopen_utf8;
-export { _luaopen_utf8 as luaopen_utf8 };

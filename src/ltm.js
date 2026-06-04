@@ -1,17 +1,17 @@
-import { constant_types, to_luastring } from './defs.js';
-import { lua_assert } from './llimits.js';
-import { pushobj2s, TValue, luaO_nilobject } from './lobject.js';
-import { luaD_call, luaD_callnoyield } from './ldo.js';
-import { CIST_LUA } from './lstate.js';
-import { luaS_bless, luaS_new } from './lstring.js';
-import { luaH_getstr } from './ltable.js';
-import { luaG_concaterror, luaG_tointerror, luaG_opinterror } from './ldebug.js';
-import { tonumber } from './lvm.js';
+import * as defs from './defs.js';
+import * as llimits from './llimits.js';
+import * as lobject from './lobject.js';
+import * as ldo from './ldo.js';
+import * as lstate from './lstate.js';
+import * as lstring from './lstring.js';
+import * as ltable from './ltable.js';
+import * as ldebug from './ldebug.js';
+import * as lvm from './lvm.js';
 
 const {
     LUA_TTABLE,
     LUA_TUSERDATA
-} = constant_types;
+} = defs.constant_types;
 
 const luaT_typenames_ = [
     'no value',
@@ -25,9 +25,9 @@ const luaT_typenames_ = [
     'userdata',
     'thread',
     'proto' /* this last case is used for tests only */
-].map(e => to_luastring(e));
+].map(e => defs.to_luastring(e));
 
-const ttypename = function (t) {
+export const ttypename = function (t) {
     return luaT_typenames_[t + 1];
 };
 
@@ -36,7 +36,7 @@ const ttypename = function (t) {
 * WARNING: if you change the order of this enumeration,
 * grep "ORDER TM" and "ORDER OP"
 */
-const TMS = {
+export const TMS = {
     TM_INDEX: 0,
     TM_NEWINDEX: 1,
     TM_GC: 2,
@@ -64,63 +64,63 @@ const TMS = {
     TM_N: 24  /* number of elements in the enum */
 };
 
-const luaT_init = function (L) {
-    L.l_G.tmname[TMS.TM_INDEX] = new luaS_new(L, to_luastring('__index', true));
-    L.l_G.tmname[TMS.TM_NEWINDEX] = new luaS_new(L, to_luastring('__newindex', true));
-    L.l_G.tmname[TMS.TM_GC] = new luaS_new(L, to_luastring('__gc', true));
-    L.l_G.tmname[TMS.TM_MODE] = new luaS_new(L, to_luastring('__mode', true));
-    L.l_G.tmname[TMS.TM_LEN] = new luaS_new(L, to_luastring('__len', true));
-    L.l_G.tmname[TMS.TM_EQ] = new luaS_new(L, to_luastring('__eq', true));
-    L.l_G.tmname[TMS.TM_ADD] = new luaS_new(L, to_luastring('__add', true));
-    L.l_G.tmname[TMS.TM_SUB] = new luaS_new(L, to_luastring('__sub', true));
-    L.l_G.tmname[TMS.TM_MUL] = new luaS_new(L, to_luastring('__mul', true));
-    L.l_G.tmname[TMS.TM_MOD] = new luaS_new(L, to_luastring('__mod', true));
-    L.l_G.tmname[TMS.TM_POW] = new luaS_new(L, to_luastring('__pow', true));
-    L.l_G.tmname[TMS.TM_DIV] = new luaS_new(L, to_luastring('__div', true));
-    L.l_G.tmname[TMS.TM_IDIV] = new luaS_new(L, to_luastring('__idiv', true));
-    L.l_G.tmname[TMS.TM_BAND] = new luaS_new(L, to_luastring('__band', true));
-    L.l_G.tmname[TMS.TM_BOR] = new luaS_new(L, to_luastring('__bor', true));
-    L.l_G.tmname[TMS.TM_BXOR] = new luaS_new(L, to_luastring('__bxor', true));
-    L.l_G.tmname[TMS.TM_SHL] = new luaS_new(L, to_luastring('__shl', true));
-    L.l_G.tmname[TMS.TM_SHR] = new luaS_new(L, to_luastring('__shr', true));
-    L.l_G.tmname[TMS.TM_UNM] = new luaS_new(L, to_luastring('__unm', true));
-    L.l_G.tmname[TMS.TM_BNOT] = new luaS_new(L, to_luastring('__bnot', true));
-    L.l_G.tmname[TMS.TM_LT] = new luaS_new(L, to_luastring('__lt', true));
-    L.l_G.tmname[TMS.TM_LE] = new luaS_new(L, to_luastring('__le', true));
-    L.l_G.tmname[TMS.TM_CONCAT] = new luaS_new(L, to_luastring('__concat', true));
-    L.l_G.tmname[TMS.TM_CALL] = new luaS_new(L, to_luastring('__call', true));
+export const luaT_init = function (L) {
+    L.l_G.tmname[TMS.TM_INDEX] = new lstring.luaS_new(L, defs.to_luastring('__index', true));
+    L.l_G.tmname[TMS.TM_NEWINDEX] = new lstring.luaS_new(L, defs.to_luastring('__newindex', true));
+    L.l_G.tmname[TMS.TM_GC] = new lstring.luaS_new(L, defs.to_luastring('__gc', true));
+    L.l_G.tmname[TMS.TM_MODE] = new lstring.luaS_new(L, defs.to_luastring('__mode', true));
+    L.l_G.tmname[TMS.TM_LEN] = new lstring.luaS_new(L, defs.to_luastring('__len', true));
+    L.l_G.tmname[TMS.TM_EQ] = new lstring.luaS_new(L, defs.to_luastring('__eq', true));
+    L.l_G.tmname[TMS.TM_ADD] = new lstring.luaS_new(L, defs.to_luastring('__add', true));
+    L.l_G.tmname[TMS.TM_SUB] = new lstring.luaS_new(L, defs.to_luastring('__sub', true));
+    L.l_G.tmname[TMS.TM_MUL] = new lstring.luaS_new(L, defs.to_luastring('__mul', true));
+    L.l_G.tmname[TMS.TM_MOD] = new lstring.luaS_new(L, defs.to_luastring('__mod', true));
+    L.l_G.tmname[TMS.TM_POW] = new lstring.luaS_new(L, defs.to_luastring('__pow', true));
+    L.l_G.tmname[TMS.TM_DIV] = new lstring.luaS_new(L, defs.to_luastring('__div', true));
+    L.l_G.tmname[TMS.TM_IDIV] = new lstring.luaS_new(L, defs.to_luastring('__idiv', true));
+    L.l_G.tmname[TMS.TM_BAND] = new lstring.luaS_new(L, defs.to_luastring('__band', true));
+    L.l_G.tmname[TMS.TM_BOR] = new lstring.luaS_new(L, defs.to_luastring('__bor', true));
+    L.l_G.tmname[TMS.TM_BXOR] = new lstring.luaS_new(L, defs.to_luastring('__bxor', true));
+    L.l_G.tmname[TMS.TM_SHL] = new lstring.luaS_new(L, defs.to_luastring('__shl', true));
+    L.l_G.tmname[TMS.TM_SHR] = new lstring.luaS_new(L, defs.to_luastring('__shr', true));
+    L.l_G.tmname[TMS.TM_UNM] = new lstring.luaS_new(L, defs.to_luastring('__unm', true));
+    L.l_G.tmname[TMS.TM_BNOT] = new lstring.luaS_new(L, defs.to_luastring('__bnot', true));
+    L.l_G.tmname[TMS.TM_LT] = new lstring.luaS_new(L, defs.to_luastring('__lt', true));
+    L.l_G.tmname[TMS.TM_LE] = new lstring.luaS_new(L, defs.to_luastring('__le', true));
+    L.l_G.tmname[TMS.TM_CONCAT] = new lstring.luaS_new(L, defs.to_luastring('__concat', true));
+    L.l_G.tmname[TMS.TM_CALL] = new lstring.luaS_new(L, defs.to_luastring('__call', true));
 };
 
 /*
 ** Return the name of the type of an object. For tables and userdata
 ** with metatable, use their '__name' metafield, if present.
 */
-const __name = to_luastring('__name', true);
-const luaT_objtypename = function (L, o) {
+const __name = defs.to_luastring('__name', true);
+export const luaT_objtypename = function (L, o) {
     let mt;
     if ((o.ttistable() && (mt = o.value.metatable) !== null) ||
         (o.ttisfulluserdata() && (mt = o.value.metatable) !== null)) {
-        let name = luaH_getstr(mt, luaS_bless(L, __name));
+        let name = ltable.luaH_getstr(mt, lstring.luaS_bless(L, __name));
         if (name.ttisstring())
             return name.svalue();
     }
     return ttypename(o.ttnov());
 };
 
-const luaT_callTM = function (L, f, p1, p2, p3, hasres) {
+export const luaT_callTM = function (L, f, p1, p2, p3, hasres) {
     let func = L.top;
 
-    pushobj2s(L, f); /* push function (assume EXTRA_STACK) */
-    pushobj2s(L, p1); /* 1st argument */
-    pushobj2s(L, p2); /* 2nd argument */
+    lobject.pushobj2s(L, f); /* push function (assume EXTRA_STACK) */
+    lobject.pushobj2s(L, p1); /* 1st argument */
+    lobject.pushobj2s(L, p2); /* 2nd argument */
 
     if (!hasres)  /* no result? 'p3' is third argument */
-        pushobj2s(L, p3); /* 3rd argument */
+        lobject.pushobj2s(L, p3); /* 3rd argument */
 
-    if (L.ci.callstatus & CIST_LUA)
-        luaD_call(L, func, hasres);
+    if (L.ci.callstatus & lstate.CIST_LUA)
+        ldo.luaD_call(L, func, hasres);
     else
-        luaD_callnoyield(L, func, hasres);
+        ldo.luaD_callnoyield(L, func, hasres);
 
     if (hasres) {  /* if has result, move it to its place */
         let tv = L.stack[L.top - 1];
@@ -129,7 +129,7 @@ const luaT_callTM = function (L, f, p1, p2, p3, hasres) {
     }
 };
 
-const luaT_callbinTM = function (L, p1, p2, res, event) {
+export const luaT_callbinTM = function (L, p1, p2, res, event) {
     let tm = luaT_gettmbyobj(L, p1, event);
     if (tm.ttisnil())
         tm = luaT_gettmbyobj(L, p2, event);
@@ -138,42 +138,42 @@ const luaT_callbinTM = function (L, p1, p2, res, event) {
     return true;
 };
 
-const luaT_trybinTM = function (L, p1, p2, res, event) {
+export const luaT_trybinTM = function (L, p1, p2, res, event) {
     if (!luaT_callbinTM(L, p1, p2, res, event)) {
         switch (event) {
             case TMS.TM_CONCAT:
-                return luaG_concaterror(L, p1, p2);
+                return ldebug.luaG_concaterror(L, p1, p2);
             case TMS.TM_BAND: case TMS.TM_BOR: case TMS.TM_BXOR:
             case TMS.TM_SHL: case TMS.TM_SHR: case TMS.TM_BNOT: {
-                let n1 = tonumber(p1);
-                let n2 = tonumber(p2);
+                let n1 = lvm.tonumber(p1);
+                let n2 = lvm.tonumber(p2);
                 if (n1 !== false && n2 !== false)
-                    return luaG_tointerror(L, p1, p2);
+                    return ldebug.luaG_tointerror(L, p1, p2);
                 else
-                    return luaG_opinterror(L, p1, p2, to_luastring('perform bitwise operation on', true));
+                    return ldebug.luaG_opinterror(L, p1, p2, defs.to_luastring('perform bitwise operation on', true));
             }
             default:
-                return luaG_opinterror(L, p1, p2, to_luastring('perform arithmetic on', true));
+                return ldebug.luaG_opinterror(L, p1, p2, defs.to_luastring('perform arithmetic on', true));
         }
     }
 };
 
-const luaT_callorderTM = function (L, p1, p2, event) {
-    let res = new TValue();
+export const luaT_callorderTM = function (L, p1, p2, event) {
+    let res = new lobject.TValue();
     if (!luaT_callbinTM(L, p1, p2, res, event))
         return null;
     else
         return !res.l_isfalse();
 };
 
-const fasttm = function (l, et, e) {
+export const fasttm = function (l, et, e) {
     return et === null ? null :
         (et.flags & (1 << e)) ? null : luaT_gettm(et, e, l.l_G.tmname[e]);
 };
 
-const luaT_gettm = function (events, event, ename) {
-    const tm = luaH_getstr(events, ename);
-    lua_assert(event <= TMS.TM_EQ);
+export const luaT_gettm = function (events, event, ename) {
+    const tm = ltable.luaH_getstr(events, ename);
+    llimits.lua_assert(event <= TMS.TM_EQ);
     if (tm.ttisnil()) {  /* no tag method? */
         events.flags |= 1 << event;  /* cache this fact */
         return null;
@@ -181,7 +181,7 @@ const luaT_gettm = function (events, event, ename) {
     else return tm;
 };
 
-const luaT_gettmbyobj = function (L, o, event) {
+export const luaT_gettmbyobj = function (L, o, event) {
     let mt;
     switch (o.ttnov()) {
         case LUA_TTABLE:
@@ -192,28 +192,5 @@ const luaT_gettmbyobj = function (L, o, event) {
             mt = L.l_G.mt[o.ttnov()];
     }
 
-    return mt ? luaH_getstr(mt, L.l_G.tmname[event]) : luaO_nilobject;
+    return mt ? ltable.luaH_getstr(mt, L.l_G.tmname[event]) : lobject.luaO_nilobject;
 };
-
-const _fasttm = fasttm;
-export { _fasttm as fasttm };
-const _TMS = TMS;
-export { _TMS as TMS };
-const _luaT_callTM = luaT_callTM;
-export { _luaT_callTM as luaT_callTM };
-const _luaT_callbinTM = luaT_callbinTM;
-export { _luaT_callbinTM as luaT_callbinTM };
-const _luaT_trybinTM = luaT_trybinTM;
-export { _luaT_trybinTM as luaT_trybinTM };
-const _luaT_callorderTM = luaT_callorderTM;
-export { _luaT_callorderTM as luaT_callorderTM };
-const _luaT_gettm = luaT_gettm;
-export { _luaT_gettm as luaT_gettm };
-const _luaT_gettmbyobj = luaT_gettmbyobj;
-export { _luaT_gettmbyobj as luaT_gettmbyobj };
-const _luaT_init = luaT_init;
-export { _luaT_init as luaT_init };
-const _luaT_objtypename = luaT_objtypename;
-export { _luaT_objtypename as luaT_objtypename };
-const _ttypename = ttypename;
-export { _ttypename as ttypename };

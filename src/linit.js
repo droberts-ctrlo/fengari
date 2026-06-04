@@ -1,17 +1,17 @@
-import { lua_pop } from './lua.js';
-import { luaL_requiref } from './lauxlib.js';
-import { to_luastring } from './fengaricore.js';
-import { luaopen_fengari } from './fengarilib.js';
-import { luaopen_base } from './lbaselib.js';
-import { luaopen_coroutine } from './lcorolib.js';
-import { luaopen_debug } from './ldblib.js';
-import { luaopen_io } from './liolib.js';
-import { luaopen_math } from './lmathlib.js';
-import { luaopen_package } from './loadlib.js';
-import { luaopen_os } from './loslib.js';
-import { luaopen_string } from './lstrlib.js';
-import { luaopen_table } from './ltablib.js';
-import { luaopen_utf8 } from './lutf8lib.js';
+import * as lua from './lua.js';
+import * as lauxlib from './lauxlib.js';
+import * as fengaricore from './fengaricore.js';
+import * as fengarilib from './fengarilib.js';
+import * as lbaselib from './lbaselib.js';
+import * as lcorolib from './lcorolib.js';
+import * as ldblib from './ldblib.js';
+import * as liolib from './liolib.js';
+import * as lmathlib from './lmathlib.js';
+import * as loadlib from './loadlib.js';
+import * as loslib from './loslib.js';
+import * as lstrlib from './lstrlib.js';
+import * as ltablib from './ltablib.js';
+import * as lutf8lib from './lutf8lib.js';
 
 const LUA_COLIBNAME = 'coroutine';
 const LUA_TABLIBNAME = 'table';
@@ -27,27 +27,25 @@ const LUA_FENGARILIBNAME = 'fengari';
 const loadedlibs = {};
 
 /* export before requiring lualib.js */
-const luaL_openlibs = function(L) {
+export const luaL_openlibs = function(L) {
     /* "require" functions from 'loadedlibs' and set results to global table */
     for (let lib in loadedlibs) {
-        luaL_requiref(L, to_luastring(lib), loadedlibs[lib], 1);
-        lua_pop(L, 1); /* remove lib */
+        lauxlib.luaL_requiref(L, fengaricore.to_luastring(lib), loadedlibs[lib], 1);
+        lua.lua_pop(L, 1); /* remove lib */
     }
 };
-const _luaL_openlibs = luaL_openlibs;
-export { _luaL_openlibs as luaL_openlibs };
 
-loadedlibs['_G'] = luaopen_base,
-loadedlibs[LUA_LOADLIBNAME] = luaopen_package;
-loadedlibs[LUA_COLIBNAME] = luaopen_coroutine;
-loadedlibs[LUA_TABLIBNAME] = luaopen_table;
-loadedlibs[LUA_OSLIBNAME] = luaopen_os;
-loadedlibs[LUA_STRLIBNAME] = luaopen_string;
-loadedlibs[LUA_MATHLIBNAME] = luaopen_math;
-loadedlibs[LUA_UTF8LIBNAME] = luaopen_utf8;
-loadedlibs[LUA_DBLIBNAME] = luaopen_debug;
+loadedlibs['_G'] = lbaselib.luaopen_base,
+loadedlibs[LUA_LOADLIBNAME] = loadlib.luaopen_package;
+loadedlibs[LUA_COLIBNAME] = lcorolib.luaopen_coroutine;
+loadedlibs[LUA_TABLIBNAME] = ltablib.luaopen_table;
+loadedlibs[LUA_OSLIBNAME] = loslib.luaopen_os;
+loadedlibs[LUA_STRLIBNAME] = lstrlib.luaopen_string;
+loadedlibs[LUA_MATHLIBNAME] = lmathlib.luaopen_math;
+loadedlibs[LUA_UTF8LIBNAME] = lutf8lib.luaopen_utf8;
+loadedlibs[LUA_DBLIBNAME] = ldblib.luaopen_debug;
 if (typeof process !== 'undefined')
-    loadedlibs[LUA_IOLIBNAME] = luaopen_io;
+    loadedlibs[LUA_IOLIBNAME] = liolib.luaopen_io;
 
 /* Extension: fengari library */
-loadedlibs[LUA_FENGARILIBNAME] = luaopen_fengari;
+loadedlibs[LUA_FENGARILIBNAME] = fengarilib.luaopen_fengari;

@@ -12,54 +12,31 @@ export { luaopen_package } from './loadlib.js';
 export { luaopen_fengari } from './fengarilib.js';
 import { LUA_VERSION_MAJOR, LUA_VERSION_MINOR } from './lua.js';
 
-const LUA_VERSUFFIX = '_' + LUA_VERSION_MAJOR + '_' + LUA_VERSION_MINOR;
-const _LUA_VERSUFFIX = LUA_VERSUFFIX;
-export { _LUA_VERSUFFIX as LUA_VERSUFFIX };
+export const LUA_VERSUFFIX = '_' + LUA_VERSION_MAJOR + '_' + LUA_VERSION_MINOR;
 
 export function lua_assert(_c) { }
 
 export { luaopen_base } from './lbaselib.js';
 
-const LUA_COLIBNAME = 'coroutine';
-const _LUA_COLIBNAME = LUA_COLIBNAME;
-export { _LUA_COLIBNAME as LUA_COLIBNAME };
+export const LUA_COLIBNAME = 'coroutine';
 
-const LUA_TABLIBNAME = 'table';
-const _LUA_TABLIBNAME = LUA_TABLIBNAME;
-export { _LUA_TABLIBNAME as LUA_TABLIBNAME };
+export const LUA_TABLIBNAME = 'table';
 
 export const LUA_IOLIBNAME = 'io';
 
-const LUA_OSLIBNAME = 'os';
-const _LUA_OSLIBNAME = LUA_OSLIBNAME;
-export { _LUA_OSLIBNAME as LUA_OSLIBNAME };
+export const LUA_OSLIBNAME = 'os';
 
-const LUA_STRLIBNAME = 'string';
-const _LUA_STRLIBNAME = LUA_STRLIBNAME;
-export { _LUA_STRLIBNAME as LUA_STRLIBNAME };
+export const LUA_STRLIBNAME = 'string';
 
-const LUA_UTF8LIBNAME = 'utf8';
-const _LUA_UTF8LIBNAME = LUA_UTF8LIBNAME;
-export { _LUA_UTF8LIBNAME as LUA_UTF8LIBNAME };
+export const LUA_UTF8LIBNAME = 'utf8';
 
-const LUA_BITLIBNAME = 'bit32';
-const _LUA_BITLIBNAME = LUA_BITLIBNAME;
-export { _LUA_BITLIBNAME as LUA_BITLIBNAME };
+export const LUA_BITLIBNAME = 'bit32';
 // module.exports.luaopen_bit32 = require("./lbitlib.js").luaopen_bit32;
 
-const LUA_MATHLIBNAME = 'math';
-const _LUA_MATHLIBNAME = LUA_MATHLIBNAME;
-export { _LUA_MATHLIBNAME as LUA_MATHLIBNAME };
+export const LUA_MATHLIBNAME = 'math';
 
-const LUA_DBLIBNAME = 'debug';
-const _LUA_DBLIBNAME = LUA_DBLIBNAME;
-export { _LUA_DBLIBNAME as LUA_DBLIBNAME };
+export const LUA_DBLIBNAME = 'debug';
 
-const LUA_LOADLIBNAME = 'package';
-const _LUA_LOADLIBNAME = LUA_LOADLIBNAME;
-export { _LUA_LOADLIBNAME as LUA_LOADLIBNAME };
+export const LUA_LOADLIBNAME = 'package';
 
-const LUA_FENGARILIBNAME = 'fengari';
-const _LUA_FENGARILIBNAME = LUA_FENGARILIBNAME;
-export { _LUA_FENGARILIBNAME as LUA_FENGARILIBNAME };
-
+export const LUA_FENGARILIBNAME = 'fengari';

@@ -1,111 +1,109 @@
-'use strict';
-
-import { LUA_OK, LUA_TFUNCTION, LUA_TSTRING, LUA_YIELD, lua_Debug, lua_checkstack, lua_concat, lua_error, lua_getstack, lua_gettop, lua_insert, lua_isyieldable, lua_newthread, lua_pop, lua_pushboolean, lua_pushcclosure, lua_pushliteral, lua_pushthread, lua_pushvalue, lua_resume, lua_status, lua_tothread, lua_type, lua_upvalueindex, lua_xmove, lua_yield } from './lua.js';
-import { luaL_argcheck, luaL_checktype, luaL_newlib, luaL_where } from './lauxlib.js';
+import * as lua from './lua.js';
+import * as lauxlib from './lauxlib.js';
 
 const getco = function(L) {
-    let co = lua_tothread(L, 1);
-    luaL_argcheck(L, co, 1, 'thread expected');
+    let co = lua.lua_tothread(L, 1);
+    lauxlib.luaL_argcheck(L, co, 1, 'thread expected');
     return co;
 };
 
 const auxresume = function(L, co, narg) {
-    if (!lua_checkstack(co, narg)) {
-        lua_pushliteral(L, 'too many arguments to resume');
+    if (!lua.lua_checkstack(co, narg)) {
+        lua.lua_pushliteral(L, 'too many arguments to resume');
         return -1;  /* error flag */
     }
 
-    if (lua_status(co) === LUA_OK && lua_gettop(co) === 0) {
-        lua_pushliteral(L, 'cannot resume dead coroutine');
+    if (lua.lua_status(co) === lua.LUA_OK && lua.lua_gettop(co) === 0) {
+        lua.lua_pushliteral(L, 'cannot resume dead coroutine');
         return -1;  /* error flag */
     }
 
-    lua_xmove(L, co, narg);
-    let status = lua_resume(co, L, narg);
-    if (status === LUA_OK || status === LUA_YIELD) {
-        let nres = lua_gettop(co);
-        if (!lua_checkstack(L, nres + 1)) {
-            lua_pop(co, nres);  /* remove results anyway */
-            lua_pushliteral(L, 'too many results to resume');
+    lua.lua_xmove(L, co, narg);
+    let status = lua.lua_resume(co, L, narg);
+    if (status === lua.LUA_OK || status === lua.LUA_YIELD) {
+        let nres = lua.lua_gettop(co);
+        if (!lua.lua_checkstack(L, nres + 1)) {
+            lua.lua_pop(co, nres);  /* remove results anyway */
+            lua.lua_pushliteral(L, 'too many results to resume');
             return -1;  /* error flag */
         }
 
-        lua_xmove(co,  L, nres);  /* move yielded values */
+        lua.lua_xmove(co,  L, nres);  /* move yielded values */
         return nres;
     } else {
-        lua_xmove(co, L, 1);  /* move error message */
+        lua.lua_xmove(co, L, 1);  /* move error message */
         return -1;  /* error flag */
     }
 };
 
 const luaB_coresume = function(L) {
     let co = getco(L);
-    let r = auxresume(L, co, lua_gettop(L) - 1);
+    let r = auxresume(L, co, lua.lua_gettop(L) - 1);
     if (r < 0) {
-        lua_pushboolean(L, 0);
-        lua_insert(L, -2);
+        lua.lua_pushboolean(L, 0);
+        lua.lua_insert(L, -2);
         return 2;  /* return false + error message */
     } else {
-        lua_pushboolean(L, 1);
-        lua_insert(L, -(r + 1));
+        lua.lua_pushboolean(L, 1);
+        lua.lua_insert(L, -(r + 1));
         return r + 1;  /* return true + 'resume' returns */
     }
 };
 
 const luaB_auxwrap = function(L) {
-    let co = lua_tothread(L, lua_upvalueindex(1));
-    let r = auxresume(L, co, lua_gettop(L));
+    let co = lua.lua_tothread(L, lua.lua_upvalueindex(1));
+    let r = auxresume(L, co, lua.lua_gettop(L));
     if (r < 0) {
-        if (lua_type(L, -1) === LUA_TSTRING) {  /* error object is a string? */
-            luaL_where(L, 1);  /* add extra info */
-            lua_insert(L, -2);
-            lua_concat(L, 2);
+        if (lua.lua_type(L, -1) === lua.LUA_TSTRING) {  /* error object is a string? */
+            lauxlib.luaL_where(L, 1);  /* add extra info */
+            lua.lua_insert(L, -2);
+            lua.lua_concat(L, 2);
         }
 
-        return lua_error(L);  /* propagate error */
+        return lua.lua_error(L);  /* propagate error */
     }
 
     return r;
 };
 
 const luaB_cocreate = function(L) {
-    luaL_checktype(L, 1, LUA_TFUNCTION);
-    let NL = lua_newthread(L);
-    lua_pushvalue(L, 1);  /* move function to top */
-    lua_xmove(L, NL, 1);  /* move function from L to NL */
+    lauxlib.luaL_checktype(L, 1, lua.LUA_TFUNCTION);
+    let NL = lua.lua_newthread(L);
+    lua.lua_pushvalue(L, 1);  /* move function to top */
+    lua.lua_xmove(L, NL, 1);  /* move function from L to NL */
     return 1;
 };
 
 const luaB_cowrap = function(L) {
     luaB_cocreate(L);
-    lua_pushcclosure(L, luaB_auxwrap, 1);
+    lua.lua_pushcclosure(L, luaB_auxwrap, 1);
     return 1;
 };
 
 const luaB_yield = function(L) {
-    return lua_yield(L, lua_gettop(L));
+    return lua.lua_yield(L, lua.lua_gettop(L));
 };
 
 const luaB_costatus = function(L) {
     let co = getco(L);
-    if (L === co) lua_pushliteral(L, 'running');
+    if (L === co) lua.lua_pushliteral(L, 'running');
     else {
-        switch (lua_status(co)) {
-            case LUA_YIELD:
-                lua_pushliteral(L, 'suspended');
+        switch (lua.lua_status(co)) {
+            case lua.LUA_YIELD:
+                lua.lua_pushliteral(L, 'suspended');
                 break;
-            case LUA_OK: {
-                let ar = new lua_Debug();
-                if (lua_getstack(co, 0, ar) > 0)  /* does it have frames? */
-                    lua_pushliteral(L, 'normal');  /* it is running */
-                else if (lua_gettop(co) === 0)
-                    lua_pushliteral(L, 'dead');
+            case lua.LUA_OK: {
+                let ar = new lua.lua_Debug();
+                if (lua.lua_getstack(co, 0, ar) > 0)  /* does it have frames? */
+                    lua.lua_pushliteral(L, 'normal');  /* it is running */
+                else if (lua.lua_gettop(co) === 0)
+                    lua.lua_pushliteral(L, 'dead');
                 else
-                    lua_pushliteral(L, 'suspended');  /* initial state */
+                    lua.lua_pushliteral(L, 'suspended');  /* initial state */
                 break;
             }
             default:  /* some error occurred */
-                lua_pushliteral(L, 'dead');
+                lua.lua_pushliteral(L, 'dead');
                 break;
         }
     }
@@ -114,12 +112,12 @@ const luaB_costatus = function(L) {
 };
 
 const luaB_yieldable = function(L) {
-    lua_pushboolean(L, lua_isyieldable(L));
+    lua.lua_pushboolean(L, lua.lua_isyieldable(L));
     return 1;
 };
 
 const luaB_corunning = function(L) {
-    lua_pushboolean(L, lua_pushthread(L));
+    lua.lua_pushboolean(L, lua.lua_pushthread(L));
     return 2;
 };
 
@@ -133,10 +131,7 @@ const co_funcs = {
     'yield':       luaB_yield
 };
 
-const luaopen_coroutine = function(L) {
-    luaL_newlib(L, co_funcs);
+export const luaopen_coroutine = function(L) {
+    lauxlib.luaL_newlib(L, co_funcs);
     return 1;
 };
-
-const _luaopen_coroutine = luaopen_coroutine;
-export { _luaopen_coroutine as luaopen_coroutine };

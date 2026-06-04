@@ -1,7 +1,7 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 const prefix = `
     local unpack = table.unpack
@@ -28,9 +28,9 @@ const prefix = `
     if _soft then limit = 5000 end
 `;
 
-test("[test-suite] sort: testing unpack", () => {
+test('[test-suite] sort: testing unpack', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("wrong number of arguments", table.insert, {}, 2, 3, 4)
@@ -65,9 +65,9 @@ test("[test-suite] sort: testing unpack", () => {
 });
 
 
-test("[test-suite] sort: testing unpack", () => {
+test('[test-suite] sort: testing unpack', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -105,9 +105,9 @@ test("[test-suite] sort: testing unpack", () => {
 });
 
 
-test("[test-suite] sort: testing unpack", () => {
+test('[test-suite] sort: testing unpack', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- length is not an integer
@@ -123,9 +123,9 @@ test("[test-suite] sort: testing unpack", () => {
 });
 
 
-test("[test-suite] sort: testing pack", () => {
+test('[test-suite] sort: testing pack', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = table.pack()
@@ -144,9 +144,9 @@ test("[test-suite] sort: testing pack", () => {
 });
 
 
-test("[test-suite] sort: testing move", () => {
+test('[test-suite] sort: testing move', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -227,9 +227,9 @@ test("[test-suite] sort: testing move", () => {
 });
 
 
-test("[test-suite] sort: testing long move", () => {
+test('[test-suite] sort: testing long move', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -266,9 +266,9 @@ test("[test-suite] sort: testing long move", () => {
 });
 
 
-test("[test-suite] sort: testing sort, strange lengths", () => {
+test('[test-suite] sort: testing sort, strange lengths', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = setmetatable({}, {__len = function () return -1 end})
@@ -284,9 +284,9 @@ test("[test-suite] sort: testing sort, strange lengths", () => {
 });
 
 
-test("[test-suite] sort: test checks for invalid order functions", () => {
+test('[test-suite] sort: test checks for invalid order functions', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function check (t)
@@ -305,9 +305,9 @@ test("[test-suite] sort: test checks for invalid order functions", () => {
 });
 
 
-test("[test-suite] sort: sort alpha", () => {
+test('[test-suite] sort: sort alpha', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function check (a, f)
@@ -330,9 +330,9 @@ test("[test-suite] sort: sort alpha", () => {
 });
 
 
-test("[test-suite] sort: sort perm", () => {
+test('[test-suite] sort: sort perm', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function check (a, f)
@@ -375,9 +375,9 @@ test("[test-suite] sort: sort perm", () => {
 });
 
 
-test("[test-suite] sort: Invert-sorting", () => {
+test('[test-suite] sort: Invert-sorting', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function check (a, f)
@@ -413,9 +413,9 @@ test("[test-suite] sort: Invert-sorting", () => {
 });
 
 
-test("[test-suite] sort: sorting", () => {
+test('[test-suite] sort: sorting', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function check (a, f)

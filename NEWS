@@ -1,3 +1,7 @@
+0.1.6 - 2026-06-04
+
+  - Move across to ES modules
+
 UNRELEASED
 
   - Add os.setlocale that only understands the C locale

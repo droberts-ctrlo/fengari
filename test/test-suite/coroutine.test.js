@@ -1,7 +1,7 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 import { luaopen_tests } from './ltests.js';
 
@@ -53,9 +53,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] coroutine: is main thread", () => {
+test('[test-suite] coroutine: is main thread', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local main, ismain = coroutine.running()
@@ -71,9 +71,9 @@ test("[test-suite] coroutine: is main thread", () => {
 });
 
 
-test("[test-suite] coroutine: trivial errors", () => {
+test('[test-suite] coroutine: trivial errors', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(not pcall(coroutine.resume, 0))
@@ -86,9 +86,9 @@ test("[test-suite] coroutine: trivial errors", () => {
 });
 
 
-test("[test-suite] coroutine: tests for multiple yield/resume arguments", () => {
+test('[test-suite] coroutine: tests for multiple yield/resume arguments', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function eqtab (t1, t2)
@@ -141,9 +141,9 @@ test("[test-suite] coroutine: tests for multiple yield/resume arguments", () => 
 });
 
 
-test("[test-suite] coroutine: yields in tail calls", () => {
+test('[test-suite] coroutine: yields in tail calls', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo (i) return coroutine.yield(i) end
@@ -163,9 +163,9 @@ test("[test-suite] coroutine: yields in tail calls", () => {
 });
 
 
-test("[test-suite] coroutine: recursive", () => {
+test('[test-suite] coroutine: recursive', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function pf (n, i)
@@ -187,9 +187,9 @@ test("[test-suite] coroutine: recursive", () => {
 });
 
 
-test("[test-suite] coroutine: sieve", () => {
+test('[test-suite] coroutine: sieve', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function gen (n)
@@ -228,9 +228,9 @@ test("[test-suite] coroutine: sieve", () => {
 });
 
 
-test("[test-suite] coroutine: yielding across JS boundaries", () => {
+test('[test-suite] coroutine: yielding across JS boundaries', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local f = function (s, i) return coroutine.yield(i) end
@@ -268,9 +268,9 @@ test("[test-suite] coroutine: yielding across JS boundaries", () => {
 });
 
 
-test("[test-suite] coroutine: unyieldable JS call", () => {
+test('[test-suite] coroutine: unyieldable JS call', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -294,9 +294,9 @@ test("[test-suite] coroutine: unyieldable JS call", () => {
 });
 
 
-test("[test-suite] coroutine: errors in coroutines", () => {
+test('[test-suite] coroutine: errors in coroutines', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function foo ()
@@ -327,9 +327,9 @@ test("[test-suite] coroutine: errors in coroutines", () => {
 });
 
 
-test("[test-suite] coroutine: co-routines x for loop", () => {
+test('[test-suite] coroutine: co-routines x for loop', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function all (a, n, k)
@@ -355,9 +355,9 @@ test("[test-suite] coroutine: co-routines x for loop", () => {
 });
 
 
-test("[test-suite] coroutine: old bug: attempt to resume itself", () => {
+test('[test-suite] coroutine: old bug: attempt to resume itself', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function co_func (current_co)
@@ -386,9 +386,9 @@ test("[test-suite] coroutine: old bug: attempt to resume itself", () => {
 });
 
 
-test("[test-suite] coroutine: old bug: other old bug when attempting to resume itself", () => {
+test('[test-suite] coroutine: old bug: other old bug when attempting to resume itself', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -409,9 +409,9 @@ test("[test-suite] coroutine: old bug: other old bug when attempting to resume i
 });
 
 
-test("[test-suite] coroutine: attempt to resume 'normal' coroutine", () => {
+test('[test-suite] coroutine: attempt to resume \'normal\' coroutine', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co1, co2
@@ -433,9 +433,9 @@ test("[test-suite] coroutine: attempt to resume 'normal' coroutine", () => {
 });
 
 
-test("[test-suite] coroutine: infinite recursion of coroutines", () => {
+test('[test-suite] coroutine: infinite recursion of coroutines', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = function(a) coroutine.wrap(a)(a) end
@@ -449,9 +449,9 @@ test("[test-suite] coroutine: infinite recursion of coroutines", () => {
 });
 
 
-test("[test-suite] coroutine: access to locals of erroneous coroutines", () => {
+test('[test-suite] coroutine: access to locals of erroneous coroutines', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local x = coroutine.create (function ()
@@ -472,9 +472,9 @@ test("[test-suite] coroutine: access to locals of erroneous coroutines", () => {
     lua_call(L, 0, 0);
 });
 
-test("[test-suite] coroutine: leaving a pending coroutine open", () => {
+test('[test-suite] coroutine: leaving a pending coroutine open', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _X = coroutine.wrap(function ()
@@ -492,9 +492,9 @@ test("[test-suite] coroutine: leaving a pending coroutine open", () => {
 });
 
 
-test("[test-suite] coroutine: stack overflow", () => {
+test('[test-suite] coroutine: stack overflow', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- bug (stack overflow)
@@ -520,9 +520,9 @@ test("[test-suite] coroutine: stack overflow", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields inside metamethods", () => {
+test('[test-suite] coroutine: testing yields inside metamethods', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = new(10)
@@ -568,9 +568,9 @@ test("[test-suite] coroutine: testing yields inside metamethods", () => {
 });
 
 
-test("[test-suite] coroutine: tests for comparsion operators", () => {
+test('[test-suite] coroutine: tests for comparsion operators', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -620,9 +620,9 @@ test("[test-suite] coroutine: tests for comparsion operators", () => {
 });
 
 
-test("[test-suite] coroutine: getuptable & setuptable", () => {
+test('[test-suite] coroutine: getuptable & setuptable', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do local _ENV = _ENV
@@ -640,9 +640,9 @@ test("[test-suite] coroutine: getuptable & setuptable", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields inside 'for' iterators", () => {
+test('[test-suite] coroutine: testing yields inside \'for\' iterators', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local f = function (s, i)
@@ -674,9 +674,9 @@ const jsprefix = `
     end
 `;
 
-test("[test-suite] coroutine: testing yields inside hooks", () => {
+test('[test-suite] coroutine: testing yields inside hooks', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local A, B = 0, 0
@@ -706,9 +706,9 @@ test("[test-suite] coroutine: testing yields inside hooks", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields inside line hook", () => {
+test('[test-suite] coroutine: testing yields inside line hook', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local line = debug.getinfo(1, "l").currentline + 2    -- get line number
@@ -737,9 +737,9 @@ test("[test-suite] coroutine: testing yields inside line hook", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields in count hook", () => {
+test('[test-suite] coroutine: testing yields in count hook', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local line = debug.getinfo(1, "l").currentline + 2    -- get line number
@@ -766,9 +766,9 @@ test("[test-suite] coroutine: testing yields in count hook", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields inside line hook", () => {
+test('[test-suite] coroutine: testing yields inside line hook', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local line = debug.getinfo(1, "l").currentline + 2    -- get line number
@@ -804,9 +804,9 @@ test("[test-suite] coroutine: testing yields inside line hook", () => {
 });
 
 
-test("[test-suite] coroutine: testing debug library on a coroutine suspended inside a hook", () => {
+test('[test-suite] coroutine: testing debug library on a coroutine suspended inside a hook', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -844,9 +844,9 @@ test("[test-suite] coroutine: testing debug library on a coroutine suspended ins
 });
 
 
-test("[test-suite] coroutine: testing debug library on last function in a suspended coroutine", () => {
+test('[test-suite] coroutine: testing debug library on last function in a suspended coroutine', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -868,9 +868,9 @@ test("[test-suite] coroutine: testing debug library on last function in a suspen
 });
 
 
-test("[test-suite] coroutine: reusing a thread", () => {
+test('[test-suite] coroutine: reusing a thread', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(T.testC([[
@@ -902,9 +902,9 @@ test("[test-suite] coroutine: reusing a thread", () => {
 });
 
 
-test("[test-suite] coroutine: resuming running coroutine", () => {
+test('[test-suite] coroutine: resuming running coroutine', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         C = coroutine.create(function ()
@@ -938,9 +938,9 @@ test("[test-suite] coroutine: resuming running coroutine", () => {
     lua_call(L, 0, 0);
 });
 
-test("[test-suite] coroutine: using a main thread as a coroutine", () => {
+test('[test-suite] coroutine: using a main thread as a coroutine', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local state = T.newstate()
@@ -982,9 +982,9 @@ test("[test-suite] coroutine: using a main thread as a coroutine", () => {
 });
 
 
-test("[test-suite] coroutine: tests for coroutine API", () => {
+test('[test-suite] coroutine: tests for coroutine API', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function apico (...)
@@ -1034,9 +1034,9 @@ test("[test-suite] coroutine: tests for coroutine API", () => {
 });
 
 
-test("[test-suite] coroutine: tests for coroutine API", () => {
+test('[test-suite] coroutine: tests for coroutine API', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         f = T.makeCfunc("pushnum 3; pushnum 5; yield 1;")
@@ -1055,9 +1055,9 @@ test("[test-suite] coroutine: tests for coroutine API", () => {
 });
 
 
-test("[test-suite] coroutine: testing coroutines with C bodies", () => {
+test('[test-suite] coroutine: testing coroutines with C bodies', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function eqtab (t1, t2)
@@ -1100,9 +1100,9 @@ test("[test-suite] coroutine: testing coroutines with C bodies", () => {
 });
 
 
-test("[test-suite] coroutine: testing chain of suspendable C calls", () => {
+test('[test-suite] coroutine: testing chain of suspendable C calls', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local count = 3   -- number of levels
@@ -1143,9 +1143,9 @@ test("[test-suite] coroutine: testing chain of suspendable C calls", () => {
 });
 
 
-test("[test-suite] coroutine: testing yields with continuations", () => {
+test('[test-suite] coroutine: testing yields with continuations', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         co = coroutine.wrap(function (...) return
@@ -1208,9 +1208,9 @@ test("[test-suite] coroutine: testing yields with continuations", () => {
 });
 
 
-test("[test-suite] coroutine: bug in nCcalls", () => {
+test('[test-suite] coroutine: bug in nCcalls', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local co = coroutine.wrap(function ()

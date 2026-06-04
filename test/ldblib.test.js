@@ -1,11 +1,11 @@
 const lua = require('../src/lua.js');
 const lauxlib = require('../src/lauxlib.js');
 const lualib = require('../src/lualib.js');
-const {to_luastring} = require("../src/fengaricore.js");
+const {to_luastring} = require('../src/fengaricore.js');
 
 test('debug.sethook', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local result = ""
@@ -29,13 +29,13 @@ test('debug.sethook', () => {
     }
 
     expect(lua.lua_tojsstring(L, -1))
-        .toBe("return count line count line count line call count line return count line count line call count line return count line count line call count line return count line ");
+        .toBe('return count line count line count line call count line return count line count line call count line return count line count line call count line return count line ');
 });
 
 
 test('debug.gethook', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local result = ""
@@ -59,15 +59,15 @@ test('debug.gethook', () => {
     }
 
     expect(lua.lua_typename(L, lua.lua_type(L, -3)))
-        .toEqual(to_luastring("function"));
-    expect(lua.lua_tojsstring(L, -2)).toBe("crl");
+        .toEqual(to_luastring('function'));
+    expect(lua.lua_tojsstring(L, -2)).toBe('crl');
     expect(lua.lua_tointeger(L, -1)).toBe(1);
 });
 
 
 test('debug.getlocal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local alocal = "alocal"
@@ -95,12 +95,12 @@ test('debug.getlocal', () => {
     }
 
     expect(lua.lua_tojsstring(L, -1))
-        .toBe("alocal alocalanother anotherinfunction infunctionanotherin anotherin");
+        .toBe('alocal alocalanother anotherinfunction infunctionanotherin anotherin');
 });
 
 test('debug.setlocal', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local alocal = "alocal"
@@ -136,7 +136,7 @@ test('debug.setlocal', () => {
 
 test('debug.upvalueid', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local upvalue = "upvalue"
@@ -159,7 +159,7 @@ test('debug.upvalueid', () => {
 
 test('debug.upvaluejoin', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local upvalue1 = "upvalue1"
@@ -184,13 +184,13 @@ test('debug.upvaluejoin', () => {
     }
 
     expect(lua.lua_tojsstring(L, -1))
-        .toBe("upvalue2");
+        .toBe('upvalue2');
 });
 
 
 test('debug.traceback (with a global)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local trace
@@ -211,7 +211,7 @@ test('debug.traceback (with a global)', () => {
     {
         lualib.luaL_openlibs(L);
         luaCode = to_luastring(luaCode);
-        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring("traceback-test"));
+        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring('traceback-test'));
         lua.lua_call(L, 0, -1);
     }
 
@@ -234,7 +234,7 @@ test('debug.traceback (with a global)', () => {
 
 test('debug.traceback (with a upvalue)', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local trace
@@ -256,7 +256,7 @@ test('debug.traceback (with a upvalue)', () => {
     {
         lualib.luaL_openlibs(L);
         luaCode = to_luastring(luaCode);
-        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring("traceback-test"));
+        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring('traceback-test'));
         lua.lua_call(L, 0, -1);
     }
 
@@ -278,7 +278,7 @@ test('debug.traceback (with a upvalue)', () => {
 
 test('debug.getinfo', () => {
     let L = lauxlib.luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local alocal = function(p1, p2) end
@@ -293,16 +293,16 @@ test('debug.getinfo', () => {
     {
         lualib.luaL_openlibs(L);
         luaCode = to_luastring(luaCode);
-        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring("getinfo-test"));
+        lauxlib.luaL_loadbuffer(L, luaCode, luaCode.length, to_luastring('getinfo-test'));
         lua.lua_call(L, 0, -1);
     }
 
-    expect(lua.lua_tojsstring(L, -8)).toBe(`[string "getinfo-test"]`);
+    expect(lua.lua_tojsstring(L, -8)).toBe('[string "getinfo-test"]');
     expect(lua.lua_tointeger(L, -7)).toBe(0);
-    expect(lua.lua_tojsstring(L, -6)).toBe(`Lua`);
+    expect(lua.lua_tojsstring(L, -6)).toBe('Lua');
     expect(lua.lua_tointeger(L, -5)).toBe(2);
-    expect(lua.lua_tojsstring(L, -4)).toBe(`[string "getinfo-test"]`);
+    expect(lua.lua_tojsstring(L, -4)).toBe('[string "getinfo-test"]');
     expect(lua.lua_tointeger(L, -3)).toBe(1);
-    expect(lua.lua_tojsstring(L, -2)).toBe(`Lua`);
+    expect(lua.lua_tojsstring(L, -2)).toBe('Lua');
     expect(lua.lua_tointeger(L, -1)).toBe(0);
 });

@@ -1,11 +1,11 @@
 import { LUA_OK, lua_call, lua_isinteger, lua_tointeger, lua_isnumber, lua_tojsstring, lua_isstring } from '../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
 import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from "../src/fengaricore.js";
+import { to_luastring } from '../src/fengaricore.js';
 
 test('os.time', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return os.time()
@@ -22,7 +22,7 @@ test('os.time', () => {
 
 test('os.time (with format)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return os.time({
@@ -44,7 +44,7 @@ test('os.time (with format)', () => {
 
 test('os.difftime', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t1 = os.time()
@@ -63,7 +63,7 @@ test('os.difftime', () => {
 
 test('os.date', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return os.date('%Y-%m-%d', os.time({
@@ -78,13 +78,13 @@ test('os.date', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("2015-02-08");
+    expect(lua_tojsstring(L, -1)).toBe('2015-02-08');
 });
 
 
 test('os.date normalisation', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return os.date('%Y-%m-%d', os.time({
@@ -99,13 +99,13 @@ test('os.date normalisation', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("2013-11-30");
+    expect(lua_tojsstring(L, -1)).toBe('2013-11-30');
 });
 
 
 test('os.time normalisation of table', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {
@@ -128,7 +128,7 @@ test('os.time normalisation of table', () => {
 
 test('os.setlocale', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert("C" == os.setlocale())
@@ -145,7 +145,7 @@ test('os.setlocale', () => {
 
 test('os.getenv', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return os.getenv('PATH')

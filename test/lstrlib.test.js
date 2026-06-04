@@ -1,11 +1,11 @@
 import { LUA_OK, lua_call, lua_tointeger, lua_tojsstring, lua_tostring, lua_load, lua_toboolean, lua_gettop } from '../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
 import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from "../src/fengaricore.js";
+import { to_luastring } from '../src/fengaricore.js';
 
 test('string.len', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = "world"
@@ -24,7 +24,7 @@ test('string.len', () => {
 
 test('string.char', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.char(104, 101, 108, 108, 111)
@@ -35,13 +35,13 @@ test('string.char', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -1)).toBe('hello');
 });
 
 
 test('string.upper, string.lower', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.upper("hello"), string.lower("HELLO")
@@ -52,14 +52,14 @@ test('string.upper, string.lower', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("HELLO");
-    expect(lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -2)).toBe('HELLO');
+    expect(lua_tojsstring(L, -1)).toBe('hello');
 });
 
 
 test('string.rep', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.rep("hello", 3, ", ")
@@ -70,13 +70,13 @@ test('string.rep', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("hello, hello, hello");
+    expect(lua_tojsstring(L, -1)).toBe('hello, hello, hello');
 });
 
 
 test('string.reverse', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.reverse("olleh")
@@ -87,13 +87,13 @@ test('string.reverse', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("hello");
+    expect(lua_tojsstring(L, -1)).toBe('hello');
 });
 
 
 test('string.byte', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.byte("hello", 2, 4)
@@ -112,7 +112,7 @@ test('string.byte', () => {
 
 test('string.format', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.format("%%%d %010d", 10, 23)
@@ -123,13 +123,13 @@ test('string.format', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("%10 0000000023");
+    expect(lua_tojsstring(L, -1)).toBe('%10 0000000023');
 });
 
 
 test('string.format', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.format("%07X", 0xFFFFFFF)
@@ -140,13 +140,13 @@ test('string.format', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("FFFFFFF");
+    expect(lua_tojsstring(L, -1)).toBe('FFFFFFF');
 });
 
 
 test('string.format', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.format("%q", 'a string with "quotes" and \\n new line')
@@ -158,14 +158,14 @@ test('string.format', () => {
     }
 
     expect(lua_tojsstring(L, -1)).toBe('"a string with \\"quotes\\" and \\\n new line"',
-        "Correct element(s) on the stack"
+        'Correct element(s) on the stack'
     );
 });
 
 
 test('string.sub', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.sub("123456789",2,4),  -- "234"
@@ -186,23 +186,23 @@ test('string.sub', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -11)).toBe("234");
-    expect(lua_tojsstring(L, -10)).toBe("789");
-    expect(lua_tojsstring(L, -9)).toBe("");
-    expect(lua_tojsstring(L, -8)).toBe("7");
-    expect(lua_tojsstring(L, -7)).toBe("");
-    expect(lua_tojsstring(L, -6)).toBe("123456789");
-    expect(lua_tojsstring(L, -5)).toBe("123456789");
-    expect(lua_tojsstring(L, -4)).toBe("");
-    expect(lua_tojsstring(L, -3)).toBe("9");
-    expect(lua_tojsstring(L, -2)).toBe("6789");
-    expect(lua_tojsstring(L, -1)).toBe("456");
+    expect(lua_tojsstring(L, -11)).toBe('234');
+    expect(lua_tojsstring(L, -10)).toBe('789');
+    expect(lua_tojsstring(L, -9)).toBe('');
+    expect(lua_tojsstring(L, -8)).toBe('7');
+    expect(lua_tojsstring(L, -7)).toBe('');
+    expect(lua_tojsstring(L, -6)).toBe('123456789');
+    expect(lua_tojsstring(L, -5)).toBe('123456789');
+    expect(lua_tojsstring(L, -4)).toBe('');
+    expect(lua_tojsstring(L, -3)).toBe('9');
+    expect(lua_tojsstring(L, -2)).toBe('6789');
+    expect(lua_tojsstring(L, -1)).toBe('456');
 });
 
 
 test('string.dump', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local todump = function()
@@ -225,17 +225,17 @@ test('string.dump', () => {
             let r = s.str;
             s.str = null;
             return r;
-        }, {str: str}, to_luastring("test"), to_luastring("binary"));
+        }, {str: str}, to_luastring('test'), to_luastring('binary'));
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -1)).toBe("hello1212.5");
+    expect(lua_tojsstring(L, -1)).toBe('hello1212.5');
 });
 
 
 test('string.pack/unpack/packsize', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local s1, n, s2 = "hello", 2, "you"
@@ -256,7 +256,7 @@ test('string.pack/unpack/packsize', () => {
 
 test('string.find without pattern', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.find("hello to you", " to ")
@@ -274,7 +274,7 @@ test('string.find without pattern', () => {
 
 test('string.find with special pattern (issue #185)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.find("-", "-")
@@ -293,7 +293,7 @@ test('string.find with special pattern (issue #185)', () => {
 
 test('string.match', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.match("foo: 123 bar: 456", "(%a+):%s*(%d+)")
@@ -304,14 +304,14 @@ test('string.match', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("foo");
-    expect(lua_tojsstring(L, -1)).toBe("123");
+    expect(lua_tojsstring(L, -2)).toBe('foo');
+    expect(lua_tojsstring(L, -1)).toBe('123');
 });
 
 
 test('string.find', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.find("foo: 123 bar: 456", "(%a+):%s*(%d+)")
@@ -324,14 +324,14 @@ test('string.find', () => {
 
     expect(lua_tointeger(L, -4)).toBe(1);
     expect(lua_tointeger(L, -3)).toBe(8);
-    expect(lua_tojsstring(L, -2)).toBe("foo");
-    expect(lua_tojsstring(L, -1)).toBe("123");
+    expect(lua_tojsstring(L, -2)).toBe('foo');
+    expect(lua_tojsstring(L, -1)).toBe('123');
 });
 
 
 test('string.gmatch', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local s = "hello world from Lua"
@@ -349,16 +349,16 @@ test('string.gmatch', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -4)).toBe("hello");
-    expect(lua_tojsstring(L, -3)).toBe("world");
-    expect(lua_tojsstring(L, -2)).toBe("from");
-    expect(lua_tojsstring(L, -1)).toBe("Lua");
+    expect(lua_tojsstring(L, -4)).toBe('hello');
+    expect(lua_tojsstring(L, -3)).toBe('world');
+    expect(lua_tojsstring(L, -2)).toBe('from');
+    expect(lua_tojsstring(L, -1)).toBe('Lua');
 });
 
 
 test('string.gsub', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.gsub("hello world", "(%w+)", "%1 %1")
@@ -369,14 +369,14 @@ test('string.gsub', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("hello hello world world");
+    expect(lua_tojsstring(L, -2)).toBe('hello hello world world');
     expect(lua_tointeger(L, -1)).toBe(2);
 });
 
 
 test('string.gsub (number)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.gsub("hello world", "%w+", "%0 %0", 1)
@@ -387,14 +387,14 @@ test('string.gsub (number)', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("hello hello world");
+    expect(lua_tojsstring(L, -2)).toBe('hello hello world');
     expect(lua_tointeger(L, -1)).toBe(1);
 });
 
 
 test('string.gsub (pattern)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.gsub("hello world from Lua", "(%w+)%s*(%w+)", "%2 %1")
@@ -405,14 +405,14 @@ test('string.gsub (pattern)', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("world hello Lua from");
+    expect(lua_tojsstring(L, -2)).toBe('world hello Lua from');
     expect(lua_tointeger(L, -1)).toBe(2);
 });
 
 
 test('string.gsub (function)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return string.gsub("4+5 = $return 4+5$", "%$(.-)%$", function (s)
@@ -425,7 +425,7 @@ test('string.gsub (function)', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("4+5 = 9");
+    expect(lua_tojsstring(L, -2)).toBe('4+5 = 9');
     expect(lua_tointeger(L, -1)).toBe(1);
 });
 
@@ -433,7 +433,7 @@ test('string.gsub (function)', () => {
 
 test('string.gsub (table)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {name="lua", version="5.3"}
@@ -445,6 +445,6 @@ test('string.gsub (table)', () => {
         lua_call(L, 0, -1);
     }
 
-    expect(lua_tojsstring(L, -2)).toBe("lua-5.3.tar.gz");
+    expect(lua_tojsstring(L, -2)).toBe('lua-5.3.tar.gz');
     expect(lua_tointeger(L, -1)).toBe(2);
 });

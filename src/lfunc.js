@@ -1,9 +1,9 @@
-import { constant_types } from './defs.js';
-import { LClosure, TValue } from './lobject.js';
+import * as defs from './defs.js';
+import * as lobject from './lobject.js';
 
-const { LUA_TNIL } = constant_types;
+const { LUA_TNIL } = defs.constant_types;
 
-class Proto {
+export class Proto {
     constructor(L) {
         this.id = L.l_G.id_counter++;
         this.k = [];              // constants used by the function
@@ -22,37 +22,37 @@ class Proto {
     }
 }
 
-const luaF_newLclosure = function(L, n) {
-    return new LClosure(L, n);
+export const luaF_newLclosure = function (L, n) {
+    return new lobject.LClosure(L, n);
 };
 
 
-const luaF_findupval = function(L, level) {
+export const luaF_findupval = function (L, level) {
     return L.stack[level];
 };
 
-const luaF_close = function(L, level) {
+export const luaF_close = function (L, level) {
     /* Create new TValues on stack;
      * any closures will keep referencing old TValues */
-    for (let i=level; i<L.top; i++) {
+    for (let i = level; i < L.top; i++) {
         let old = L.stack[i];
-        L.stack[i] = new TValue(old.type, old.value);
+        L.stack[i] = new lobject.TValue(old.type, old.value);
     }
 };
 
 /*
 ** fill a closure with new upvalues
 */
-const luaF_initupvals = function(L, cl) {
+export const luaF_initupvals = function (L, cl) {
     for (let i = 0; i < cl.nupvalues; i++)
-        cl.upvals[i] = new TValue(LUA_TNIL, null);
+        cl.upvals[i] = new lobject.TValue(LUA_TNIL, null);
 };
 
 /*
 ** Look for n-th local variable at line 'line' in function 'func'.
 ** Returns null if not found.
 */
-const luaF_getlocalname = function(f, local_number, pc) {
+export const luaF_getlocalname = function (f, local_number, pc) {
     for (let i = 0; i < f.locvars.length && f.locvars[i].startpc <= pc; i++) {
         if (pc < f.locvars[i].endpc) {  /* is variable active? */
             local_number--;
@@ -63,16 +63,4 @@ const luaF_getlocalname = function(f, local_number, pc) {
     return null;  /* not found */
 };
 
-export const MAXUPVAL          = 255;
-const _Proto = Proto;
-export { _Proto as Proto };
-const _luaF_findupval = luaF_findupval;
-export { _luaF_findupval as luaF_findupval };
-const _luaF_close = luaF_close;
-export { _luaF_close as luaF_close };
-const _luaF_getlocalname = luaF_getlocalname;
-export { _luaF_getlocalname as luaF_getlocalname };
-const _luaF_initupvals = luaF_initupvals;
-export { _luaF_initupvals as luaF_initupvals };
-const _luaF_newLclosure = luaF_newLclosure;
-export { _luaF_newLclosure as luaF_newLclosure };
+export const MAXUPVAL = 255;

@@ -1,11 +1,11 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
-test("[test-suite] vararg: testing vararg", () => {
+test('[test-suite] vararg: testing vararg', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f(a, ...)
@@ -79,9 +79,9 @@ test("[test-suite] vararg: testing vararg", () => {
 });
 
 
-test("[test-suite] vararg: new-style varargs", () => {
+test('[test-suite] vararg: new-style varargs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function oneless (a, ...) return ... end
@@ -112,9 +112,9 @@ test("[test-suite] vararg: new-style varargs", () => {
 });
 
 
-test("[test-suite] vararg: varargs for main chunks", () => {
+test('[test-suite] vararg: varargs for main chunks', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         f = load[[ return {...} ]]
@@ -150,9 +150,9 @@ test("[test-suite] vararg: varargs for main chunks", () => {
 });
 
 
-test("[test-suite] vararg: bug in 5.2.2", () => {
+test('[test-suite] vararg: bug in 5.2.2', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,

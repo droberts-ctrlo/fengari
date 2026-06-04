@@ -1,26 +1,26 @@
-import { LUA_MINSTACK, LUA_RIDX_GLOBALS, LUA_RIDX_MAINTHREAD, constant_types, thread_status } from './defs.js';
-import { TValue } from './lobject.js';
-import { luaD_rawrunprotected } from './ldo.js';
-import { lua_version, api_incr_top } from './lapi.js';
-import { luaH_new, luaH_setint } from './ltable.js';
-import { TMS, luaT_init } from './ltm.js';
+import * as defs from './defs.js';
+import * as lobject from './lobject.js';
+import * as ldo from './ldo.js';
+import * as lapi from './lapi.js';
+import * as ltable from './ltable.js';
+import * as ltm from './ltm.js';
 
-const {
+export const {
     LUA_NUMTAGS,
     LUA_TNIL,
     LUA_TTABLE,
     LUA_TTHREAD
-} = constant_types;
+} = defs.constant_types;
 
-const {
+export const {
     LUA_OK
-} = thread_status;
+} = defs.thread_status;
 
-const EXTRA_STACK = 5;
+export const EXTRA_STACK = 5;
 
-const BASIC_STACK_SIZE = 2 * LUA_MINSTACK;
+export const BASIC_STACK_SIZE = 2 * defs.LUA_MINSTACK;
 
-class CallInfo {
+export class CallInfo {
 
     constructor() {
         this.func = null;
@@ -44,7 +44,7 @@ class CallInfo {
 
 }
 
-class lua_State {
+export class lua_State {
 
     constructor(g) {
         this.id = g.id_counter++;
@@ -72,24 +72,24 @@ class lua_State {
 
 }
 
-class global_State {
+export class global_State {
 
     constructor() {
         this.id_counter = 1; /* used to give objects unique ids */
         this.ids = new WeakMap();
 
         this.mainthread = null;
-        this.l_registry = new TValue(LUA_TNIL, null);
+        this.l_registry = new lobject.TValue(LUA_TNIL, null);
         this.panic = null;
         this.atnativeerror = null;
         this.version = null;
-        this.tmname = new Array(TMS.TM_N);
+        this.tmname = new Array(ltm.TMS.TM_N);
         this.mt = new Array(LUA_NUMTAGS);
     }
 
 }
 
-const luaE_extendCI = function (L) {
+export const luaE_extendCI = function (L) {
     let ci = new CallInfo();
     L.ci.next = ci;
     ci.previous = L.ci;
@@ -98,12 +98,12 @@ const luaE_extendCI = function (L) {
     return ci;
 };
 
-const luaE_freeCI = function (L) {
+export const luaE_freeCI = function (L) {
     let ci = L.ci;
     ci.next = null;
 };
 
-const stack_init = function (L1, L) {
+export const stack_init = function (L1, _L) {
     L1.stack = new Array(BASIC_STACK_SIZE);
     L1.top = 0;
     L1.stack_last = BASIC_STACK_SIZE - EXTRA_STACK;
@@ -113,12 +113,12 @@ const stack_init = function (L1, L) {
     ci.callstatus = 0;
     ci.funcOff = L1.top;
     ci.func = L1.stack[L1.top];
-    L1.stack[L1.top++] = new TValue(LUA_TNIL, null);
-    ci.top = L1.top + LUA_MINSTACK;
+    L1.stack[L1.top++] = new lobject.TValue(LUA_TNIL, null);
+    ci.top = L1.top + defs.LUA_MINSTACK;
     L1.ci = ci;
 };
 
-const freestack = function (L) {
+export const freestack = function (L) {
     L.ci = L.base_ci;
     luaE_freeCI(L);
     L.stack = null;
@@ -127,30 +127,30 @@ const freestack = function (L) {
 /*
 ** Create registry table and its predefined values
 */
-const init_registry = function (L, g) {
-    let registry = luaH_new(L);
+export const init_registry = function (L, g) {
+    let registry = ltable.luaH_new(L);
     g.l_registry.sethvalue(registry);
-    luaH_setint(registry, LUA_RIDX_MAINTHREAD, new TValue(LUA_TTHREAD, L));
-    luaH_setint(registry, LUA_RIDX_GLOBALS, new TValue(LUA_TTABLE, luaH_new(L)));
+    ltable.luaH_setint(registry, defs.LUA_RIDX_MAINTHREAD, new lobject.TValue(LUA_TTHREAD, L));
+    ltable.luaH_setint(registry, defs.LUA_RIDX_GLOBALS, new lobject.TValue(LUA_TTABLE, ltable.luaH_new(L)));
 };
 
 /*
 ** open parts of the state that may cause memory-allocation errors.
 ** ('g->version' !== NULL flags that the state was completely build)
 */
-const f_luaopen = function (L) {
+export const f_luaopen = function (L) {
     let g = L.l_G;
     stack_init(L, L);
     init_registry(L, g);
-    luaT_init(L);
-    g.version = lua_version(null);
+    ltm.luaT_init(L);
+    g.version = lapi.lua_version(null);
 };
 
-const lua_newthread = function (L) {
+export const lua_newthread = function (L) {
     let g = L.l_G;
     let L1 = new lua_State(g);
-    L.stack[L.top] = new TValue(LUA_TTHREAD, L1);
-    api_incr_top(L);
+    L.stack[L.top] = new lobject.TValue(LUA_TTHREAD, L1);
+    lapi.api_incr_top(L);
     L1.hookmask = L.hookmask;
     L1.basehookcount = L.basehookcount;
     L1.hook = L.hook;
@@ -159,35 +159,31 @@ const lua_newthread = function (L) {
     return L1;
 };
 
-const luaE_freethread = function (L, L1) {
+export const luaE_freethread = function (L, L1) {
     freestack(L1);
 };
 
-const lua_newstate = function () {
+export const lua_newstate = function () {
     let g = new global_State();
     let L = new lua_State(g);
     g.mainthread = L;
 
-    if (luaD_rawrunprotected(L, f_luaopen, null) !== LUA_OK) {
+    if (ldo.luaD_rawrunprotected(L, f_luaopen, null) !== LUA_OK) {
         L = null;
     }
 
     return L;
 };
 
-const close_state = function (L) {
+export const close_state = function (L) {
     freestack(L);
 };
 
-const lua_close = function (L) {
+export const lua_close = function (L) {
     L = L.l_G.mainthread;  /* only the main thread can be closed */
     close_state(L);
 };
 
-const _lua_State = lua_State;
-export { _lua_State as lua_State };
-const _CallInfo = CallInfo;
-export { _CallInfo as CallInfo };
 export const CIST_OAH = (1 << 0);  /* original value of 'allowhook' */
 export const CIST_LUA = (1 << 1);  /* call is running a Lua function */
 export const CIST_HOOKED = (1 << 2);  /* call is running a debug hook */
@@ -197,17 +193,3 @@ export const CIST_TAIL = (1 << 5);  /* call was tail called */
 export const CIST_HOOKYIELD = (1 << 6);  /* last hook called yielded */
 export const CIST_LEQ = (1 << 7);  /* using __lt for __le */
 export const CIST_FIN = (1 << 8);   /* call is running a finalizer */
-const _EXTRA_STACK = EXTRA_STACK;
-export { _EXTRA_STACK as EXTRA_STACK };
-const _lua_close = lua_close;
-export { _lua_close as lua_close };
-const _lua_newstate = lua_newstate;
-export { _lua_newstate as lua_newstate };
-const _lua_newthread = lua_newthread;
-export { _lua_newthread as lua_newthread };
-const _luaE_extendCI = luaE_extendCI;
-export { _luaE_extendCI as luaE_extendCI };
-const _luaE_freeCI = luaE_freeCI;
-export { _luaE_freeCI as luaE_freeCI };
-const _luaE_freethread = luaE_freethread;
-export { _luaE_freethread as luaE_freethread };

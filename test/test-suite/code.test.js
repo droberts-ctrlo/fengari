@@ -1,13 +1,13 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 import { luaopen_tests } from './ltests.js';
 
-test("[test-suite] code: testing reuse in constant table", () => {
+test('[test-suite] code: testing reuse in constant table', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checkKlist (func, list)
@@ -62,9 +62,9 @@ const prefix = `
 `;
 
 
-test("[test-suite] code: some basic instructions", () => {
+test('[test-suite] code: some basic instructions', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function ()
@@ -79,9 +79,9 @@ test("[test-suite] code: some basic instructions", () => {
 });
 
 
-test("[test-suite] code: sequence of LOADNILs", () => {
+test('[test-suite] code: sequence of LOADNILs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function ()
@@ -110,9 +110,9 @@ test("[test-suite] code: sequence of LOADNILs", () => {
 });
 
 
-test("[test-suite] code: single return", () => {
+test('[test-suite] code: single return', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check (function (a,b,c) return a end, 'RETURN')
@@ -125,9 +125,9 @@ test("[test-suite] code: single return", () => {
 });
 
 
-test("[test-suite] code: infinite loops", () => {
+test('[test-suite] code: infinite loops', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function () while true do local a = -1 end end,
@@ -147,9 +147,9 @@ test("[test-suite] code: infinite loops", () => {
 });
 
 
-test("[test-suite] code: concat optimization", () => {
+test('[test-suite] code: concat optimization', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function (a,b,c,d) return a..b..c..d end,
@@ -163,9 +163,9 @@ test("[test-suite] code: concat optimization", () => {
 });
 
 
-test("[test-suite] code: not", () => {
+test('[test-suite] code: not', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function () return not not nil end, 'LOADBOOL', 'RETURN')
@@ -181,9 +181,9 @@ test("[test-suite] code: not", () => {
 });
 
 
-test("[test-suite] code: direct access to locals", () => {
+test('[test-suite] code: direct access to locals', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function ()
@@ -204,9 +204,9 @@ test("[test-suite] code: direct access to locals", () => {
 });
 
 
-test("[test-suite] code: direct access to constants", () => {
+test('[test-suite] code: direct access to constants', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function ()
@@ -239,9 +239,9 @@ test("[test-suite] code: direct access to constants", () => {
 });
 
 
-test("[test-suite] code: constant folding", () => {
+test('[test-suite] code: constant folding', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checkK (func, val)
@@ -273,9 +273,9 @@ test("[test-suite] code: constant folding", () => {
 });
 
 
-test("[test-suite] code: no folding", () => {
+test('[test-suite] code: no folding', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function () return -0.0 end, 'LOADK', 'UNM', 'RETURN')
@@ -291,9 +291,9 @@ test("[test-suite] code: no folding", () => {
 });
 
 
-test("[test-suite] code: bug in constant folding for 5.1", () => {
+test('[test-suite] code: bug in constant folding for 5.1', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function () return -nil end, 'LOADNIL', 'UNM', 'RETURN')
@@ -321,9 +321,9 @@ test("[test-suite] code: bug in constant folding for 5.1", () => {
 });
 
 
-test("[test-suite] code: x == nil , x ~= nil", () => {
+test('[test-suite] code: x == nil , x ~= nil', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkequal(function () if (a==nil) then a=1 end; if a~=nil then a=1 end end,
@@ -346,9 +346,9 @@ test("[test-suite] code: x == nil , x ~= nil", () => {
 });
 
 
-test("[test-suite] code: if-goto optimizations", () => {
+test('[test-suite] code: if-goto optimizations', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         check(function (a, b, c, d, e)

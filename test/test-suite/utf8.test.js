@@ -1,7 +1,7 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 const prefix = `
     local function checkerror (msg, f, ...)
@@ -92,9 +92,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] utf8: offset", () => {
+test('[test-suite] utf8: offset', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         assert(utf8.offset("alo", 5) == nil)
@@ -107,9 +107,9 @@ test("[test-suite] utf8: offset", () => {
 });
 
 
-test("[test-suite] utf8: error indication in utf8.len", () => {
+test('[test-suite] utf8: error indication in utf8.len', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         do
@@ -130,9 +130,9 @@ test("[test-suite] utf8: error indication in utf8.len", () => {
 });
 
 
-test("[test-suite] utf8: error in initial position for offset", () => {
+test('[test-suite] utf8: error in initial position for offset', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         checkerror("position out of range", utf8.offset, "abc", 1, 5)
@@ -150,9 +150,9 @@ test("[test-suite] utf8: error in initial position for offset", () => {
 });
 
 
-test("[test-suite] utf8: codepoints", () => {
+test('[test-suite] utf8: codepoints', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         local s = "hello World"
@@ -188,9 +188,9 @@ test("[test-suite] utf8: codepoints", () => {
 });
 
 
-test("[test-suite] utf8: UTF-8 representation for 0x11ffff (value out of valid range)", () => {
+test('[test-suite] utf8: UTF-8 representation for 0x11ffff (value out of valid range)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         invalid("\\xF4\\x9F\\xBF\\xBF")
@@ -202,9 +202,9 @@ test("[test-suite] utf8: UTF-8 representation for 0x11ffff (value out of valid r
 });
 
 
-test("[test-suite] utf8: overlong sequences", () => {
+test('[test-suite] utf8: overlong sequences', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         invalid("\\xC0\\x80")          -- zero
@@ -219,9 +219,9 @@ test("[test-suite] utf8: overlong sequences", () => {
 });
 
 
-test("[test-suite] utf8: invalid bytes", () => {
+test('[test-suite] utf8: invalid bytes', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         invalid("\\x80")  -- continuation byte
@@ -236,9 +236,9 @@ test("[test-suite] utf8: invalid bytes", () => {
 });
 
 
-test("[test-suite] utf8: empty strings", () => {
+test('[test-suite] utf8: empty strings', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         check("", {})
@@ -250,9 +250,9 @@ test("[test-suite] utf8: empty strings", () => {
 });
 
 
-test("[test-suite] utf8: minimum and maximum values for each sequence size", () => {
+test('[test-suite] utf8: minimum and maximum values for each sequence size', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = prefix + `
         s = "\\0 \\x7F\\z

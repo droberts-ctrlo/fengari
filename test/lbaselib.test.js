@@ -1,12 +1,12 @@
 import { LUA_OK, lua_call, lua_tojsstring, lua_istable, lua_toboolean, lua_pcall, lua_tointeger, lua_topointer, lua_isnil, lua_tonumber } from '../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
 import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from "../src/fengaricore.js";
+import { to_luastring } from '../src/fengaricore.js';
 
 
 test('print', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         print("hello", "world", 123)
@@ -21,7 +21,7 @@ test('print', () => {
 
 test('setmetatable, getmetatable', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -43,7 +43,7 @@ test('setmetatable, getmetatable', () => {
     }
 
     expect(lua_tojsstring(L, -2))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua_istable(L, -1)).toBe(true);
 });
@@ -51,7 +51,7 @@ test('setmetatable, getmetatable', () => {
 
 test('rawequal', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -81,7 +81,7 @@ test('rawequal', () => {
 
 test('rawset, rawget', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local mt = {
@@ -106,22 +106,22 @@ test('rawset, rawget', () => {
     }
 
     expect(lua_tojsstring(L, -4))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua_tojsstring(L, -3))
-        .toBe("hello");
+        .toBe('hello');
 
     expect(lua_tojsstring(L, -2))
-        .toBe("bye");
+        .toBe('bye');
 
     expect(lua_tojsstring(L, -1))
-        .toBe("bye");
+        .toBe('bye');
 });
 
 
 test('type', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return type(1), type(true), type("hello"), type({}), type(nil)
@@ -133,25 +133,25 @@ test('type', () => {
     }
 
     expect(lua_tojsstring(L, -5))
-        .toBe("number");
+        .toBe('number');
 
     expect(lua_tojsstring(L, -4))
-        .toBe("boolean");
+        .toBe('boolean');
 
     expect(lua_tojsstring(L, -3))
-        .toBe("string");
+        .toBe('string');
 
     expect(lua_tojsstring(L, -2))
-        .toBe("table");
+        .toBe('table');
 
     expect(lua_tojsstring(L, -1))
-        .toBe("nil");
+        .toBe('nil');
 });
 
 
 test('error', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         error("you fucked up")
@@ -168,7 +168,7 @@ test('error', () => {
 
 test('error, protected', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         error("you fucked up")
@@ -185,7 +185,7 @@ test('error, protected', () => {
 
 test('pcall', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local willFail = function ()
@@ -206,7 +206,7 @@ test('pcall', () => {
 
 test('xpcall', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local willFail = function ()
@@ -231,7 +231,7 @@ test('xpcall', () => {
 
 test('ipairs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {1, 2, 3, 4, 5, ['yo'] = 'lo'}
@@ -255,7 +255,7 @@ test('ipairs', () => {
 
 test('select', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return {select('#', 1, 2, 3)}, {select(2, 1, 2, 3)}, {select(-2, 1, 2, 3)}
@@ -279,7 +279,7 @@ test('select', () => {
 
 test('tonumber', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return tonumber('foo'),
@@ -304,7 +304,7 @@ test('tonumber', () => {
 
 test('assert', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(1 < 0, "this doesn't makes sense")
@@ -321,7 +321,7 @@ test('assert', () => {
 
 test('rawlen', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return rawlen({1, 2, 3}), rawlen('hello')
@@ -339,7 +339,7 @@ test('rawlen', () => {
 
 test('next', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0
@@ -368,7 +368,7 @@ test('next', () => {
 
 test('pairs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0
@@ -397,7 +397,7 @@ test('pairs', () => {
 
 test('pairs with __pairs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local total = 0

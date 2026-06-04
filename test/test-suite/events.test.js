@@ -1,13 +1,13 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 import { luaopen_tests } from './ltests.js';
 
-test("[test-suite] events: testing metatable", () => {
+test('[test-suite] events: testing metatable', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         X = 20; B = 30
@@ -188,9 +188,9 @@ test("[test-suite] events: testing metatable", () => {
 });
 
 
-test("[test-suite] events: test for rawlen", () => {
+test('[test-suite] events: test for rawlen', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         t = setmetatable({1,2,3}, {__len = function () return 10 end})
@@ -210,9 +210,9 @@ test("[test-suite] events: test for rawlen", () => {
 });
 
 
-test("[test-suite] events: test comparison", () => {
+test('[test-suite] events: test comparison', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         t = {}
@@ -259,9 +259,9 @@ test("[test-suite] events: test comparison", () => {
 });
 
 
-test("[test-suite] events: test 'partial order'", () => {
+test('[test-suite] events: test \'partial order\'', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         t = {}
@@ -330,9 +330,9 @@ test("[test-suite] events: test 'partial order'", () => {
 });
 
 
-test("[test-suite] events: __eq between userdata", () => {
+test('[test-suite] events: __eq between userdata', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         T = require('T')
@@ -362,9 +362,9 @@ test("[test-suite] events: __eq between userdata", () => {
 });
 
 
-test("[test-suite] events: concat", () => {
+test('[test-suite] events: concat', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         t = {}
@@ -401,9 +401,9 @@ test("[test-suite] events: concat", () => {
 });
 
 
-test("[test-suite] events: concat metamethod x numbers (bug in 5.1.1)", () => {
+test('[test-suite] events: concat metamethod x numbers (bug in 5.1.1)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         c = {}
@@ -423,9 +423,9 @@ test("[test-suite] events: concat metamethod x numbers (bug in 5.1.1)", () => {
 });
 
 
-test("[test-suite] events: test comparison compatibilities", () => {
+test('[test-suite] events: test comparison compatibilities', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t1, t2, c, d
@@ -449,9 +449,9 @@ test("[test-suite] events: test comparison compatibilities", () => {
 });
 
 
-test("[test-suite] events: test for several levels of callstest for several levels of calls", () => {
+test('[test-suite] events: test for several levels of callstest for several levels of calls', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local i
@@ -480,9 +480,9 @@ test("[test-suite] events: test for several levels of callstest for several leve
 });
 
 
-test("[test-suite] events: __index on _ENV", () => {
+test('[test-suite] events: __index on _ENV', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local _g = _G
@@ -500,9 +500,9 @@ test("[test-suite] events: __index on _ENV", () => {
 });
 
 
-test("[test-suite] events: testing metatables for basic types", () => {
+test('[test-suite] events: testing metatables for basic types', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         mt = {__index = function (a,b) return a+b end,
@@ -542,9 +542,9 @@ test("[test-suite] events: testing metatables for basic types", () => {
 });
 
 
-test("[test-suite] events: loops in delegation", () => {
+test('[test-suite] events: loops in delegation', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}; setmetatable(a, a); a.__index = a; a.__newindex = a
@@ -559,9 +559,9 @@ test("[test-suite] events: loops in delegation", () => {
 });
 
 
-test("[test-suite] events: bug in 5.1", () => {
+test('[test-suite] events: bug in 5.1', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         T, K, V = nil
