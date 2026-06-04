@@ -1,6 +1,4 @@
-'use strict';
-
-import { LUA_SIGNATURE, LUA_VERSION_MAJOR, LUA_VERSION_MINOR, constant_types, luastring_of } from './defs.js';
+import * as defs from './defs.js';
 
 const {
     LUA_TBOOLEAN,
@@ -9,12 +7,12 @@ const {
     LUA_TNUMFLT,
     LUA_TNUMINT,
     LUA_TSHRSTR
-} = constant_types;
+} = defs.constant_types;
 
-const LUAC_DATA = luastring_of(25, 147, 13, 10, 26, 10);
+const LUAC_DATA = defs.luastring_of(25, 147, 13, 10, 26, 10);
 const LUAC_INT = 0x5678;
 const LUAC_NUM = 370.5;
-const LUAC_VERSION = Number(LUA_VERSION_MAJOR) * 16 + Number(LUA_VERSION_MINOR);
+const LUAC_VERSION = Number(defs.LUA_VERSION_MAJOR) * 16 + Number(defs.LUA_VERSION_MINOR);
 const LUAC_FORMAT = 0;   /* this is the official format */
 
 class DumpState {
@@ -33,7 +31,7 @@ const DumpBlock = function (b, size, D) {
 };
 
 const DumpByte = function (y, D) {
-    DumpBlock(luastring_of(y), 1, D);
+    DumpBlock(defs.luastring_of(y), 1, D);
 };
 
 const DumpInt = function (x, D) {
@@ -162,7 +160,7 @@ const DumpFunction = function (f, psource, D) {
 };
 
 const DumpHeader = function (D) {
-    DumpBlock(LUA_SIGNATURE, LUA_SIGNATURE.length, D);
+    DumpBlock(defs.LUA_SIGNATURE, defs.LUA_SIGNATURE.length, D);
     DumpByte(LUAC_VERSION, D);
     DumpByte(LUAC_FORMAT, D);
     DumpBlock(LUAC_DATA, LUAC_DATA.length, D);
@@ -178,7 +176,7 @@ const DumpHeader = function (D) {
 /*
 ** dump Lua function as precompiled chunk
 */
-const luaU_dump = function (L, f, w, data, strip) {
+export const luaU_dump = function (L, f, w, data, strip) {
     let D = new DumpState();
     D.L = L;
     D.writer = w;
@@ -190,6 +188,3 @@ const luaU_dump = function (L, f, w, data, strip) {
     DumpFunction(f, null, D);
     return D.status;
 };
-
-const _luaU_dump = luaU_dump;
-export { _luaU_dump as luaU_dump };

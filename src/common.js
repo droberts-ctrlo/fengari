@@ -1,4 +1,4 @@
-const conf = (process.env.FENGARICONF ? JSON.parse(process.env.FENGARICONF) : {});
+const conf = (typeof process !== 'undefined' && process.env.FENGARICONF ? JSON.parse(process.env.FENGARICONF) : {});
 
 /*
 @@ LUAI_MAXSTACK limits the size of the Lua stack.

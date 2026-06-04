@@ -1,6 +1,6 @@
-import { luastring_of } from './defs.js';
+import * as defs from './defs.js';
 
-const luai_ctype_ = luastring_of(
+const luai_ctype_ = defs.luastring_of(
     0x00,  /* EOZ */
     0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,  0x00,        /* 0. */
     0x00,  0x08,  0x08,  0x08,  0x08,  0x08,  0x00,  0x00,
@@ -42,39 +42,26 @@ const PRINTBIT = 2;
 const SPACEBIT = 3;
 const XDIGITBIT = 4;
 
-const lisdigit = function(c) {
+export const lisdigit = function(c) {
     return (luai_ctype_[c+1] & (1<<DIGITBIT)) !== 0;
 };
 
-const lisxdigit = function(c) {
+export const lisxdigit = function(c) {
     return (luai_ctype_[c+1] & (1<<XDIGITBIT)) !== 0;
 };
 
-const lisprint = function(c) {
+export const lisprint = function(c) {
     return (luai_ctype_[c+1] & (1<<PRINTBIT)) !== 0;
 };
 
-const lisspace = function(c) {
+export const lisspace = function(c) {
     return (luai_ctype_[c+1] & (1<<SPACEBIT)) !== 0;
 };
 
-const lislalpha = function(c) {
+export const lislalpha = function(c) {
     return (luai_ctype_[c+1] & (1<<ALPHABIT)) !== 0;
 };
 
-const lislalnum = function(c) {
+export const lislalnum = function(c) {
     return (luai_ctype_[c+1] & ((1<<ALPHABIT)|(1<<DIGITBIT))) !== 0;
 };
-
-const _lisdigit = lisdigit;
-export { _lisdigit as lisdigit };
-const _lislalnum = lislalnum;
-export { _lislalnum as lislalnum };
-const _lislalpha = lislalpha;
-export { _lislalpha as lislalpha };
-const _lisprint = lisprint;
-export { _lisprint as lisprint };
-const _lisspace = lisspace;
-export { _lisspace as lisspace };
-const _lisxdigit = lisxdigit;
-export { _lisxdigit as lisxdigit };

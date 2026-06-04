@@ -1,7 +1,5 @@
 [![Build Status](https://github.com/fengari-lua/fengari/actions/workflows/ci.yaml/badge.svg)](https://github.com/fengari-lua/fengari/actions/workflows/ci.yaml?query=event%3Apush)
-[![npm](https://img.shields.io/npm/v/fengari.svg)](https://npmjs.com/package/fengari)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![#fengari on libera.chat](https://img.shields.io/badge/chat-%23fengari-brightgreen)](https://web.libera.chat/?channels=#fengari)
 
 <p align="center">
     <img src="https://github.com/fengari-lua/fengari/raw/master/logo.png" alt="Fengari" width="304" height="304">
@@ -10,13 +8,13 @@
 
 # Fengari
 
-🌙 φεγγάρι - The Lua VM written in JS ES6 for Node and the browser
+🌙 φεγγάρι - The Lua VM written in JS ES for Node and the browser
 
 This repository contains the core fengari code (which is a port of the Lua C library) which includes parser, virtual machine and base libraries.
 However it is rare to use this repository directly.
 
-- To use fengari in a web browser as easily as you might use JavaScript, see [fengari-web](https://github.com/fengari-lua/fengari-web)
-- [fengari-interop](https://github.com/fengari-lua/fengari-interop) is a lua library that makes interoperating with JavaScript objects simple, it is already included in fengari-web.
+- To use fengari in a web browser as easily as you might use JavaScript, see [fengari-web](https://github.com/droberts-ctrlo/fengari-web)
+- [fengari-interop](https://github.com/droberts-ctrlo/fengari-interop) is a lua library that makes interoperating with JavaScript objects simple, it is already included in fengari-web.
 - For a clone of the `lua` command line tool, but running under node.js, see [fengari-node-cli](https://github.com/fengari-lua/fengari-node-cli)
 
 ### The JS API

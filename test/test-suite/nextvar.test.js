@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 const prefix = `
     local function checkerror (msg, f, ...)
@@ -12,9 +12,9 @@ const prefix = `
     end
 `;
 
-test("[test-suite] nextvar: testing size operator", () => {
+test('[test-suite] nextvar: testing size operator', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = {}
@@ -35,9 +35,9 @@ test("[test-suite] nextvar: testing size operator", () => {
 });
 
 
-test("[test-suite] nextvar: testing ipairs", () => {
+test('[test-suite] nextvar: testing ipairs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local x = 0
@@ -55,9 +55,9 @@ test("[test-suite] nextvar: testing ipairs", () => {
 });
 
 
-test("[test-suite] nextvar: test for 'false' x ipair", () => {
+test('[test-suite] nextvar: test for \'false\' x ipair', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         x = false
@@ -76,9 +76,9 @@ test("[test-suite] nextvar: test for 'false' x ipair", () => {
 });
 
 
-test("[test-suite] nextvar: iterator function is always the same", () => {
+test('[test-suite] nextvar: iterator function is always the same', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(type(ipairs{}) == 'function' and ipairs{} == ipairs{})
@@ -90,9 +90,9 @@ test("[test-suite] nextvar: iterator function is always the same", () => {
 });
 
 
-test.skip("[test-suite] nextvar: JS tests", () => {
+test.skip('[test-suite] nextvar: JS tests', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- testing table sizes
@@ -232,9 +232,9 @@ test.skip("[test-suite] nextvar: JS tests", () => {
 });
 
 
-test("[test-suite] nextvar: test size operation on empty tables", () => {
+test('[test-suite] nextvar: test size operation on empty tables', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(#{} == 0)
@@ -250,9 +250,9 @@ test("[test-suite] nextvar: test size operation on empty tables", () => {
 });
 
 
-test("[test-suite] nextvar: test size operation on empty tables", () => {
+test('[test-suite] nextvar: test size operation on empty tables', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(#{} == 0)
@@ -268,9 +268,9 @@ test("[test-suite] nextvar: test size operation on empty tables", () => {
 });
 
 
-test("[test-suite] nextvar: next uses always the same iteration function", () => {
+test('[test-suite] nextvar: next uses always the same iteration function', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local nofind = {}
@@ -317,9 +317,9 @@ test("[test-suite] nextvar: next uses always the same iteration function", () =>
 });
 
 
-test("[test-suite] nextvar: invalid key to 'next'", () => {
+test('[test-suite] nextvar: invalid key to \'next\'', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("invalid key", next, {10,20}, 3)
@@ -331,9 +331,9 @@ test("[test-suite] nextvar: invalid key to 'next'", () => {
 });
 
 
-test("[test-suite] nextvar: both 'pairs' and 'ipairs' need an argument", () => {
+test('[test-suite] nextvar: both \'pairs\' and \'ipairs\' need an argument', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("bad argument", pairs)
@@ -346,9 +346,9 @@ test("[test-suite] nextvar: both 'pairs' and 'ipairs' need an argument", () => {
 });
 
 
-test("[test-suite] nextvar: fmod table", () => {
+test('[test-suite] nextvar: fmod table', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -373,9 +373,9 @@ test("[test-suite] nextvar: fmod table", () => {
 });
 
 
-test("[test-suite] nextvar: check next", () => {
+test('[test-suite] nextvar: check next', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checknext (a)
@@ -398,9 +398,9 @@ test("[test-suite] nextvar: check next", () => {
 });
 
 
-test("[test-suite] nextvar: # operator", () => {
+test('[test-suite] nextvar: # operator', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(#{} == 0)
@@ -419,9 +419,9 @@ test("[test-suite] nextvar: # operator", () => {
 });
 
 
-test("[test-suite] nextvar: maxn", () => {
+test('[test-suite] nextvar: maxn', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- 'maxn' is now deprecated, but it is easily defined in Lua
@@ -448,9 +448,9 @@ test("[test-suite] nextvar: maxn", () => {
 });
 
 
-test("[test-suite] nextvar: int overflow", () => {
+test('[test-suite] nextvar: int overflow', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -464,9 +464,9 @@ test("[test-suite] nextvar: int overflow", () => {
 });
 
 
-test("[test-suite] nextvar: erasing values", () => {
+test('[test-suite] nextvar: erasing values', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local t = {[{1}] = 1, [{2}] = 2, [string.rep("x ", 4)] = 3,
@@ -549,9 +549,9 @@ test("[test-suite] nextvar: erasing values", () => {
 });
 
 
-test("[test-suite] nextvar: testing table library with metamethods", () => {
+test('[test-suite] nextvar: testing table library with metamethods', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -607,9 +607,9 @@ test("[test-suite] nextvar: testing table library with metamethods", () => {
 });
 
 
-test.skip("[test-suite] nextvar: JS tests", () => {
+test.skip('[test-suite] nextvar: JS tests', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local tab = {10, 20, 30}
@@ -648,9 +648,9 @@ test.skip("[test-suite] nextvar: JS tests", () => {
 });
 
 
-test("[test-suite] nextvar: next", () => {
+test('[test-suite] nextvar: next', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -675,9 +675,9 @@ test("[test-suite] nextvar: next", () => {
 });
 
 
-test("[test-suite] nextvar: testing floats in numeric for", () => {
+test('[test-suite] nextvar: testing floats in numeric for', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -706,9 +706,9 @@ test("[test-suite] nextvar: testing floats in numeric for", () => {
 });
 
 
-test("[test-suite] nextvar: conversion", () => {
+test('[test-suite] nextvar: conversion', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = 0; for i="10","1","-2" do a=a+1 end; assert(a==5)
@@ -720,9 +720,9 @@ test("[test-suite] nextvar: conversion", () => {
 });
 
 
-test("[test-suite] nextvar: checking types", () => {
+test('[test-suite] nextvar: checking types', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -786,9 +786,9 @@ test("[test-suite] nextvar: checking types", () => {
 });
 
 
-test("[test-suite] nextvar: testing generic 'for'", () => {
+test('[test-suite] nextvar: testing generic \'for\'', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function f (n, p)
@@ -815,9 +815,9 @@ test("[test-suite] nextvar: testing generic 'for'", () => {
 });
 
 
-test("[test-suite] nextvar: testing __pairs and __ipairs metamethod", () => {
+test('[test-suite] nextvar: testing __pairs and __ipairs metamethod', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -855,9 +855,9 @@ test("[test-suite] nextvar: testing __pairs and __ipairs metamethod", () => {
 });
 
 
-test("[test-suite] nextvar: testing ipairs with metamethods", () => {
+test('[test-suite] nextvar: testing ipairs with metamethods', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {n=10}

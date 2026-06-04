@@ -1,11 +1,11 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring, luaL_loadfile } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
-test("[test-suite] pm: pattern matching", () => {
+test('[test-suite] pm: pattern matching', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f(s, p)
@@ -92,9 +92,9 @@ test("[test-suite] pm: pattern matching", () => {
 });
 
 
-test("[test-suite] pm: tonumber", () => {
+test('[test-suite] pm: tonumber', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function f1(s, p)
@@ -119,9 +119,9 @@ test("[test-suite] pm: tonumber", () => {
 });
 
 
-test("[test-suite] pm: range", () => {
+test('[test-suite] pm: range', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function range (i, j)
@@ -160,32 +160,32 @@ test("[test-suite] pm: range", () => {
 
 
 // Can't be represented by JS string, testing from actual lua file
-test("[test-suite] pm: classes", () => {
+test('[test-suite] pm: classes', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     luaL_openlibs(L);
-    if (luaL_loadfile(L, to_luastring("test/test-suite/pm-classes.lua")) === LUA_ERRSYNTAX)
+    if (luaL_loadfile(L, to_luastring('test/test-suite/pm-classes.lua')) === LUA_ERRSYNTAX)
         throw new SyntaxError(lua_tojsstring(L, -1));
     lua_call(L, 0, 0);
 });
 
 
 // Can't be represented by JS string, testing from actual lua file
-test("[test-suite] pm: gsub", () => {
+test('[test-suite] pm: gsub', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     luaL_openlibs(L);
-    if (luaL_loadfile(L, to_luastring("test/test-suite/pm-gsub.lua")) === LUA_ERRSYNTAX)
+    if (luaL_loadfile(L, to_luastring('test/test-suite/pm-gsub.lua')) === LUA_ERRSYNTAX)
         throw new SyntaxError(lua_tojsstring(L, -1));
     lua_call(L, 0, 0);
 });
 
 
-test("[test-suite] pm: empty matches", () => {
+test('[test-suite] pm: empty matches', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do   -- new (5.3.3) semantics for empty matches
@@ -208,9 +208,9 @@ test("[test-suite] pm: empty matches", () => {
 });
 
 
-test("[test-suite] pm: gsub", () => {
+test('[test-suite] pm: gsub', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.gsub("um (dois) tres (quatro)", "(%(%w+%))", string.upper) ==
@@ -250,9 +250,9 @@ test("[test-suite] pm: gsub", () => {
 });
 
 
-test("[test-suite] pm: gsub isbalanced", () => {
+test('[test-suite] pm: gsub isbalanced', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function isbalanced (s)
@@ -270,9 +270,9 @@ test("[test-suite] pm: gsub isbalanced", () => {
 });
 
 
-test("[test-suite] pm: capture", () => {
+test('[test-suite] pm: capture', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function checkerror (msg, f, ...)
@@ -307,9 +307,9 @@ test("[test-suite] pm: capture", () => {
 });
 
 
-test("[test-suite] pm: bug since 2.5 (C-stack overflow) (TODO: _soft)", () => {
+test('[test-suite] pm: bug since 2.5 (C-stack overflow) (TODO: _soft)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true
@@ -332,9 +332,9 @@ test("[test-suite] pm: bug since 2.5 (C-stack overflow) (TODO: _soft)", () => {
 });
 
 
-test("[test-suite] pm: big strings (TODO: _soft)", () => {
+test('[test-suite] pm: big strings (TODO: _soft)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true -- TODO
@@ -357,9 +357,9 @@ test("[test-suite] pm: big strings (TODO: _soft)", () => {
 });
 
 
-test("[test-suite] pm: recursive nest of gsubs", () => {
+test('[test-suite] pm: recursive nest of gsubs', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         function rev (s)
@@ -376,9 +376,9 @@ test("[test-suite] pm: recursive nest of gsubs", () => {
 });
 
 
-test("[test-suite] pm: gsub with tables", () => {
+test('[test-suite] pm: gsub with tables', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.gsub("alo alo", ".", {}) == "alo alo")
@@ -398,9 +398,9 @@ test("[test-suite] pm: gsub with tables", () => {
 });
 
 
-test("[test-suite] pm: gmatch", () => {
+test('[test-suite] pm: gmatch', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local a = 0
@@ -434,9 +434,9 @@ test("[test-suite] pm: gmatch", () => {
 });
 
 
-test("[test-suite] pm: tests for '%f' ('frontiers')", () => {
+test('[test-suite] pm: tests for \'%f\' (\'frontiers\')', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.gsub("aaa aa a aaa a", "%f[%w]a", "x") == "xaa xa x xaa x")
@@ -472,9 +472,9 @@ test("[test-suite] pm: tests for '%f' ('frontiers')", () => {
 });
 
 
-test("[test-suite] pm: malformed patterns", () => {
+test('[test-suite] pm: malformed patterns', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function malform (p, m)
@@ -502,9 +502,9 @@ test("[test-suite] pm: malformed patterns", () => {
 });
 
 
-test("[test-suite] pm: \\0 in patterns", () => {
+test('[test-suite] pm: \\0 in patterns', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.match("ab\\0\\1\\2c", "[\\0-\\2]+") == "\\0\\1\\2")
@@ -522,9 +522,9 @@ test("[test-suite] pm: \\0 in patterns", () => {
 });
 
 
-test("[test-suite] pm: magic char after \\0", () => {
+test('[test-suite] pm: magic char after \\0', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(string.find("abc\\0\\0","\\0.") == 4)

@@ -1,34 +1,34 @@
-import { LUA_HOOKCOUNT, LUA_HOOKLINE, LUA_MASKCOUNT, LUA_MASKLINE, constant_types, thread_status, from_userstring, luastring_eq, luastring_indexOf, to_luastring } from './defs.js';
-import { api_check, lua_assert } from './llimits.js';
-import { LUA_IDSIZE } from './luaconf.js';
-import { api_incr_top } from './lapi.js';
-import { luaD_callnoyield, luaD_throw, luaD_hook } from './ldo.js';
-import { luaF_getlocalname } from './lfunc.js';
-import { LUA_ENV } from './llex.js';
-import { pushobj2s, setobjs2s, CClosure, luaO_chunkid, TValue, luaO_pushfstring, luaO_pushvfstring } from './lobject.js';
-import { ISK, INDEXK, OpCodesI, testAMode } from './lopcodes.js';
-import { CIST_LUA, CIST_FIN, CIST_TAIL, CIST_HOOKED, CIST_HOOKYIELD } from './lstate.js';
-import { luaH_new, luaH_setint } from './ltable.js';
-import { TMS, luaT_objtypename } from './ltm.js';
-import { cvt2str, tonumber, tointeger } from './lvm.js';
+import * as defs from './defs.js';
+import * as llimits from './llimits.js';
+import * as luaconf from './luaconf.js';
+import * as lapi from './lapi.js';
+import * as ldo from './ldo.js';
+import * as lfunc from './lfunc.js';
+import * as llex from './llex.js';
+import * as lobject from './lobject.js';
+import * as lopcodes from './lopcodes.js';
+import * as lstate from './lstate.js';
+import * as ltable from './ltable.js';
+import * as ltm from './ltm.js';
+import * as lvm from './lvm.js';
 
-const {
+export const {
     LUA_TBOOLEAN,
     LUA_TNIL,
     LUA_TTABLE
-} = constant_types;
+} = defs.constant_types;
 
-const {
+export const {
     LUA_ERRRUN,
     LUA_YIELD
-} = thread_status;
+} = defs.thread_status;
 
-const currentpc = function (ci) {
-    lua_assert(ci.callstatus & CIST_LUA);
+export const currentpc = function (ci) {
+    llimits.lua_assert(ci.callstatus & lstate.CIST_LUA);
     return ci.l_savedpc - 1;
 };
 
-const currentline = function (ci) {
+export const currentline = function (ci) {
     return ci.func.value.p.lineinfo.length !== 0 ? ci.func.value.p.lineinfo[currentpc(ci)] : -1;
 };
 
@@ -38,7 +38,7 @@ const currentline = function (ci) {
 ** purposes. (It exchanges 'func' and 'extra'; so, when called again,
 ** after debugging, it also "re-restores" ** 'func' to its altered value.
 */
-const swapextra = function (L) {
+export const swapextra = function (L) {
     if (L.status === LUA_YIELD) {
         let ci = L.ci;  /* get function that yielded */
         let temp = ci.funcOff;  /* exchange its 'func' and 'extra' values */
@@ -48,12 +48,12 @@ const swapextra = function (L) {
     }
 };
 
-const lua_sethook = function (L, func, mask, count) {
+export const lua_sethook = function (L, func, mask, count) {
     if (func === null || mask === 0) {  /* turn off hooks? */
         mask = 0;
         func = null;
     }
-    if (L.ci.callstatus & CIST_LUA)
+    if (L.ci.callstatus & lstate.CIST_LUA)
         L.oldpc = L.ci.l_savedpc;
     L.hook = func;
     L.basehookcount = count;
@@ -61,21 +61,21 @@ const lua_sethook = function (L, func, mask, count) {
     L.hookmask = mask;
 };
 
-const lua_gethook = function (L) {
+export const lua_gethook = function (L) {
     return L.hook;
 };
 
 
-const lua_gethookmask = function (L) {
+export const lua_gethookmask = function (L) {
     return L.hookmask;
 };
 
 
-const lua_gethookcount = function (L) {
+export const lua_gethookcount = function (L) {
     return L.basehookcount;
 };
 
-const lua_getstack = function (L, level, ar) {
+export const lua_getstack = function (L, level, ar) {
     let ci;
     let status;
     if (level < 0) return 0;  /* invalid (negative) level */
@@ -89,34 +89,34 @@ const lua_getstack = function (L, level, ar) {
     return status;
 };
 
-const upvalname = function (p, uv) {
-    lua_assert(uv < p.upvalues.length);
+export const upvalname = function (p, uv) {
+    llimits.lua_assert(uv < p.upvalues.length);
     let s = p.upvalues[uv].name;
-    if (s === null) return to_luastring('?', true);
+    if (s === null) return defs.to_luastring('?', true);
     return s.getstr();
 };
 
-const findvararg = function (ci, n) {
+export const findvararg = function (ci, n) {
     let nparams = ci.func.value.p.numparams;
     if (n >= ci.l_base - ci.funcOff - nparams)
         return null;  /* no such vararg */
     else {
         return {
             pos: ci.funcOff + nparams + n,
-            name: to_luastring('(*vararg)', true)  /* generic name for any vararg */
+            name: defs.to_luastring('(*vararg)', true)  /* generic name for any vararg */
         };
     }
 };
 
-const findlocal = function (L, ci, n) {
+export const findlocal = function (L, ci, n) {
     let base, name = null;
 
-    if (ci.callstatus & CIST_LUA) {
+    if (ci.callstatus & lstate.CIST_LUA) {
         if (n < 0)  /* access to vararg values? */
             return findvararg(ci, -n);
         else {
             base = ci.l_base;
-            name = luaF_getlocalname(ci.func.value.p, n, currentpc(ci));
+            name = lfunc.luaF_getlocalname(ci.func.value.p, n, currentpc(ci));
         }
     } else
         base = ci.funcOff + 1;
@@ -124,7 +124,7 @@ const findlocal = function (L, ci, n) {
     if (name === null) {  /* no 'standard' name? */
         let limit = ci === L.ci ? L.top : ci.next.funcOff;
         if (limit - base >= n && n > 0)  /* is 'n' inside 'ci' stack? */
-            name = to_luastring('(*temporary)', true);  /* generic name for any valid slot */
+            name = defs.to_luastring('(*temporary)', true);  /* generic name for any valid slot */
         else
             return null;  /* no name */
     }
@@ -134,20 +134,20 @@ const findlocal = function (L, ci, n) {
     };
 };
 
-const lua_getlocal = function (L, ar, n) {
+export const lua_getlocal = function (L, ar, n) {
     let name;
     swapextra(L);
     if (ar === null) {  /* information about non-active function? */
         if (!L.stack[L.top - 1].ttisLclosure())  /* not a Lua function? */
             name = null;
         else  /* consider live variables at function start (parameters) */
-            name = luaF_getlocalname(L.stack[L.top - 1].value.p, n, 0);
+            name = lfunc.luaF_getlocalname(L.stack[L.top - 1].value.p, n, 0);
     } else {  /* active function; get information through 'ar' */
         let local = findlocal(L, ar.i_ci, n);
         if (local) {
             name = local.name;
-            pushobj2s(L, L.stack[local.pos]);
-            api_check(L, L.top <= L.ci.top, 'stack overflow');
+            lobject.pushobj2s(L, L.stack[local.pos]);
+            llimits.api_check(L, L.top <= L.ci.top, 'stack overflow');
         } else {
             name = null;
         }
@@ -156,13 +156,13 @@ const lua_getlocal = function (L, ar, n) {
     return name;
 };
 
-const lua_setlocal = function (L, ar, n) {
+export const lua_setlocal = function (L, ar, n) {
     let name;
     swapextra(L);
     let local = findlocal(L, ar.i_ci, n);
     if (local) {
         name = local.name;
-        setobjs2s(L, local.pos, L.top - 1);
+        lobject.setobjs2s(L, local.pos, L.top - 1);
         delete L.stack[--L.top];  /* pop value */
     } else {
         name = null;
@@ -171,57 +171,57 @@ const lua_setlocal = function (L, ar, n) {
     return name;
 };
 
-const funcinfo = function (ar, cl) {
-    if (cl === null || cl instanceof CClosure) {
-        ar.source = to_luastring('=[JS]', true);
+export const funcinfo = function (ar, cl) {
+    if (cl === null || cl instanceof lobject.CClosure) {
+        ar.source = defs.to_luastring('=[JS]', true);
         ar.linedefined = -1;
         ar.lastlinedefined = -1;
-        ar.what = to_luastring('J', true);
+        ar.what = defs.to_luastring('J', true);
     } else {
         let p = cl.p;
-        ar.source = p.source ? p.source.getstr() : to_luastring('=?', true);
+        ar.source = p.source ? p.source.getstr() : defs.to_luastring('=?', true);
         ar.linedefined = p.linedefined;
         ar.lastlinedefined = p.lastlinedefined;
-        ar.what = ar.linedefined === 0 ? to_luastring('main', true) : to_luastring('Lua', true);
+        ar.what = ar.linedefined === 0 ? defs.to_luastring('main', true) : defs.to_luastring('Lua', true);
     }
 
-    ar.short_src = luaO_chunkid(ar.source, LUA_IDSIZE);
+    ar.short_src = lobject.luaO_chunkid(ar.source, luaconf.LUA_IDSIZE);
 };
 
-const collectvalidlines = function (L, f) {
-    if (f === null || f instanceof CClosure) {
-        L.stack[L.top] = new TValue(LUA_TNIL, null);
-        api_incr_top(L);
+export const collectvalidlines = function (L, f) {
+    if (f === null || f instanceof lobject.CClosure) {
+        L.stack[L.top] = new lobject.TValue(LUA_TNIL, null);
+        lapi.api_incr_top(L);
     } else {
         let lineinfo = f.p.lineinfo;
-        let t = luaH_new(L);
-        L.stack[L.top] = new TValue(LUA_TTABLE, t);
-        api_incr_top(L);
-        let v = new TValue(LUA_TBOOLEAN, true);
+        let t = ltable.luaH_new(L);
+        L.stack[L.top] = new lobject.TValue(LUA_TTABLE, t);
+        lapi.api_incr_top(L);
+        let v = new lobject.TValue(LUA_TBOOLEAN, true);
         for (let i = 0; i < lineinfo.length; i++)
-            luaH_setint(t, lineinfo[i], v);
+            ltable.luaH_setint(t, lineinfo[i], v);
     }
 };
 
-const getfuncname = function (L, ci) {
+export const getfuncname = function (L, ci) {
     let r = {
         name: null,
         funcname: null
     };
     if (ci === null)
         return null;
-    else if (ci.callstatus & CIST_FIN) {  /* is this a finalizer? */
-        r.name = to_luastring('__gc', true);
-        r.funcname = to_luastring('metamethod', true);  /* report it as such */
+    else if (ci.callstatus & lstate.CIST_FIN) {  /* is this a finalizer? */
+        r.name = defs.to_luastring('__gc', true);
+        r.funcname = defs.to_luastring('metamethod', true);  /* report it as such */
         return r;
     }
     /* calling function is a known Lua function? */
-    else if (!(ci.callstatus & CIST_TAIL) && ci.previous.callstatus & CIST_LUA)
+    else if (!(ci.callstatus & lstate.CIST_TAIL) && ci.previous.callstatus & lstate.CIST_LUA)
         return funcnamefromcode(L, ci.previous);
     else return null;  /* no way to find a name */
 };
 
-const auxgetinfo = function (L, what, ar, f, ci) {
+export const auxgetinfo = function (L, what, ar, f, ci) {
     let status = 1;
     for (; what.length > 0; what = what.subarray(1)) {
         switch (what[0]) {
@@ -230,12 +230,12 @@ const auxgetinfo = function (L, what, ar, f, ci) {
                 break;
             }
             case 108 /* ('l').charCodeAt(0) */: {
-                ar.currentline = ci && ci.callstatus & CIST_LUA ? currentline(ci) : -1;
+                ar.currentline = ci && ci.callstatus & lstate.CIST_LUA ? currentline(ci) : -1;
                 break;
             }
             case 117 /* ('u').charCodeAt(0) */: {
                 ar.nups = f === null ? 0 : f.nupvalues;
-                if (f === null || f instanceof CClosure) {
+                if (f === null || f instanceof lobject.CClosure) {
                     ar.isvararg = true;
                     ar.nparams = 0;
                 } else {
@@ -245,13 +245,13 @@ const auxgetinfo = function (L, what, ar, f, ci) {
                 break;
             }
             case 116 /* ('t').charCodeAt(0) */: {
-                ar.istailcall = ci ? ci.callstatus & CIST_TAIL : 0;
+                ar.istailcall = ci ? ci.callstatus & lstate.CIST_TAIL : 0;
                 break;
             }
             case 110 /* ('n').charCodeAt(0) */: {
                 let r = getfuncname(L, ci);
                 if (r === null) {
-                    ar.namewhat = to_luastring('', true);
+                    ar.namewhat = defs.to_luastring('', true);
                     ar.name = null;
                 } else {
                     ar.namewhat = r.funcname;
@@ -269,44 +269,44 @@ const auxgetinfo = function (L, what, ar, f, ci) {
     return status;
 };
 
-const lua_getinfo = function (L, what, ar) {
-    what = from_userstring(what);
+export const lua_getinfo = function (L, what, ar) {
+    what = defs.from_userstring(what);
     let status, cl, ci, func;
     swapextra(L);
     if (what[0] === 62 /* ('>').charCodeAt(0) */) {
         ci = null;
         func = L.stack[L.top - 1];
-        api_check(L, func.ttisfunction(), 'function expected');
+        llimits.api_check(L, func.ttisfunction(), 'function expected');
         what = what.subarray(1);  /* skip the '>' */
         L.top--;  /* pop function */
     } else {
         ci = ar.i_ci;
         func = ci.func;
-        lua_assert(ci.func.ttisfunction());
+        llimits.lua_assert(ci.func.ttisfunction());
     }
 
     cl = func.ttisclosure() ? func.value : null;
     status = auxgetinfo(L, what, ar, cl, ci);
-    if (luastring_indexOf(what, 102 /* ('f').charCodeAt(0) */) >= 0) {
-        pushobj2s(L, func);
-        api_check(L, L.top <= L.ci.top, 'stack overflow');
+    if (defs.luastring_indexOf(what, 102 /* ('f').charCodeAt(0) */) >= 0) {
+        lobject.pushobj2s(L, func);
+        llimits.api_check(L, L.top <= L.ci.top, 'stack overflow');
     }
 
     swapextra(L);
-    if (luastring_indexOf(what, 76 /* ('L').charCodeAt(0) */) >= 0)
+    if (defs.luastring_indexOf(what, 76 /* ('L').charCodeAt(0) */) >= 0)
         collectvalidlines(L, cl);
 
     return status;
 };
 
-const kname = function (p, pc, c) {
+export const kname = function (p, pc, c) {
     let r = {
         name: null,
         funcname: null
     };
 
-    if (ISK(c)) {  /* is 'c' a constant? */
-        let kvalue = p.k[INDEXK(c)];
+    if (lopcodes.ISK(c)) {  /* is 'c' a constant? */
+        let kvalue = p.k[lopcodes.INDEXK(c)];
         if (kvalue.ttisstring()) {  /* literal constant? */
             r.name = kvalue.svalue();  /* it is its own name */
             return r;
@@ -319,11 +319,11 @@ const kname = function (p, pc, c) {
         }
         /* else no reasonable name found */
     }
-    r.name = to_luastring('?', true);
+    r.name = defs.to_luastring('?', true);
     return r;  /* no reasonable name found */
 };
 
-const filterpc = function (pc, jmptarget) {
+export const filterpc = function (pc, jmptarget) {
     if (pc < jmptarget)  /* is code conditional (inside a jump)? */
         return -1;  /* cannot know who sets that register */
     else return pc;  /* current position sets that register */
@@ -332,10 +332,10 @@ const filterpc = function (pc, jmptarget) {
 /*
 ** try to find last instruction before 'lastpc' that modified register 'reg'
 */
-const findsetreg = function (p, lastpc, reg) {
+export const findsetreg = function (p, lastpc, reg) {
     let setreg = -1;  /* keep last instruction that changed 'reg' */
     let jmptarget = 0;  /* any code before this address is conditional */
-    let OCi = OpCodesI;
+    let OCi = lopcodes.OpCodesI;
     for (let pc = 0; pc < lastpc; pc++) {
         let i = p.code[pc];
         let a = i.A;
@@ -368,7 +368,7 @@ const findsetreg = function (p, lastpc, reg) {
                 break;
             }
             default:
-                if (testAMode(i.opcode) && reg === a)
+                if (lopcodes.testAMode(i.opcode) && reg === a)
                     setreg = filterpc(pc, jmptarget);
                 break;
         }
@@ -378,20 +378,20 @@ const findsetreg = function (p, lastpc, reg) {
 };
 
 
-const getobjname = function (p, lastpc, reg) {
+export const getobjname = function (p, lastpc, reg) {
     let r = {
-        name: luaF_getlocalname(p, reg + 1, lastpc),
+        name: lfunc.luaF_getlocalname(p, reg + 1, lastpc),
         funcname: null
     };
 
     if (r.name) {  /* is a local? */
-        r.funcname = to_luastring('local', true);
+        r.funcname = defs.to_luastring('local', true);
         return r;
     }
 
     /* else try symbolic execution */
     let pc = findsetreg(p, lastpc, reg);
-    let OCi = OpCodesI;
+    let OCi = lopcodes.OpCodesI;
     if (pc !== -1) {  /* could find instruction? */
         let i = p.code[pc];
         switch (i.opcode) {
@@ -405,14 +405,14 @@ const getobjname = function (p, lastpc, reg) {
             case OCi.OP_GETTABLE: {
                 let k = i.C;  /* key index */
                 let t = i.B;  /* table index */
-                let vn = i.opcode === OCi.OP_GETTABLE ? luaF_getlocalname(p, t + 1, pc) : upvalname(p, t);
+                let vn = i.opcode === OCi.OP_GETTABLE ? lfunc.luaF_getlocalname(p, t + 1, pc) : upvalname(p, t);
                 r.name = kname(p, pc, k).name;
-                r.funcname = (vn && luastring_eq(vn, LUA_ENV)) ? to_luastring('global', true) : to_luastring('field', true);
+                r.funcname = (vn && defs.luastring_eq(vn, llex.LUA_ENV)) ? defs.to_luastring('global', true) : defs.to_luastring('field', true);
                 return r;
             }
             case OCi.OP_GETUPVAL: {
                 r.name = upvalname(p, i.B);
-                r.funcname = to_luastring('upvalue', true);
+                r.funcname = defs.to_luastring('upvalue', true);
                 return r;
             }
             case OCi.OP_LOADK:
@@ -420,7 +420,7 @@ const getobjname = function (p, lastpc, reg) {
                 let b = i.opcode === OCi.OP_LOADK ? i.Bx : p.code[pc + 1].Ax;
                 if (p.k[b].ttisstring()) {
                     r.name = p.k[b].svalue();
-                    r.funcname = to_luastring('constant', true);
+                    r.funcname = defs.to_luastring('constant', true);
                     return r;
                 }
                 break;
@@ -428,7 +428,7 @@ const getobjname = function (p, lastpc, reg) {
             case OCi.OP_SELF: {
                 let k = i.C;
                 r.name = kname(p, pc, k).name;
-                r.funcname = to_luastring('method', true);
+                r.funcname = defs.to_luastring('method', true);
                 return r;
             }
             default: break;
@@ -444,21 +444,21 @@ const getobjname = function (p, lastpc, reg) {
 ** Returns what the name is (e.g., "for iterator", "method",
 ** "metamethod") and sets '*name' to point to the name.
 */
-const funcnamefromcode = function (L, ci) {
+export const funcnamefromcode = function (L, ci) {
     let r = {
         name: null,
         funcname: null
     };
 
-    let tm = 0;  /* (initial value avoids warnings) */
+    let tm;  /* (initial value avoids warnings) */
     let p = ci.func.value.p;  /* calling function */
     let pc = currentpc(ci);  /* calling instruction index */
     let i = p.code[pc];  /* calling instruction */
-    let OCi = OpCodesI;
+    let OCi = lopcodes.OpCodesI;
 
-    if (ci.callstatus & CIST_HOOKED) {
-        r.name = to_luastring('?', true);
-        r.funcname = to_luastring('hook', true);
+    if (ci.callstatus & lstate.CIST_HOOKED) {
+        r.name = defs.to_luastring('?', true);
+        r.funcname = defs.to_luastring('hook', true);
         return r;
     }
 
@@ -467,48 +467,48 @@ const funcnamefromcode = function (L, ci) {
         case OCi.OP_TAILCALL:
             return getobjname(p, pc, i.A);  /* get function name */
         case OCi.OP_TFORCALL:
-            r.name = to_luastring('for iterator', true);
-            r.funcname = to_luastring('for iterator', true);
+            r.name = defs.to_luastring('for iterator', true);
+            r.funcname = defs.to_luastring('for iterator', true);
             return r;
         /* other instructions can do calls through metamethods */
         case OCi.OP_SELF:
         case OCi.OP_GETTABUP:
         case OCi.OP_GETTABLE:
-            tm = TMS.TM_INDEX;
+            tm = ltm.TMS.TM_INDEX;
             break;
         case OCi.OP_SETTABUP:
         case OCi.OP_SETTABLE:
-            tm = TMS.TM_NEWINDEX;
+            tm = ltm.TMS.TM_NEWINDEX;
             break;
-        case OCi.OP_ADD: tm = TMS.TM_ADD; break;
-        case OCi.OP_SUB: tm = TMS.TM_SUB; break;
-        case OCi.OP_MUL: tm = TMS.TM_MUL; break;
-        case OCi.OP_MOD: tm = TMS.TM_MOD; break;
-        case OCi.OP_POW: tm = TMS.TM_POW; break;
-        case OCi.OP_DIV: tm = TMS.TM_DIV; break;
-        case OCi.OP_IDIV: tm = TMS.TM_IDIV; break;
-        case OCi.OP_BAND: tm = TMS.TM_BAND; break;
-        case OCi.OP_BOR: tm = TMS.TM_BOR; break;
-        case OCi.OP_BXOR: tm = TMS.TM_BXOR; break;
-        case OCi.OP_SHL: tm = TMS.TM_SHL; break;
-        case OCi.OP_SHR: tm = TMS.TM_SHR; break;
-        case OCi.OP_UNM: tm = TMS.TM_UNM; break;
-        case OCi.OP_BNOT: tm = TMS.TM_BNOT; break;
-        case OCi.OP_LEN: tm = TMS.TM_LEN; break;
-        case OCi.OP_CONCAT: tm = TMS.TM_CONCAT; break;
-        case OCi.OP_EQ: tm = TMS.TM_EQ; break;
-        case OCi.OP_LT: tm = TMS.TM_LT; break;
-        case OCi.OP_LE: tm = TMS.TM_LE; break;
+        case OCi.OP_ADD: tm = ltm.TMS.TM_ADD; break;
+        case OCi.OP_SUB: tm = ltm.TMS.TM_SUB; break;
+        case OCi.OP_MUL: tm = ltm.TMS.TM_MUL; break;
+        case OCi.OP_MOD: tm = ltm.TMS.TM_MOD; break;
+        case OCi.OP_POW: tm = ltm.TMS.TM_POW; break;
+        case OCi.OP_DIV: tm = ltm.TMS.TM_DIV; break;
+        case OCi.OP_IDIV: tm = ltm.TMS.TM_IDIV; break;
+        case OCi.OP_BAND: tm = ltm.TMS.TM_BAND; break;
+        case OCi.OP_BOR: tm = ltm.TMS.TM_BOR; break;
+        case OCi.OP_BXOR: tm = ltm.TMS.TM_BXOR; break;
+        case OCi.OP_SHL: tm = ltm.TMS.TM_SHL; break;
+        case OCi.OP_SHR: tm = ltm.TMS.TM_SHR; break;
+        case OCi.OP_UNM: tm = ltm.TMS.TM_UNM; break;
+        case OCi.OP_BNOT: tm = ltm.TMS.TM_BNOT; break;
+        case OCi.OP_LEN: tm = ltm.TMS.TM_LEN; break;
+        case OCi.OP_CONCAT: tm = ltm.TMS.TM_CONCAT; break;
+        case OCi.OP_EQ: tm = ltm.TMS.TM_EQ; break;
+        case OCi.OP_LT: tm = ltm.TMS.TM_LT; break;
+        case OCi.OP_LE: tm = ltm.TMS.TM_LE; break;
         default:
             return null;  /* cannot find a reasonable name */
     }
 
     r.name = L.l_G.tmname[tm].getstr();
-    r.funcname = to_luastring('metamethod', true);
+    r.funcname = defs.to_luastring('metamethod', true);
     return r;
 };
 
-const isinstack = function (L, ci, o) {
+export const isinstack = function (L, ci, o) {
     for (let i = ci.l_base; i < ci.top; i++) {
         if (L.stack[i] === o)
             return i;
@@ -522,13 +522,13 @@ const isinstack = function (L, ci, o) {
 ** with instructions OP_GETTABUP/OP_SETTABUP, which operate directly on
 ** upvalues.)
 */
-const getupvalname = function (L, ci, o) {
+export const getupvalname = function (L, ci, o) {
     let c = ci.func.value;
     for (let i = 0; i < c.nupvalues; i++) {
         if (c.upvals[i] === o) {
             return {
                 name: upvalname(c.p, i),
-                funcname: to_luastring('upvalue', true)
+                funcname: defs.to_luastring('upvalue', true)
             };
         }
     }
@@ -536,153 +536,118 @@ const getupvalname = function (L, ci, o) {
     return null;
 };
 
-const varinfo = function (L, o) {
+export const varinfo = function (L, o) {
     let ci = L.ci;
     let kind = null;
-    if (ci.callstatus & CIST_LUA) {
+    if (ci.callstatus & lstate.CIST_LUA) {
         kind = getupvalname(L, ci, o);  /* check whether 'o' is an upvalue */
         let stkid = isinstack(L, ci, o);
         if (!kind && stkid)  /* no? try a register */
             kind = getobjname(ci.func.value.p, currentpc(ci), stkid - ci.l_base);
     }
 
-    return kind ? luaO_pushfstring(L, to_luastring(' (%s \'%s\')', true), kind.funcname, kind.name) : to_luastring('', true);
+    return kind ? lobject.luaO_pushfstring(L, defs.to_luastring(' (%s \'%s\')', true), kind.funcname, kind.name) : defs.to_luastring('', true);
 };
 
-const luaG_typeerror = function (L, o, op) {
-    let t = luaT_objtypename(L, o);
-    luaG_runerror(L, to_luastring('attempt to %s a %s value%s', true), op, t, varinfo(L, o));
+export const luaG_typeerror = function (L, o, op) {
+    let t = ltm.luaT_objtypename(L, o);
+    luaG_runerror(L, defs.to_luastring('attempt to %s a %s value%s', true), op, t, varinfo(L, o));
 };
 
-const luaG_concaterror = function (L, p1, p2) {
-    if (p1.ttisstring() || cvt2str(p1)) p1 = p2;
-    luaG_typeerror(L, p1, to_luastring('concatenate', true));
+export const luaG_concaterror = function (L, p1, p2) {
+    if (p1.ttisstring() || lvm.cvt2str(p1)) p1 = p2;
+    luaG_typeerror(L, p1, defs.to_luastring('concatenate', true));
 };
 
 /*
 ** Error when both values are convertible to numbers, but not to integers
 */
-const luaG_opinterror = function (L, p1, p2, msg) {
-    if (tonumber(p1) === false)
+export const luaG_opinterror = function (L, p1, p2, msg) {
+    if (lvm.tonumber(p1) === false)
         p2 = p1;
     luaG_typeerror(L, p2, msg);
 };
 
-const luaG_ordererror = function (L, p1, p2) {
-    let t1 = luaT_objtypename(L, p1);
-    let t2 = luaT_objtypename(L, p2);
-    if (luastring_eq(t1, t2))
-        luaG_runerror(L, to_luastring('attempt to compare two %s values', true), t1);
+export const luaG_ordererror = function (L, p1, p2) {
+    let t1 = ltm.luaT_objtypename(L, p1);
+    let t2 = ltm.luaT_objtypename(L, p2);
+    if (defs.luastring_eq(t1, t2))
+        luaG_runerror(L, defs.to_luastring('attempt to compare two %s values', true), t1);
     else
-        luaG_runerror(L, to_luastring('attempt to compare %s with %s', true), t1, t2);
+        luaG_runerror(L, defs.to_luastring('attempt to compare %s with %s', true), t1, t2);
 };
 
 /* add src:line information to 'msg' */
-const luaG_addinfo = function (L, msg, src, line) {
+export const luaG_addinfo = function (L, msg, src, line) {
     let buff;
     if (src)
-        buff = luaO_chunkid(src.getstr(), LUA_IDSIZE);
+        buff = lobject.luaO_chunkid(src.getstr(), luaconf.LUA_IDSIZE);
     else
-        buff = to_luastring('?', true);
+        buff = defs.to_luastring('?', true);
 
-    return luaO_pushfstring(L, to_luastring('%s:%d: %s', true), buff, line, msg);
+    return lobject.luaO_pushfstring(L, defs.to_luastring('%s:%d: %s', true), buff, line, msg);
 };
 
-const luaG_runerror = function (L, fmt, ...argp) {
+export const luaG_runerror = function (L, fmt, ...argp) {
     let ci = L.ci;
-    let msg = luaO_pushvfstring(L, fmt, argp);
-    if (ci.callstatus & CIST_LUA)  /* if Lua function, add source:line information */
+    let msg = lobject.luaO_pushvfstring(L, fmt, argp);
+    if (ci.callstatus & lstate.CIST_LUA)  /* if Lua function, add source:line information */
         luaG_addinfo(L, msg, ci.func.value.p.source, currentline(ci));
     luaG_errormsg(L);
 };
 
-const luaG_errormsg = function (L) {
+export const luaG_errormsg = function (L) {
     if (L.errfunc !== 0) {  /* is there an error handling function? */
         let errfunc = L.errfunc;
-        pushobj2s(L, L.stack[L.top - 1]); /* move argument */
-        setobjs2s(L, L.top - 2, errfunc); /* push function */
-        luaD_callnoyield(L, L.top - 2, 1);
+        lobject.pushobj2s(L, L.stack[L.top - 1]); /* move argument */
+        lobject.setobjs2s(L, L.top - 2, errfunc); /* push function */
+        ldo.luaD_callnoyield(L, L.top - 2, 1);
     }
 
-    luaD_throw(L, LUA_ERRRUN);
+    ldo.luaD_throw(L, LUA_ERRRUN);
 };
 
 /*
 ** Error when both values are convertible to numbers, but not to integers
 */
-const luaG_tointerror = function (L, p1, p2) {
-    let temp = tointeger(p1);
+export const luaG_tointerror = function (L, p1, p2) {
+    let temp = lvm.tointeger(p1);
     if (temp === false)
         p2 = p1;
-    luaG_runerror(L, to_luastring('number%s has no integer representation', true), varinfo(L, p2));
+    luaG_runerror(L, defs.to_luastring('number%s has no integer representation', true), varinfo(L, p2));
 };
 
-const luaG_traceexec = function (L) {
+export const luaG_traceexec = function (L) {
     let ci = L.ci;
     let mask = L.hookmask;
-    let counthook = (--L.hookcount === 0 && (mask & LUA_MASKCOUNT));
+    let counthook = (--L.hookcount === 0 && (mask & defs.LUA_MASKCOUNT));
     if (counthook)
         L.hookcount = L.basehookcount;  /* reset count */
-    else if (!(mask & LUA_MASKLINE))
+    else if (!(mask & defs.LUA_MASKLINE))
         return;  /* no line hook and count != 0; nothing to be done */
-    if (ci.callstatus & CIST_HOOKYIELD) {  /* called hook last time? */
-        ci.callstatus &= ~CIST_HOOKYIELD;  /* erase mark */
+    if (ci.callstatus & lstate.CIST_HOOKYIELD) {  /* called hook last time? */
+        ci.callstatus &= ~lstate.CIST_HOOKYIELD;  /* erase mark */
         return;  /* do not call hook again (VM yielded, so it did not move) */
     }
     if (counthook)
-        luaD_hook(L, LUA_HOOKCOUNT, -1);  /* call count hook */
-    if (mask & LUA_MASKLINE) {
+        ldo.luaD_hook(L, defs.LUA_HOOKCOUNT, -1);  /* call count hook */
+    if (mask & defs.LUA_MASKLINE) {
         let p = ci.func.value.p;
         let npc = ci.l_savedpc - 1; // pcRel(ci.u.l.savedpc, p);
         let newline = p.lineinfo.length !== 0 ? p.lineinfo[npc] : -1;
         if (npc === 0 ||  /* call linehook when enter a new function, */
             ci.l_savedpc <= L.oldpc ||  /* when jump back (loop), or when */
             newline !== (p.lineinfo.length !== 0 ? p.lineinfo[L.oldpc - 1] : -1))  /* enter a new line */
-            luaD_hook(L, LUA_HOOKLINE, newline);  /* call line hook */
+            ldo.luaD_hook(L, defs.LUA_HOOKLINE, newline);  /* call line hook */
     }
     L.oldpc = ci.l_savedpc;
     if (L.status === LUA_YIELD) {  /* did hook yield? */
         if (counthook)
             L.hookcount = 1;  /* undo decrement to zero */
         ci.l_savedpc--;  /* undo increment (resume will increment it again) */
-        ci.callstatus |= CIST_HOOKYIELD;  /* mark that it yielded */
+        ci.callstatus |= lstate.CIST_HOOKYIELD;  /* mark that it yielded */
         ci.funcOff = L.top - 1;  /* protect stack below results */
         ci.func = L.stack[ci.funcOff];
-        luaD_throw(L, LUA_YIELD);
+        ldo.luaD_throw(L, LUA_YIELD);
     }
 };
-
-const _luaG_addinfo = luaG_addinfo;
-export { _luaG_addinfo as luaG_addinfo };
-const _luaG_concaterror = luaG_concaterror;
-export { _luaG_concaterror as luaG_concaterror };
-const _luaG_errormsg = luaG_errormsg;
-export { _luaG_errormsg as luaG_errormsg };
-const _luaG_opinterror = luaG_opinterror;
-export { _luaG_opinterror as luaG_opinterror };
-const _luaG_ordererror = luaG_ordererror;
-export { _luaG_ordererror as luaG_ordererror };
-const _luaG_runerror = luaG_runerror;
-export { _luaG_runerror as luaG_runerror };
-const _luaG_tointerror = luaG_tointerror;
-export { _luaG_tointerror as luaG_tointerror };
-const _luaG_traceexec = luaG_traceexec;
-export { _luaG_traceexec as luaG_traceexec };
-const _luaG_typeerror = luaG_typeerror;
-export { _luaG_typeerror as luaG_typeerror };
-const _lua_gethook = lua_gethook;
-export { _lua_gethook as lua_gethook };
-const _lua_gethookcount = lua_gethookcount;
-export { _lua_gethookcount as lua_gethookcount };
-const _lua_gethookmask = lua_gethookmask;
-export { _lua_gethookmask as lua_gethookmask };
-const _lua_getinfo = lua_getinfo;
-export { _lua_getinfo as lua_getinfo };
-const _lua_getlocal = lua_getlocal;
-export { _lua_getlocal as lua_getlocal };
-const _lua_getstack = lua_getstack;
-export { _lua_getstack as lua_getstack };
-const _lua_sethook = lua_sethook;
-export { _lua_sethook as lua_sethook };
-const _lua_setlocal = lua_setlocal;
-export { _lua_setlocal as lua_setlocal };

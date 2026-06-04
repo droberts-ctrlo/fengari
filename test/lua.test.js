@@ -1,12 +1,12 @@
 import { LUA_OK, lua_call } from '../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
 import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from "../src/fengaricore.js";
+import { to_luastring } from '../src/fengaricore.js';
 
 // TODO: remove
 test.skip('locals.lua', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true
@@ -23,7 +23,7 @@ test.skip('locals.lua', () => {
 
 test.skip('constructs.lua', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true
@@ -40,7 +40,7 @@ test.skip('constructs.lua', () => {
 
 test.skip('strings.lua', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         return dofile("tests/lua-tests/strings.lua")
@@ -55,7 +55,7 @@ test.skip('strings.lua', () => {
 
 test('__newindex leaves nils', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local x = setmetatable({}, {

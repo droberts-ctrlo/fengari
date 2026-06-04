@@ -1,11 +1,11 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
-test("[test-suite] attrib: testing require", () => {
+test('[test-suite] attrib: testing require', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(require"string" == string)
@@ -60,15 +60,15 @@ test("[test-suite] attrib: testing require", () => {
 
 
 // TODO: when io.write etc.
-test.skip("[test-suite] attrib: system specific tests for 'require'", () => {
+test.skip('[test-suite] attrib: system specific tests for \'require\'', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 });
 
 
-test("[test-suite] attrib: testing assignments, logical operators, and constructors", () => {
+test('[test-suite] attrib: testing assignments, logical operators, and constructors', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local res, res2 = 27
@@ -166,9 +166,9 @@ test("[test-suite] attrib: testing assignments, logical operators, and construct
 });
 
 
-test("[test-suite] attrib: test of large float/integer indices ", () => {
+test('[test-suite] attrib: test of large float/integer indices ', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         a = {}
@@ -230,9 +230,9 @@ test("[test-suite] attrib: test of large float/integer indices ", () => {
 });
 
 
-test("[test-suite] attrib: test conflicts in multiple assignment", () => {
+test('[test-suite] attrib: test conflicts in multiple assignment', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -250,9 +250,9 @@ test("[test-suite] attrib: test conflicts in multiple assignment", () => {
 });
 
 
-test("[test-suite] attrib: repeat test with upvalues", () => {
+test('[test-suite] attrib: repeat test with upvalues', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -276,9 +276,9 @@ test("[test-suite] attrib: repeat test with upvalues", () => {
 });
 
 
-test("[test-suite] attrib: bug in 5.2 beta", () => {
+test('[test-suite] attrib: bug in 5.2 beta', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         local function foo ()

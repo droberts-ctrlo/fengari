@@ -1,7 +1,7 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 const checkload = `
     local function checkload (s, msg)
@@ -11,7 +11,7 @@ const checkload = `
 
 test('[test-suite] constructs: testing semicolons', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do ;;; end
@@ -27,7 +27,7 @@ test('[test-suite] constructs: testing semicolons', () => {
 
 test('[test-suite] constructs: invalid operations should not raise errors when not executed', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         if false then a = 3 // 0; a = 0 % 0 end
@@ -41,7 +41,7 @@ test('[test-suite] constructs: invalid operations should not raise errors when n
 
 test('[test-suite] constructs: testing priorities', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(2^3^2 == 2^(3^2));
@@ -94,7 +94,7 @@ test('[test-suite] constructs: testing priorities', () => {
 
 test('[test-suite] constructs: silly loops', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         repeat until 1; repeat until true;
@@ -267,7 +267,7 @@ test('[test-suite] constructs: silly loops', () => {
 
 test.skip('[test-suite] constructs: huge loops, upvalue', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         -- sometimes will be 0, sometimes will not...
@@ -341,9 +341,9 @@ test.skip('[test-suite] constructs: huge loops, upvalue', () => {
 });
 
 
-test("[test-suite] constructs: testing some syntax errors (chosen through 'gcov')", () => {
+test('[test-suite] constructs: testing some syntax errors (chosen through \'gcov\')', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         _soft = true

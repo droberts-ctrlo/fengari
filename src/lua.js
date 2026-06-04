@@ -6,22 +6,25 @@ export { lua_gethook, lua_gethookcount, lua_gethookmask, lua_getinfo, lua_getloc
 export { lua_isyieldable, lua_resume, lua_yield, lua_yieldk } from './ldo.js';
 export { lua_close, lua_newstate, lua_newthread } from './lstate.js';
 
-export const LUA_ERRERR              = thread_status.LUA_ERRERR;
-export const LUA_ERRGCMM             = thread_status.LUA_ERRGCMM;
-export const LUA_ERRMEM              = thread_status.LUA_ERRMEM;
-export const LUA_ERRRUN              = thread_status.LUA_ERRRUN;
-export const LUA_ERRSYNTAX           = thread_status.LUA_ERRSYNTAX;
-export const LUA_NUMTAGS             = constant_types.LUA_NUMTAGS;
-export const LUA_OK                  = thread_status.LUA_OK;
-export const LUA_YIELD               = thread_status.LUA_YIELD;
+export const {
+    LUA_ERRERR,
+    LUA_ERRGCMM,
+    LUA_ERRMEM,
+    LUA_ERRRUN,
+    LUA_ERRSYNTAX,
+    LUA_OK,
+    LUA_YIELD
+} = thread_status;
 
-export const LUA_TNONE               = constant_types.LUA_TNONE;
-export const LUA_TNIL                = constant_types.LUA_TNIL;
-export const LUA_TBOOLEAN            = constant_types.LUA_TBOOLEAN;
-export const LUA_TLIGHTUSERDATA      = constant_types.LUA_TLIGHTUSERDATA;
-export const LUA_TNUMBER             = constant_types.LUA_TNUMBER;
-export const LUA_TSTRING             = constant_types.LUA_TSTRING;
-export const LUA_TTABLE              = constant_types.LUA_TTABLE;
-export const LUA_TFUNCTION           = constant_types.LUA_TFUNCTION;
-export const LUA_TUSERDATA           = constant_types.LUA_TUSERDATA;
-export const LUA_TTHREAD             = constant_types.LUA_TTHREAD;
+export const {
+    LUA_TNONE,
+    LUA_TNIL,
+    LUA_TBOOLEAN,
+    LUA_TLIGHTUSERDATA,
+    LUA_TNUMBER,
+    LUA_TSTRING,
+    LUA_TTABLE,
+    LUA_TFUNCTION,
+    LUA_TUSERDATA,
+    LUA_TTHREAD
+} = constant_types;

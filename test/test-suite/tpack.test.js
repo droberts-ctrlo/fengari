@@ -1,7 +1,7 @@
 import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
 import { luaL_newstate, luaL_loadstring } from '../../src/lauxlib.js';
 import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from "../../src/fengaricore.js";
+import { to_luastring } from '../../src/fengaricore.js';
 
 const prefix = `
     local pack = string.pack
@@ -28,9 +28,9 @@ const prefix = `
     local align = packsize("!xXi16")
 `;
 
-test("[test-suite] tpack: maximum size for integers", () => {
+test('[test-suite] tpack: maximum size for integers', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(1 <= sizeshort and sizeshort <= sizeint and sizeint <= sizelong and
@@ -52,9 +52,9 @@ test("[test-suite] tpack: maximum size for integers", () => {
 });
 
 
-test("[test-suite] tpack: minimum behavior for integer formats", () => {
+test('[test-suite] tpack: minimum behavior for integer formats', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(unpack("B", pack("B", 0xff)) == 0xff)
@@ -76,9 +76,9 @@ test("[test-suite] tpack: minimum behavior for integer formats", () => {
 });
 
 
-test("[test-suite] tpack: minimum behavior for integer formats", () => {
+test('[test-suite] tpack: minimum behavior for integer formats', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = 1, NB do
@@ -103,9 +103,9 @@ test("[test-suite] tpack: minimum behavior for integer formats", () => {
 });
 
 
-test("[test-suite] tpack: minimum behavior for integer formats", () => {
+test('[test-suite] tpack: minimum behavior for integer formats', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -136,9 +136,9 @@ test("[test-suite] tpack: minimum behavior for integer formats", () => {
 });
 
 
-test("[test-suite] tpack: minimum behavior for integer formats", () => {
+test('[test-suite] tpack: minimum behavior for integer formats', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = 1, sizeLI do
@@ -158,9 +158,9 @@ test("[test-suite] tpack: minimum behavior for integer formats", () => {
 });
 
 
-test("[test-suite] tpack: sign extension", () => {
+test('[test-suite] tpack: sign extension', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -179,9 +179,9 @@ test("[test-suite] tpack: sign extension", () => {
 });
 
 
-test("[test-suite] tpack: mixed endianness", () => {
+test('[test-suite] tpack: mixed endianness', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -198,9 +198,9 @@ test("[test-suite] tpack: mixed endianness", () => {
 });
 
 
-test("[test-suite] tpack: testing invalid formats", () => {
+test('[test-suite] tpack: testing invalid formats', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("out of limits", pack, "i0", 0)
@@ -221,9 +221,9 @@ test("[test-suite] tpack: testing invalid formats", () => {
 });
 
 
-test("[test-suite] tpack: overflow in option size (error will be in digit after limit)", () => {
+test('[test-suite] tpack: overflow in option size (error will be in digit after limit)', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         checkerror("invalid format", packsize, "c1" .. string.rep("0", 40))
@@ -244,9 +244,9 @@ test("[test-suite] tpack: overflow in option size (error will be in digit after 
 });
 
 
-test("[test-suite] tpack: overflow in packing", () => {
+test('[test-suite] tpack: overflow in packing', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for i = 1, sizeLI - 1 do
@@ -273,9 +273,9 @@ test("[test-suite] tpack: overflow in packing", () => {
 });
 
 
-test("[test-suite] tpack: Lua integer size", () => {
+test('[test-suite] tpack: Lua integer size', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         assert(unpack(">j", pack(">j", math.maxinteger)) == math.maxinteger)
@@ -295,9 +295,9 @@ test("[test-suite] tpack: Lua integer size", () => {
 });
 
 
-test("[test-suite] tpack: testing pack/unpack of floating-point numbers", () => {
+test('[test-suite] tpack: testing pack/unpack of floating-point numbers', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         for _, n in ipairs{0, -1.1, 1.9, 1/0, -1/0, 1e20, -1e20, 0.1, 2000.7} do
@@ -323,9 +323,9 @@ test("[test-suite] tpack: testing pack/unpack of floating-point numbers", () => 
 });
 
 
-test("[test-suite] tpack: testing pack/unpack of strings", () => {
+test('[test-suite] tpack: testing pack/unpack of strings', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -377,9 +377,9 @@ test("[test-suite] tpack: testing pack/unpack of strings", () => {
 });
 
 
-test("[test-suite] tpack: testing multiple types and sequence", () => {
+test('[test-suite] tpack: testing multiple types and sequence', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -397,9 +397,9 @@ test("[test-suite] tpack: testing multiple types and sequence", () => {
 });
 
 
-test("[test-suite] tpack: testing alignment", () => {
+test('[test-suite] tpack: testing alignment', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
@@ -451,9 +451,9 @@ test("[test-suite] tpack: testing alignment", () => {
 });
 
 
-test("[test-suite] tpack: testing initial position", () => {
+test('[test-suite] tpack: testing initial position', () => {
     let L = luaL_newstate();
-    if (!L) throw Error("failed to create lua state");
+    if (!L) throw Error('failed to create lua state');
 
     let luaCode = `
         do
