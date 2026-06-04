@@ -1,5 +1,5 @@
 {
-  "name": "fengari",
+  "name": "@ctrlo/fengari",
   "version": "0.1.6",
   "description": "A Lua VM written in JS modules targeting the browser",
   "main": "src/fengari.js",
