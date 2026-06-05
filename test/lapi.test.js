@@ -1,8 +1,41 @@
-import { toByteCode } from './tests.js';
+import {toByteCode} from './tests.js';
 
-import { lua_pushnil, lua_pushnumber, lua_tonumber, lua_pushinteger, lua_tointeger, lua_pushliteral, lua_tojsstring, lua_pushboolean, lua_toboolean, lua_pushvalue, lua_pushjsclosure, lua_pushjsfunction, lua_call, lua_pushstring, lua_tostring, lua_upvalueindex, lua_pcall, LUA_OK, lua_pop, lua_load, lua_setglobal, lua_createtable, lua_istable, lua_newtable, lua_settable, lua_gettable, lua_pushcfunction, lua_atnativeerror, lua_touserdata, LUA_ERRRUN, lua_seti, lua_len } from '../src/lua.js';
-import { luaL_newstate, luaL_typename, luaL_loadstring, luaL_error } from '../src/lauxlib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {
+    lua_atnativeerror,
+    lua_call,
+    lua_createtable,
+    LUA_ERRRUN,
+    lua_gettable,
+    lua_istable,
+    lua_len,
+    lua_load,
+    lua_newtable,
+    LUA_OK,
+    lua_pcall,
+    lua_pop,
+    lua_pushboolean,
+    lua_pushcfunction,
+    lua_pushinteger,
+    lua_pushjsclosure,
+    lua_pushjsfunction,
+    lua_pushliteral,
+    lua_pushnil,
+    lua_pushnumber,
+    lua_pushstring,
+    lua_pushvalue,
+    lua_setglobal,
+    lua_seti,
+    lua_settable,
+    lua_toboolean,
+    lua_tointeger,
+    lua_tojsstring,
+    lua_tonumber,
+    lua_tostring,
+    lua_touserdata,
+    lua_upvalueindex
+} from '../src/lua.js';
+import {luaL_error, luaL_loadstring, luaL_newstate, luaL_typename} from '../src/lauxlib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 
 test('luaL_newstate, lua_pushnil, luaL_typename', () => {

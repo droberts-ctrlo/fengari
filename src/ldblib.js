@@ -34,7 +34,7 @@ const db_getmetatable = function(L) {
 
 const db_setmetatable = function(L) {
     const t = lua.lua_type(L, 2);
-    lauxlib.luaL_argcheck(L, t == lua.LUA_TNIL || t == lua.LUA_TTABLE, 2, 'nil or table expected');
+    lauxlib.luaL_argcheck(L, t === lua.LUA_TNIL || t === lua.LUA_TTABLE, 2, 'nil or table expected');
     lua.lua_settop(L, 2);
     lua.lua_setmetatable(L, 1);
     return 1;  /* return 1st argument */
@@ -106,7 +106,7 @@ const settabsb = function(L, k, v) {
 ** 'lua_setfield'.
 */
 const treatstackoption = function(L, L1, fname) {
-    if (L == L1)
+    if (L === L1)
         lua.lua_rotate(L, -2, 1);  /* exchange object and table */
     else
         lua.lua_xmove(L1, L, 1);  /* move object to the "main" stack */

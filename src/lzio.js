@@ -1,4 +1,4 @@
-import { lua_assert } from './llimits.js';
+import {lua_assert} from './llimits.js';
 
 export class MBuffer {
     constructor() {

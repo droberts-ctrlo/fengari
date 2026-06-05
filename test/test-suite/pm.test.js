@@ -1,7 +1,7 @@
-import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
-import { luaL_newstate, luaL_loadstring, luaL_loadfile } from '../../src/lauxlib.js';
-import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from '../../src/fengaricore.js';
+import {lua_call, LUA_ERRSYNTAX, lua_tojsstring} from '../../src/lua.js';
+import {luaL_loadfile, luaL_loadstring, luaL_newstate} from '../../src/lauxlib.js';
+import {luaL_openlibs} from '../../src/lualib.js';
+import {to_luastring} from '../../src/fengaricore.js';
 
 test('[test-suite] pm: pattern matching', () => {
     let L = luaL_newstate();

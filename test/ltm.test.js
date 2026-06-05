@@ -1,7 +1,7 @@
-import { LUA_OK, lua_call, lua_isnil, lua_tointeger, lua_tojsstring, lua_toboolean } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, lua_isnil, LUA_OK, lua_toboolean, lua_tointeger, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('__index, __newindex: with actual table', () => {
     let L = luaL_newstate();

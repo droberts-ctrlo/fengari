@@ -1,7 +1,15 @@
-import { LUA_OK, lua_call, lua_isinteger, lua_tointeger, lua_isnumber, lua_tojsstring, lua_isstring } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {
+    lua_call,
+    lua_isinteger,
+    lua_isnumber,
+    lua_isstring,
+    LUA_OK,
+    lua_tointeger,
+    lua_tojsstring
+} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('os.time', () => {
     let L = luaL_newstate();

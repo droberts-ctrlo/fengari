@@ -34,7 +34,7 @@ class BytecodeParser {
 
         if (name[0] === 64 /* ('@').charCodeAt(0) */ || name[0] === 61 /* ('=').charCodeAt(0) */)
             this.name = name.subarray(1);
-        else if (name[0] == defs.LUA_SIGNATURE[0])
+        else if (name[0] === defs.LUA_SIGNATURE[0])
             this.name = defs.to_luastring('binary string', true);
         else
             this.name = name;

@@ -6,7 +6,7 @@
  * avoid a dependency on defs.js from lauxlib.js they are defined in this file.
  */
 
-import { LUA_COPYRIGHT } from './defs.js';
+import {LUA_COPYRIGHT} from './defs.js';
 
 export { LUA_COPYRIGHT, is_luastring, luastring_eq, luastring_from, luastring_indexOf, luastring_of, to_jsstring, to_luastring, to_uristring, from_userstring } from './defs.js';
 

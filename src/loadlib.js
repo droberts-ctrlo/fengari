@@ -373,7 +373,7 @@ const searcher_Croot = function (L) {
     let filename = findfile(L, lua.lua_tostring(L, -1), fengaricore.to_luastring('jspath', true), fengaricore.to_luastring(LUA_CSUBSEP, true));
     if (filename === null) return 1;  /* root not found */
     if ((stat = loadfunc(L, filename, name)) !== 0) {
-        if (stat != ERRFUNC)
+        if (stat !== ERRFUNC)
             return checkload(L, 0, filename);  /* real error */
         else {  /* open function not found */
             lua.lua_pushfstring(L, fengaricore.to_luastring('\n\tno module \'%s\' in file \'%s\''), name, filename);
@@ -437,13 +437,11 @@ const ll_require = function (L) {
         return 1;  /* package is already loaded */
     /* else must load package */
     lua.lua_pop(L, 1);  /* remove 'getfield' result */
-    let ctx = name;
-    return findloader(L, name, ctx, ll_require_cont);
+    return findloader(L, name, name, ll_require_cont);
 };
 
 const ll_require_cont = function (L, status, ctx) {
-    let name = ctx;
-    lua.lua_pushstring(L, name);  /* pass name as argument to module loader */
+    lua.lua_pushstring(L, ctx);  /* pass name as argument to module loader */
     lua.lua_insert(L, -2);  /* name is 1st argument (before search data) */
     lua.lua_callk(L, 2, 1, ctx, ll_require_cont2);
     return ll_require_cont2(L, lua.LUA_OK, ctx);  /* run loader to load module */
@@ -453,7 +451,7 @@ const ll_require_cont2 = function (L, status, ctx) {
     let name = ctx;
     if (!lua.lua_isnil(L, -1))  /* non-nil return? */
         lua.lua_setfield(L, 2, name);  /* LOADED[name] = returned value */
-    if (lua.lua_getfield(L, 2, name) == lua.LUA_TNIL) {   /* module set no value? */
+    if (lua.lua_getfield(L, 2, name) === lua.LUA_TNIL) {   /* module set no value? */
         lua.lua_pushboolean(L, 1);  /* use true as result */
         lua.lua_pushvalue(L, -1);  /* extra copy to be returned */
         lua.lua_setfield(L, 2, name);  /* LOADED[name] = true */

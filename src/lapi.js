@@ -498,8 +498,7 @@ export const lua_rawget = function (L, idx) {
 
 // narray and nrec are mostly useless for this implementation
 export const lua_createtable = function (L, _narray, _nrec) {
-    let t = new lobject.TValue(LUA_TTABLE, ltable.luaH_new(L));
-    L.stack[L.top] = t;
+    L.stack[L.top] = new lobject.TValue(LUA_TTABLE, ltable.luaH_new(L));
     api_incr_top(L);
 };
 
@@ -1079,8 +1078,7 @@ export const lua_upvalueid = function (L, fidx, n) {
 export const lua_upvaluejoin = function (L, fidx1, n1, fidx2, n2) {
     let ref1 = getupvalref(L, fidx1, n1);
     let ref2 = getupvalref(L, fidx2, n2);
-    let up2 = ref2.f.upvals[ref2.i];
-    ref1.f.upvals[ref1.i] = up2;
+    ref1.f.upvals[ref1.i] = ref2.f.upvals[ref2.i];
 };
 
 // This functions are only there for compatibility purposes

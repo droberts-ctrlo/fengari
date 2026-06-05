@@ -68,8 +68,8 @@ export const seterrorobj = function (L, errcode, oldtop) {
 export const ERRORSTACKSIZE = common.LUAI_MAXSTACK + 200;
 
 export const luaD_reallocstack = function (L, newsize) {
-    llimits.lua_assert(newsize <= common.LUAI_MAXSTACK || newsize == ERRORSTACKSIZE);
-    llimits.lua_assert(L.stack_last == L.stack.length - lstate.EXTRA_STACK);
+    llimits.lua_assert(newsize <= common.LUAI_MAXSTACK || newsize === ERRORSTACKSIZE);
+    llimits.lua_assert(L.stack_last === L.stack.length - lstate.EXTRA_STACK);
     L.stack.length = newsize;
     L.stack_last = newsize - lstate.EXTRA_STACK;
 };
@@ -286,7 +286,7 @@ export const callhook = function (L, ci) {
     let hook = defs.LUA_HOOKCALL;
     ci.l_savedpc++;  /* hooks assume 'pc' is already incremented */
     if ((ci.previous.callstatus & lstate.CIST_LUA) &&
-        ci.previous.l_code[ci.previous.l_savedpc - 1].opcode == lopcodes.OpCodesI.OP_TAILCALL) {
+        ci.previous.l_code[ci.previous.l_savedpc - 1].opcode === lopcodes.OpCodesI.OP_TAILCALL) {
         ci.callstatus |= lstate.CIST_TAIL;
         hook = defs.LUA_HOOKTAILCALL;
     }

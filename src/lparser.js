@@ -1275,8 +1275,7 @@ const exp1 = function (ls) {
     expr(ls, e);
     lcode.luaK_exp2nextreg(ls.fs, e);
     llimits.lua_assert(e.k === expkind.VNONRELOC);
-    let reg = e.u.info;
-    return reg;
+    return e.u.info;
 };
 
 const forbody = function (ls, base, line, nvars, isnum) {

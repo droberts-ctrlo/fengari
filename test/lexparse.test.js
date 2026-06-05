@@ -1,8 +1,18 @@
-import { lua_load, lua_call, lua_tojsstring, lua_type, LUA_TTABLE, lua_tointeger, lua_toboolean, lua_tonumber, lua_topointer } from '../src/lua.js';
-import { luaL_newstate } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { luaS_hash } from '../src/lstring.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {
+    lua_call,
+    lua_load,
+    lua_toboolean,
+    lua_tointeger,
+    lua_tojsstring,
+    lua_tonumber,
+    lua_topointer,
+    LUA_TTABLE,
+    lua_type
+} from '../src/lua.js';
+import {luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {luaS_hash} from '../src/lstring.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 // Roughly the same tests as test/lvm.js to cover all opcodes
 test('LOADK, RETURN', () => {

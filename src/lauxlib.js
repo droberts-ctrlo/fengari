@@ -565,8 +565,8 @@ export const luaL_requiref = function (L, modname, openf, glb) {
 };
 
 export const find_subarray = function (arr, subarr, from_index) {
-    var i = from_index >>> 0,
-        sl = subarr.length,
+    let i = from_index >>> 0;
+    const sl = subarr.length,
         l = arr.length + 1 - sl;
 
     loop: for (; i < l; i++) {
@@ -923,9 +923,9 @@ export const lua_writestringerror = function () {
 
 export const luaL_checkversion_ = function (L, ver, sz) {
     let v = lua.lua_version(L);
-    if (sz != LUAL_NUMSIZES)  /* check numeric types */
+    if (sz !== LUAL_NUMSIZES)  /* check numeric types */
         luaL_error(L, fengaricore.to_luastring('core and library have incompatible numeric types'));
-    if (v != lua.lua_version(null))
+    if (v !== lua.lua_version(null))
         luaL_error(L, fengaricore.to_luastring('multiple Lua VMs detected'));
     else if (v !== ver)
         luaL_error(L, fengaricore.to_luastring('version mismatch: app. needs %f, Lua core provides %f'), ver, v);

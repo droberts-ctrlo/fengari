@@ -1,7 +1,7 @@
-import { LUA_ERRSYNTAX, lua_tojsstring, lua_call } from '../../src/lua.js';
-import { luaL_newstate, luaL_loadstring, luaL_loadbuffer } from '../../src/lauxlib.js';
-import { luaL_openlibs } from '../../src/lualib.js';
-import { to_luastring } from '../../src/fengaricore.js';
+import {lua_call, LUA_ERRSYNTAX, lua_tojsstring} from '../../src/lua.js';
+import {luaL_loadbuffer, luaL_loadstring, luaL_newstate} from '../../src/lauxlib.js';
+import {luaL_openlibs} from '../../src/lualib.js';
+import {to_luastring} from '../../src/fengaricore.js';
 
 const prefix = `
     local function dostring(s) return assert(load(s))() end

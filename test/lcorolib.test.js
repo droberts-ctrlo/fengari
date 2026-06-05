@@ -1,8 +1,8 @@
-import { LUA_OK, lua_call, lua_tonumber, lua_tojsstring, lua_toboolean, lua_tothread } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { lua_State } from '../src/lstate.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, LUA_OK, lua_toboolean, lua_tojsstring, lua_tonumber, lua_tothread} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {lua_State} from '../src/lstate.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('coroutine.create, coroutine.yield, coroutine.resume', () => {
     let L = luaL_newstate();

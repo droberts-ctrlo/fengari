@@ -1,7 +1,16 @@
-import { LUA_OK, lua_call, lua_tointeger, lua_tojsstring, lua_tostring, lua_load, lua_toboolean, lua_gettop } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {
+    lua_call,
+    lua_gettop,
+    lua_load,
+    LUA_OK,
+    lua_toboolean,
+    lua_tointeger,
+    lua_tojsstring,
+    lua_tostring
+} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('string.len', () => {
     let L = luaL_newstate();

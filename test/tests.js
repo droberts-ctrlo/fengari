@@ -1,6 +1,6 @@
-import { LUA_OK, lua_tojsstring, lua_dump } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_dump, LUA_OK, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 export const toByteCode = function(luaCode) {
     let L = luaL_newstate();

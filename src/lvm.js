@@ -103,7 +103,7 @@ export const luaV_finishOp = function (L) {
                 res = !res;  /* negate result */
             }
             llimits.lua_assert(ci.l_code[ci.l_savedpc].opcode === OP_JMP);
-            if (res !== (inst.A ? true : false))  /* condition failed? */
+            if (res !== (!!inst.A))  /* condition failed? */
                 ci.l_savedpc++;  /* skip jump instruction */
             break;
         }
@@ -158,7 +158,6 @@ export const luaV_execute = function (L) {
     let ci = L.ci;
 
     ci.callstatus |= lstate.CIST_FRESH;
-    newframe:
     for (; ;) {
         llimits.lua_assert(ci === L.ci);
         let cl = ci.func.value;
@@ -499,7 +498,7 @@ export const luaV_execute = function (L) {
                         ldo.adjust_top(L, ci.top);  /* adjust results */
                 } else {
                     ci = L.ci;
-                    continue newframe;
+                    continue;
                 }
 
                 break;
@@ -530,7 +529,7 @@ export const luaV_execute = function (L) {
 
                     llimits.lua_assert(L.top === oci.l_base + L.stack[ofuncOff].value.p.maxstacksize);
 
-                    continue newframe;
+                    continue;
                 }
                 break;
             }
@@ -545,7 +544,7 @@ export const luaV_execute = function (L) {
                 if (b) ldo.adjust_top(L, ci.top);
                 llimits.lua_assert(ci.callstatus & lstate.CIST_LUA);
                 llimits.lua_assert(ci.l_code[ci.l_savedpc - 1].opcode === OP_CALL);
-                continue newframe;
+                break;
             }
             case OP_FORLOOP: {
                 if (L.stack[ra].ttisinteger()) { /* integer loop? */
@@ -738,7 +737,7 @@ export const luaV_equalobj = function (L, t1, t2) {
         case LUA_TNIL:
             return 1;
         case LUA_TBOOLEAN:
-            return t1.value == t2.value ? 1 : 0; // Might be 1 or true
+            return t1.value === t2.value ? 1 : 0; // Might be 1 or true
         case LUA_TLIGHTUSERDATA:
         case LUA_TNUMINT:
         case LUA_TNUMFLT:

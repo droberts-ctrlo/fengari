@@ -1,7 +1,18 @@
-import { LUA_OK, lua_call, lua_tojsstring, lua_istable, lua_toboolean, lua_pcall, lua_tointeger, lua_topointer, lua_isnil, lua_tonumber } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {
+    lua_call,
+    lua_isnil,
+    lua_istable,
+    LUA_OK,
+    lua_pcall,
+    lua_toboolean,
+    lua_tointeger,
+    lua_tojsstring,
+    lua_tonumber,
+    lua_topointer
+} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 
 test('print', () => {

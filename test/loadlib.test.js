@@ -1,7 +1,7 @@
-import { LUA_OK, lua_call, lua_istable, lua_tojsstring } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, lua_istable, LUA_OK, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('require an existing module', () => {
     let L = luaL_newstate();

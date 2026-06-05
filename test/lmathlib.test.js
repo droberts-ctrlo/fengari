@@ -1,7 +1,7 @@
-import { LUA_OK, lua_call, lua_tointeger, lua_tonumber, lua_tojsstring, lua_toboolean } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, LUA_OK, lua_toboolean, lua_tointeger, lua_tojsstring, lua_tonumber} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('math.abs, math.sin, math.cos, math.tan, math.asin, math.acos, math.atan', () => {
     let L = luaL_newstate();
@@ -83,7 +83,7 @@ test('math.log', () => {
 
 
 /* Node.js 6 has incorrect results for Math.exp */
-(parseInt(process.versions.node) > 6 ? test : test.skip)('math.exp', () => {
+test('math.exp', () => {
     let L = luaL_newstate();
     if (!L) throw Error('failed to create lua state');
 

@@ -1,7 +1,7 @@
-import { LUA_OK, lua_call, lua_tointeger, lua_tojsstring } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, LUA_OK, lua_tointeger, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('utf8.offset', () => {
     let L = luaL_newstate();

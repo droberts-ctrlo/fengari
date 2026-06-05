@@ -1,4 +1,4 @@
-import { luastring_of, to_luastring, to_jsstring } from '../src/defs.js';
+import {luastring_of, to_jsstring, to_luastring} from '../src/defs.js';
 
 
 const unicode_tests = [

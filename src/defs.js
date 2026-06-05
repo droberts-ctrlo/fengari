@@ -2,7 +2,7 @@
  * Fengari specific string conversion functions
  */
 
-import { LUAI_MAXSTACK } from './common.js';
+import {LUAI_MAXSTACK} from './common.js';
 
 export { LUAI_MAXSTACK };
 

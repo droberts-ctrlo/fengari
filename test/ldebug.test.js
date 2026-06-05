@@ -1,7 +1,7 @@
-import { LUA_OK, lua_pcall, lua_tojsstring } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {LUA_OK, lua_pcall, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('luaG_typeerror', () => {
     let L = luaL_newstate();

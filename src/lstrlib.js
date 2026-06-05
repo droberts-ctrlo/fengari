@@ -1,4 +1,4 @@
-import { sprintf } from 'sprintf-js';
+import {sprintf} from 'sprintf-js';
 
 import * as luaconf from './luaconf.js';
 import * as lua from './lua.js';
@@ -736,7 +736,7 @@ const unpacknum = function (L, b, islittle, size) {
     for (let i = 0; i < size; i++)
         dv.setUint8(i, b[i]);
 
-    if (size == 4) return dv.getFloat32(0, islittle);
+    if (size === 4) return dv.getFloat32(0, islittle);
     else return dv.getFloat64(0, islittle);
 };
 
@@ -1155,8 +1155,8 @@ const reprepstate = function (ms) {
 };
 
 const find_subarray = function (arr, subarr, from_index) {
-    var i = from_index >>> 0,
-        sl = subarr.length;
+    let i = from_index >>> 0;
+    const sl = subarr.length;
 
     if (sl === 0)
         return i;

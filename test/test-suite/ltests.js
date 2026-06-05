@@ -1,12 +1,153 @@
 import assert from 'assert';
 
-import { lua_tointeger, lua_pop, lua_gettop, LUA_REGISTRYINDEX, lua_upvalueindex, lua_pushstring, lua_pushnumber, lua_absindex, lua_rawlen, lua_rawseti, lua_arith, lua_call, lua_callk, LUA_OPEQ, LUA_OPLT, LUA_OPLE, lua_pushboolean, lua_compare, lua_concat, lua_copy, lua_tocfunction, lua_getfield, lua_getglobal, lua_getmetatable, lua_pushnil, lua_gettable, lua_pushinteger, lua_tostring, lua_insert, lua_iscfunction, lua_isfunction, lua_isnil, lua_isnone, lua_isnumber, lua_isstring, lua_istable, lua_islightuserdata, lua_isuserdata, lua_len, lua_newtable, lua_newthread, lua_newuserdata, lua_next, lua_pcall, lua_pcallk, lua_pushcclosure, lua_pushvalue, lua_rawgeti, lua_rawgetp, lua_rawsetp, lua_remove, lua_replace, lua_resume, lua_tothread, lua_rotate, lua_setfield, lua_setglobal, lua_setmetatable, lua_settable, lua_settop, lua_error, lua_toboolean, lua_pushcfunction, lua_tonumber, lua_topointer, lua_xmove, lua_yield, lua_yieldk, lua_isthread, LUA_TFUNCTION, lua_getupvalue, lua_setupvalue, lua_pushlightuserdata, lua_touserdata, lua_pushlstring, lua_newstate, lua_atpanic, lua_type, LUA_TTABLE, lua_close, LUA_OK, LUA_MULTRET, lua_tojsstring, lua_checkstack, lua_pushliteral, lua_sethook, lua_isnoneornil, LUA_MASKCALL, LUA_MASKRET, LUA_MASKLINE, LUA_MASKCOUNT, LUA_YIELD, lua_createtable } from '../../src/lua.js';
-import { luaL_error, luaL_checkstack, luaL_gsub, luaL_len, luaL_loadfile, luaL_checkstring, luaL_loadstring, luaL_newmetatable, luaL_tojsstring, luaL_testudata, luaL_typename, luaL_checkinteger, luaL_checktype, luaL_checknumber, luaL_argcheck, luaL_requiref, luaL_getsubtable, LUA_PRELOAD_TABLE, luaL_checklstring, luaL_loadbuffer, luaL_optstring, luaL_optinteger, luaL_newlib } from '../../src/lauxlib.js';
-import { luastring_eq, luastring_indexOf, to_jsstring, to_luastring } from '../../src/fengaricore.js';
-import { lisdigit } from '../../src/ljstype.js';
-import { GET_OPCODE, OpCodes, getOpMode, iABC, GETARG_A, GETARG_B, GETARG_C, iABx, GETARG_Bx, iAsBx, GETARG_sBx, iAx, GETARG_Ax } from '../../src/lopcodes.js';
-import { pushobj2s } from '../../src/lobject.js';
-import { sprintf } from 'sprintf-js';
+import {
+    lua_absindex,
+    lua_arith,
+    lua_atpanic,
+    lua_call,
+    lua_callk,
+    lua_checkstack,
+    lua_close,
+    lua_compare,
+    lua_concat,
+    lua_copy,
+    lua_createtable,
+    lua_error,
+    lua_getfield,
+    lua_getglobal,
+    lua_getmetatable,
+    lua_gettable,
+    lua_gettop,
+    lua_getupvalue,
+    lua_insert,
+    lua_iscfunction,
+    lua_isfunction,
+    lua_islightuserdata,
+    lua_isnil,
+    lua_isnone,
+    lua_isnoneornil,
+    lua_isnumber,
+    lua_isstring,
+    lua_istable,
+    lua_isthread,
+    lua_isuserdata,
+    lua_len,
+    LUA_MASKCALL,
+    LUA_MASKCOUNT,
+    LUA_MASKLINE,
+    LUA_MASKRET,
+    LUA_MULTRET,
+    lua_newstate,
+    lua_newtable,
+    lua_newthread,
+    lua_newuserdata,
+    lua_next,
+    LUA_OK,
+    LUA_OPEQ,
+    LUA_OPLE,
+    LUA_OPLT,
+    lua_pcall,
+    lua_pcallk,
+    lua_pop,
+    lua_pushboolean,
+    lua_pushcclosure,
+    lua_pushcfunction,
+    lua_pushinteger,
+    lua_pushlightuserdata,
+    lua_pushliteral,
+    lua_pushlstring,
+    lua_pushnil,
+    lua_pushnumber,
+    lua_pushstring,
+    lua_pushvalue,
+    lua_rawgeti,
+    lua_rawgetp,
+    lua_rawlen,
+    lua_rawseti,
+    lua_rawsetp,
+    LUA_REGISTRYINDEX,
+    lua_remove,
+    lua_replace,
+    lua_resume,
+    lua_rotate,
+    lua_setfield,
+    lua_setglobal,
+    lua_sethook,
+    lua_setmetatable,
+    lua_settable,
+    lua_settop,
+    lua_setupvalue,
+    LUA_TFUNCTION,
+    lua_toboolean,
+    lua_tocfunction,
+    lua_tointeger,
+    lua_tojsstring,
+    lua_tonumber,
+    lua_topointer,
+    lua_tostring,
+    lua_tothread,
+    lua_touserdata,
+    LUA_TTABLE,
+    lua_type,
+    lua_upvalueindex,
+    lua_xmove,
+    lua_yield,
+    LUA_YIELD,
+    lua_yieldk
+} from '../../src/lua.js';
+import {
+    LUA_PRELOAD_TABLE,
+    luaL_argcheck,
+    luaL_checkinteger,
+    luaL_checklstring,
+    luaL_checknumber,
+    luaL_checkstack,
+    luaL_checkstring,
+    luaL_checktype,
+    luaL_error,
+    luaL_getsubtable,
+    luaL_gsub,
+    luaL_len,
+    luaL_loadbuffer,
+    luaL_loadfile,
+    luaL_loadstring,
+    luaL_newlib,
+    luaL_newmetatable,
+    luaL_optinteger,
+    luaL_optstring,
+    luaL_requiref,
+    luaL_testudata,
+    luaL_tojsstring,
+    luaL_typename
+} from '../../src/lauxlib.js';
+import {luastring_eq, luastring_indexOf, to_jsstring, to_luastring} from '../../src/fengaricore.js';
+import {lisdigit} from '../../src/ljstype.js';
+import {
+    GET_OPCODE,
+    GETARG_A,
+    GETARG_Ax,
+    GETARG_B,
+    GETARG_Bx,
+    GETARG_C,
+    GETARG_sBx,
+    getOpMode,
+    iABC,
+    iABx,
+    iAsBx,
+    iAx,
+    OpCodes
+} from '../../src/lopcodes.js';
+import {pushobj2s} from '../../src/lobject.js';
+import {sprintf} from 'sprintf-js';
+import {luaopen_base} from '../../src/lbaselib.js';
+import {luaopen_coroutine} from '../../src/lcorolib.js';
+import {luaopen_debug} from '../../src/ldblib.js';
+import {luaopen_io} from '../../src/liolib.js';
+import {luaopen_os} from '../../src/loslib.js';
+import {luaopen_math} from '../../src/lmathlib.js';
+import {luaopen_string} from '../../src/lstrlib.js';
+import {luaopen_table} from '../../src/ltablib.js';
+import {luaopen_package} from '../../src/loadlib.js';
 
 const delimits = [' ', '\t', '\n', ',', ';'].map(e => e.charCodeAt(0));
 
@@ -555,16 +696,6 @@ const getstate = function(L) {
     luaL_argcheck(L, L1 !== null, 1, 'state expected');
     return L1;
 };
-
-import { luaopen_base } from '../../src/lbaselib.js';
-import { luaopen_coroutine } from '../../src/lcorolib.js';
-import { luaopen_debug } from '../../src/ldblib.js';
-import { luaopen_io } from '../../src/liolib.js';
-import { luaopen_os } from '../../src/loslib.js';
-import { luaopen_math } from '../../src/lmathlib.js';
-import { luaopen_string } from '../../src/lstrlib.js';
-import { luaopen_table } from '../../src/ltablib.js';
-import { luaopen_package } from '../../src/loadlib.js';
 
 const loadlib = function(L) {
     let libs = {

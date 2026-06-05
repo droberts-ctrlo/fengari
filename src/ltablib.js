@@ -204,7 +204,7 @@ const partition = function(L, lo, up) {
     for (;;) {
         /* next loop: repeat ++i while a[i] < P */
         while (lua.lua_geti(L, 1, ++i), sort_comp(L, -1, -2)) {
-            if (i == up - 1)  /* a[i] < P  but a[up - 1] == P  ?? */
+            if (i === up - 1)  /* a[i] < P  but a[up - 1] == P  ?? */
                 lauxlib.luaL_error(L, fengaricore.to_luastring('invalid order function for sorting'));
             lua.lua_pop(L, 1);  /* remove a[i] */
         }
@@ -244,7 +244,7 @@ const auxsort = function(L, lo, up, rnd) {
             set2(L, lo, up);  /* swap a[lo] - a[up] */
         else
             lua.lua_pop(L, 2);  /* remove both values */
-        if (up - lo == 1)  /* only 2 elements? */
+        if (up - lo === 1)  /* only 2 elements? */
             return;  /* already sorted */
         let p;  /* Pivot index */
         if (up - lo < RANLIMIT || rnd === 0)  /* small interval or no randomize? */
@@ -263,7 +263,7 @@ const auxsort = function(L, lo, up, rnd) {
             else
                 lua.lua_pop(L, 2);
         }
-        if (up - lo == 2)  /* only 3 elements? */
+        if (up - lo === 2)  /* only 3 elements? */
             return;  /* already sorted */
         lua.lua_geti(L, 1, p);  /* get middle element (Pivot) */
         lua.lua_pushvalue(L, -1);  /* push Pivot */

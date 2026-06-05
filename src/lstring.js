@@ -21,7 +21,7 @@ export class TString {
 export const luaS_eqlngstr = function (a, b) {
     llimits.lua_assert(a instanceof TString);
     llimits.lua_assert(b instanceof TString);
-    return a == b || defs.luastring_eq(a.realstring, b.realstring);
+    return a === b || defs.luastring_eq(a.realstring, b.realstring);
 };
 
 /* converts strings (arrays) to a consistent map key

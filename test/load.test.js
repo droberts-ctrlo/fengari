@@ -1,9 +1,9 @@
-import { toByteCode } from './tests.js';
+import {toByteCode} from './tests.js';
 
-import { LUA_OK, lua_call, lua_tojsstring } from '../src/lua.js';
-import { luaL_newstate, luaL_loadstring, luaL_loadbuffer } from '../src/lauxlib.js';
-import { luaL_openlibs } from '../src/lualib.js';
-import { to_luastring } from '../src/fengaricore.js';
+import {lua_call, LUA_OK, lua_tojsstring} from '../src/lua.js';
+import {luaL_loadbuffer, luaL_loadstring, luaL_newstate} from '../src/lauxlib.js';
+import {luaL_openlibs} from '../src/lualib.js';
+import {to_luastring} from '../src/fengaricore.js';
 
 test('luaL_loadstring', () => {
     let L = luaL_newstate();

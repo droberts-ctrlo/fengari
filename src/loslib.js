@@ -406,9 +406,8 @@ const os_time = function(L) {
 };
 
 const l_checktime = function(L, arg) {
-    let t = lauxlib.luaL_checkinteger(L, arg);
     // luaL_argcheck(L, t, arg, "time out-of-bounds");
-    return t;
+    return lauxlib.luaL_checkinteger(L, arg);
 };
 
 const os_difftime = function(L) {
@@ -429,7 +428,7 @@ const os_setlocale = function(L) {
        IEEE Std 1003.1-2017 Section 7.2 as equivalent to "C" */
     lua.lua_pushstring(L, (
         l === null /* passing nil returns the current locale; which is "C" */
-        || l.length == 0 /* empty string resets to the default locale; which is "C" */
+        || l.length === 0 /* empty string resets to the default locale; which is "C" */
         || fengaricore.luastring_eq(l, C) /* user passed "C" */
         || fengaricore.luastring_eq(l, POSIX) /* user passed "POSIX", equivalent to "C" */
     ) ? C : null);

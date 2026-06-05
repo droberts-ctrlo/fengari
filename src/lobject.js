@@ -140,7 +140,7 @@ export class TValue {
     }
 
     chgfltvalue(x) {
-        llimits.lua_assert(this.type == LUA_TNUMFLT);
+        llimits.lua_assert(this.type === LUA_TNUMFLT);
         this.value = x;
     }
 
@@ -150,7 +150,7 @@ export class TValue {
     }
 
     chgivalue(x) {
-        llimits.lua_assert(this.type == LUA_TNUMINT);
+        llimits.lua_assert(this.type === LUA_TNUMINT);
         this.value = x;
     }
 
@@ -487,11 +487,10 @@ export const l_str2d = function (s) {
     let mode = modes[pmode];
     if (mode === 'n')  /* reject 'inf' and 'nan' */
         return null;
-    let end = l_str2dloc(s, mode);  /* try to convert */
     // if (end === null) {   /* failed? may be a different locale */
     //     throw new Error("Locale not available to handle number"); // TODO
     // }
-    return end;
+    return l_str2dloc(s, mode);
 };
 
 export const MAXBY10 = Math.floor(llimits.MAX_INT / 10);
@@ -572,7 +571,7 @@ export const luaO_pushvfstring = function (L, fmt, argp) {
     let e;
     for (; ;) {
         e = defs.luastring_indexOf(fmt, 37 /* ('%').charCodeAt(0) */, i);
-        if (e == -1) break;
+        if (e === -1) break;
         pushstr(L, fmt.subarray(i, e));
         switch (fmt[e + 1]) {
             case 115 /* ('s').charCodeAt(0) */: {
